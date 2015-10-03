@@ -1,0 +1,3 @@
+[submodule "libudt4-sys/libudt4"]
+	path = libudt4-sys/libudt4
+	url = git://git.code.sf.net/p/udt/git
