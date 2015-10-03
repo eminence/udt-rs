@@ -5,6 +5,7 @@ build = "build.rs"
 version = "0.1.0"
 links = "udt4wrap"
 description = "Native bindings to a C wrapper around the UDT library"
+license = "BSD"
 
 [lib]
 name = "libudt4_sys"

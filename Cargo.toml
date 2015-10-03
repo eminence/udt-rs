@@ -7,6 +7,7 @@ readme = "README.md"
 description = """
 Bindings to udt, a high performance data transfer protocol (based on UDP)
 """
+license = "BSD"
 
 [dependencies]
 libudt4-sys = {path = "libudt4-sys", version="0.1"}
