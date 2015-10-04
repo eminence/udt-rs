@@ -1,0 +1,1 @@
+initSidebarItems({"enum":[["SocketFamily",""],["SocketType","Socket type"]],"fn":[["init","Initialize the UDT library."]],"mod":[["UdtOpts","Various options that can be passed to `getsockopt` or `setsockopt`"]],"struct":[["Linger","Linger option"],["UdtError",""],["UdtSocket","A UDT Socket"]],"trait":[["UdtOption",""]]});

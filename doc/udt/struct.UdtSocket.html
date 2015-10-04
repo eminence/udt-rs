@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="generator" content="rustdoc">
+    <meta name="description" content="API documentation for the Rust `UdtSocket` struct in crate `udt`.">
+    <meta name="keywords" content="rust, rustlang, rust-lang, UdtSocket">
+
+    <title>udt::UdtSocket - Rust</title>
+
+    <link rel="stylesheet" type="text/css" href="../main.css">
+
+    
+    
+</head>
+<body class="rustdoc">
+    <!--[if lte IE 8]>
+    <div class="warning">
+        This old browser is unsupported and will most likely display funky
+        things.
+    </div>
+    <![endif]-->
+
+    
+
+    <section class="sidebar">
+        
+        <p class='location'><a href='index.html'>udt</a></p><script>window.sidebarCurrent = {name: 'UdtSocket', ty: 'struct', relpath: ''};</script><script defer src="sidebar-items.js"></script>
+    </section>
+
+    <nav class="sub">
+        <form class="search-form js-only">
+            <div class="search-container">
+                <input class="search-input" name="search"
+                       autocomplete="off"
+                       placeholder="Click or press ‘S’ to search, ‘?’ for more options…"
+                       type="search">
+            </div>
+        </form>
+    </nav>
+
+    <section id='main' class="content struct">
+<h1 class='fqn'><span class='in-band'>Struct <a href='index.html'>udt</a>::<wbr><a class='struct' href=''>UdtSocket</a></span><span class='out-of-band'><span id='render-detail'>
+            <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
+                [<span class='inner'>&#x2212;</span>]
+            </a>
+        </span><a id='src-161' class='srclink' href='../src/udt/lib.rs.html#79-81' title='goto source code'>[src]</a></span></h1>
+<pre class='rust struct'>pub struct UdtSocket {
+    // some fields omitted
+}</pre><div class='docblock'><p>A UDT Socket</p>
+</div><h2 id='methods'>Methods</h2><h3 class='impl'><code>impl <a class='struct' href='../udt/struct.UdtSocket.html' title='udt::UdtSocket'>UdtSocket</a></code></h3><div class='impl-items'><h4 id='method.new' class='method'><code>fn <a href='#method.new' class='fnname'>new</a>(address_family: <a class='enum' href='../udt/enum.SocketFamily.html' title='udt::SocketFamily'>SocketFamily</a>, ty: <a class='enum' href='../udt/enum.SocketType.html' title='udt::SocketType'>SocketType</a>) -&gt; <a class='enum' href='https://doc.rust-lang.org/nightly/core/result/enum.Result.html' title='core::result::Result'>Result</a>&lt;<a class='struct' href='../udt/struct.UdtSocket.html' title='udt::UdtSocket'>UdtSocket</a>, <a class='struct' href='../udt/struct.UdtError.html' title='udt::UdtError'>UdtError</a>&gt;</code></h4>
+<div class='docblock'><p>Creates a new UDT Socket.</p>
+
+<p>Creates a new socket.  There is no limits for the number of UDT sockets in one system, as
+long as there is enough system resources.  UDT supports both IPv4 and IPv6, which can be
+selected by the <code>address_family</code> parameter. </p>
+
+<p>Two socket types are supported in UDT:  Stream for data streaming and Datagram for
+messaging.  Note that UDT sockets are connection oriented in all cases.</p>
+</div><h4 id='method.bind' class='method'><code>fn <a href='#method.bind' class='fnname'>bind</a>(&amp;mut self, name: <a class='enum' href='https://doc.rust-lang.org/nightly/std/net/addr/enum.SocketAddr.html' title='std::net::addr::SocketAddr'>SocketAddr</a>) -&gt; <a class='enum' href='https://doc.rust-lang.org/nightly/core/result/enum.Result.html' title='core::result::Result'>Result</a>&lt;<a href='https://doc.rust-lang.org/nightly/std/primitive.tuple.html'>()</a>, <a class='struct' href='../udt/struct.UdtError.html' title='udt::UdtError'>UdtError</a>&gt;</code></h4>
+<div class='docblock'><p>Binds a UDT socket to a known or an available local address.</p>
+
+<p>The bind method is usually to assign a UDT socket a local address, including IP address and
+port number. If INADDR_ANY is used, a proper IP address will be used once the UDT
+connection is set up. If 0 is used for the port, a randomly available port number will be
+used. The method getsockname can be used to retrieve this port number.</p>
+
+<p>The bind call is necessary in all cases except for a socket to listen. If bind is not
+called, UDT will automatically bind a socket to a randomly available address when a
+connection is set up.</p>
+
+<p>By default, UDT allows to reuse existing UDP port for new UDT sockets, unless UDT_REUSEADDR
+is set to false. When UDT_REUSEADDR is false, UDT will create an exclusive UDP port for
+this UDT socket. UDT_REUSEADDR must be called before bind. To reuse an existing UDT/UDP
+port, the new UDT socket must explicitly bind to the port. If the port is already used by a
+UDT socket with UDT_REUSEADDR as false, the new bind will return error. If 0 is passed as
+the port number, bind always creates a new port, no matter what value the UDT_REUSEADDR
+sets.</p>
+</div><h4 id='method.bind_from' class='method'><code>fn <a href='#method.bind_from' class='fnname'>bind_from</a>(&amp;mut self, other: <a class='struct' href='https://doc.rust-lang.org/nightly/std/net/udp/struct.UdpSocket.html' title='std::net::udp::UdpSocket'>UdpSocket</a>) -&gt; <a class='enum' href='https://doc.rust-lang.org/nightly/core/result/enum.Result.html' title='core::result::Result'>Result</a>&lt;<a href='https://doc.rust-lang.org/nightly/std/primitive.tuple.html'>()</a>, <a class='struct' href='../udt/struct.UdtError.html' title='udt::UdtError'>UdtError</a>&gt;</code></h4>
+<div class='docblock'><p>Binds a UDT socket to an existing UDP socket.</p>
+
+<p>This second form of bind allows UDT to bind directly on an existing UDP socket. This is
+usefule for firewall traversing in certain situations: 1) a UDP socket is created and its
+address is learned from a name server, there is no need to close the UDP socket and open a
+UDT socket on the same address again; 2) for certain firewall, especially some on local
+system, the port mapping maybe changed or the &quot;hole&quot; may be closed when a UDP socket is
+closed and reopened, thus it is necessary to use the UDP socket directly in UDT.</p>
+
+<p>Use the second form of bind with caution, as it violates certain programming rules
+regarding code robustness. Once the UDP socket descriptor is passed to UDT, it MUST NOT be
+touched again. DO NOT use this unless you clearly understand how the related systems work.</p>
+</div><h4 id='method.connect' class='method'><code>fn <a href='#method.connect' class='fnname'>connect</a>(&amp;mut self, name: <a class='enum' href='https://doc.rust-lang.org/nightly/std/net/addr/enum.SocketAddr.html' title='std::net::addr::SocketAddr'>SocketAddr</a>) -&gt; <a class='enum' href='https://doc.rust-lang.org/nightly/core/result/enum.Result.html' title='core::result::Result'>Result</a>&lt;<a href='https://doc.rust-lang.org/nightly/std/primitive.tuple.html'>()</a>, <a class='struct' href='../udt/struct.UdtError.html' title='udt::UdtError'>UdtError</a>&gt;</code></h4>
+<div class='docblock'><p>Connects to a server socket (in regular mode) or a peer socket (in rendezvous mode) to set
+up a UDT connection</p>
+
+<p>UDT is connection oriented, for both of its <code>Stream</code> and <code>Datagram</code> mode. <code>connect</code> must
+be called in order to set up a UDT connection. The name parameter is the address of the
+server or the peer side. In regular (default) client/server mode, the server side must has
+called bind and listen. In rendezvous mode, both sides must call bind and connect to each
+other at (approximately) the same time. Rendezvous connect may not be used for more than
+one connections on the same UDP port pair, in which case UDT_REUSEADDR may be set to false.</p>
+
+<p>UDT connect takes at least one round trip to finish. This may become a bottleneck if
+applications frequently connect and disconnect to the same address.</p>
+
+<p>When UDT_RCVSYN is set to false, the connect call will return immediately and perform the
+actual connection setup at background. Applications may use epoll to wait for the connect
+to complete.</p>
+
+<p>When connect fails, the UDT socket can still be used to connect again. However, if the
+socket was not bound before, it may be bound implicitly, as mentioned above, even if the
+connect fails. In addition, in the situation when the connect call fails, the UDT socket
+will not be automatically released, it is the applications&#39; responsibility to close the
+socket, if the socket is not needed anymore (e.g., to re-connect).</p>
+</div><h4 id='method.listen' class='method'><code>fn <a href='#method.listen' class='fnname'>listen</a>(&amp;mut self, backlog: <a href='https://doc.rust-lang.org/nightly/std/primitive.i32.html'>i32</a>) -&gt; <a class='enum' href='https://doc.rust-lang.org/nightly/core/result/enum.Result.html' title='core::result::Result'>Result</a>&lt;<a href='https://doc.rust-lang.org/nightly/std/primitive.tuple.html'>()</a>, <a class='struct' href='../udt/struct.UdtError.html' title='udt::UdtError'>UdtError</a>&gt;</code></h4>
+<div class='docblock'><p>Enables a user UDT entity to wait for clients to connect.</p>
+
+<p>The listen method lets a UDT socket enter a listening state.  The sock must call <code>bind</code>
+before a <code>listen</code> call.  In addition, if the socket is enabled for rendezvous mode, neither
+listen nor accept can be used on the socket.  A UDT socket can call <code>listen</code> more than
+once, in which case only the first call is effective, while all subsequent calls will be
+ignored if the socket is already in the listening state.</p>
+
+<p><code>backlog</code> specifies the maximum number of pending connections.</p>
+</div><h4 id='method.accept' class='method'><code>fn <a href='#method.accept' class='fnname'>accept</a>(&amp;mut self) -&gt; <a class='enum' href='https://doc.rust-lang.org/nightly/core/result/enum.Result.html' title='core::result::Result'>Result</a>&lt;<a href='https://doc.rust-lang.org/nightly/std/primitive.tuple.html'>(<a class='struct' href='../udt/struct.UdtSocket.html' title='udt::UdtSocket'>UdtSocket</a>, <a class='enum' href='https://doc.rust-lang.org/nightly/std/net/addr/enum.SocketAddr.html' title='std::net::addr::SocketAddr'>SocketAddr</a>)</a>, <a class='struct' href='../udt/struct.UdtError.html' title='udt::UdtError'>UdtError</a>&gt;</code></h4>
+<div class='docblock'><p>Retrieves an incoming connection.</p>
+
+<p>Once a UDT socket is in listening state, it accepts new connections and maintains the
+pending connections in a queue. An accept call retrieves the first connection in the queue,
+removes it from the queue, and returns the associate socket descriptor.</p>
+
+<p>If there is no connections in the queue when accept is called, a blocking socket will wait
+until a new connection is set up, whereas a non-blocking socket will return immediately
+with an error.</p>
+
+<p>The accepted sockets will inherit all proper attributes from the listening socket.</p>
+
+<h1 id="returns" class='section-header'><a
+                           href="#returns">Returns</a></h1>
+<p>Returns a tuple containing the new UdtSocket and a <code>SockAddr</code> structure containing the
+address of the new peer</p>
+</div><h4 id='method.close' class='method'><code>fn <a href='#method.close' class='fnname'>close</a>(self) -&gt; <a class='enum' href='https://doc.rust-lang.org/nightly/core/result/enum.Result.html' title='core::result::Result'>Result</a>&lt;<a href='https://doc.rust-lang.org/nightly/std/primitive.tuple.html'>()</a>, <a class='struct' href='../udt/struct.UdtError.html' title='udt::UdtError'>UdtError</a>&gt;</code></h4>
+<div class='docblock'><p>Close a UDT connection</p>
+
+<p>The close method gracefully shutdowns the UDT connection and releases all related data
+structures associated with the UDT socket. If there is no connection associated with the
+socket, close simply release the socket resources.</p>
+
+<p>On a blocking socket, if UDT_LINGER is non-zero, the close call will wait until all data in
+the sending buffer are sent out or the waiting time has exceeded the expiration time set by
+UDT_LINGER. However, if UDT_SYNSND is set to false (i.e., non-blocking sending), close will
+return immediately and any linger data will be sent at background until the linger timer
+expires.</p>
+
+<p>The closing UDT socket will send a shutdown message to the peer side so that the peer
+socket will also be closed. This is a best-effort message. If the message is not
+successfully delivered, the peer side will also be closed after a time-out. In UDT,
+shutdown is not supported.</p>
+
+<p>All sockets should be closed if they are not used any more.</p>
+</div><h4 id='method.getpeername' class='method'><code>fn <a href='#method.getpeername' class='fnname'>getpeername</a>(&amp;mut self) -&gt; <a class='enum' href='https://doc.rust-lang.org/nightly/core/result/enum.Result.html' title='core::result::Result'>Result</a>&lt;<a class='enum' href='https://doc.rust-lang.org/nightly/std/net/addr/enum.SocketAddr.html' title='std::net::addr::SocketAddr'>SocketAddr</a>, <a class='struct' href='../udt/struct.UdtError.html' title='udt::UdtError'>UdtError</a>&gt;</code></h4>
+<div class='docblock'><p>Retrieves the address information of the peer side of a connected UDT socket</p>
+
+<p>The getpeername retrieves the address of the peer side associated to the connection. The
+UDT socket must be connected at the time when this method is called.</p>
+</div><h4 id='method.getsockname' class='method'><code>fn <a href='#method.getsockname' class='fnname'>getsockname</a>(&amp;mut self) -&gt; <a class='enum' href='https://doc.rust-lang.org/nightly/core/result/enum.Result.html' title='core::result::Result'>Result</a>&lt;<a class='enum' href='https://doc.rust-lang.org/nightly/std/net/addr/enum.SocketAddr.html' title='std::net::addr::SocketAddr'>SocketAddr</a>, <a class='struct' href='../udt/struct.UdtError.html' title='udt::UdtError'>UdtError</a>&gt;</code></h4>
+<div class='docblock'><p>Retrieves the local address associated with a UDT socket.</p>
+
+<p>The getsockname retrieves the local address associated with the socket. The UDT socket must
+be bound explicitly (via bind) or implicitly (via connect), otherwise this method will fail
+because there is no meaningful address bound to the socket.</p>
+
+<p>If getsockname is called after an explicit bind, but before connect, the IP address
+returned will be exactly the IP address that is used for bind and it may be 0.0.0.0 if
+ADDR_ANY is used. If getsockname is called after connect, the IP address returned will be
+the address that the peer socket sees. In the case when there is a proxy (e.g., NAT), the
+IP address returned will be the translated address by the proxy, but not a local address.
+If there is no proxy, the IP address returned will be a local address. In either case, the
+port number is local (i.e, not the translated proxy port).</p>
+
+<p>Because UDP is connection-less, using getsockname on a UDP port will almost always return
+0.0.0.0 as IP address (unless it is bound to an explicit IP) . As a connection oriented
+protocol, UDT will return a meaningful IP address by getsockname if there is no proxy
+translation exist.</p>
+
+<p>UDT has no multihoming support yet. When there are multiple local addresses and more than
+one of them can be routed to the destination address, UDT may not behave properly due to
+the multi-path effect. In this case, the UDT socket must be explicitly bound to one of
+the local addresses.</p>
+</div><h4 id='method.sendmsg' class='method'><code>fn <a href='#method.sendmsg' class='fnname'>sendmsg</a>(&amp;mut self, buf: <a href='https://doc.rust-lang.org/nightly/std/primitive.slice.html'>&amp;[</a><a href='https://doc.rust-lang.org/nightly/std/primitive.u8.html'>u8</a><a href='https://doc.rust-lang.org/nightly/std/primitive.slice.html'>]</a>) -&gt; <a class='enum' href='https://doc.rust-lang.org/nightly/core/result/enum.Result.html' title='core::result::Result'>Result</a>&lt;<a href='https://doc.rust-lang.org/nightly/std/primitive.i32.html'>i32</a>, <a class='struct' href='../udt/struct.UdtError.html' title='udt::UdtError'>UdtError</a>&gt;</code></h4>
+<div class='docblock'><p>Sends a message to the peer side.</p>
+
+<p>The sendmsg method sends a message to the peer side. The UDT socket must be in SOCK_DGRAM
+mode in order to send or receive messages. Message is the minimum data unit in this
+situation. In particular, sendmsg always tries to send the message out as a whole, that is,
+the message will either to completely sent or it is not sent at all.</p>
+
+<p>In blocking mode (default), sendmsg waits until there is enough space to hold the whole
+message. In non-blocking mode, sendmsg returns immediately and returns error if no buffer
+space available.</p>
+
+<p>If UDT_SNDTIMEO is set and the socket is in blocking mode, sendmsg only waits a limited
+time specified by UDT_SNDTIMEO option. If there is still no buffer space available when the
+timer expires, error will be returned. UDT_SNDTIMEO has no effect for non-blocking socket.</p>
+
+<p>The ttl parameter gives the message a limited life time, which starts counting once the
+first packet of the message is sent out. If the message has not been delivered to the
+receiver after the TTL timer expires and each packet in the message has been sent out at
+least once, the message will be discarded. Lost packets in the message will be
+retransmitted before TTL expires.</p>
+
+<p>On the other hand, the inorder option decides if this message should be delivered in order.
+That is, the message should not be delivered to the receiver side application unless all
+messages prior to it are either delivered or discarded.</p>
+
+<p>Finally, if the message size is greater than the size of the receiver buffer, the message
+will never be received in whole by the receiver side. Only the beginning part that can be
+hold in the receiver buffer may be read and the rest will be discarded.</p>
+
+<h1 id="returns" class='section-header'><a
+                           href="#returns">Returns</a></h1>
+<p>On success, sendmsg returns the actual size of message that has just been sent. The size
+should be equal to len. Otherwise UDT::ERROR is returned and specific error information can
+be retrieved by getlasterror. If UDT_SNDTIMEO is set to a positive value, zero will be
+returned if the message cannot be sent before the timer expires.</p>
+</div><h4 id='method.send' class='method'><code>fn <a href='#method.send' class='fnname'>send</a>(&amp;mut self, buf: <a href='https://doc.rust-lang.org/nightly/std/primitive.slice.html'>&amp;[</a><a href='https://doc.rust-lang.org/nightly/std/primitive.u8.html'>u8</a><a href='https://doc.rust-lang.org/nightly/std/primitive.slice.html'>]</a>) -&gt; <a class='enum' href='https://doc.rust-lang.org/nightly/core/result/enum.Result.html' title='core::result::Result'>Result</a>&lt;<a href='https://doc.rust-lang.org/nightly/std/primitive.i32.html'>i32</a>, <a class='struct' href='../udt/struct.UdtError.html' title='udt::UdtError'>UdtError</a>&gt;</code></h4>
+<div class='docblock'><p>Sends out a certain amount of data from an application buffer.</p>
+
+<p>The send method sends certain amount of data from the application buffer. If the the size
+limit of sending buffer queue is reached, send only sends a portion of the application
+buffer and returns the actual size of data that has been sent.</p>
+
+<p>In blocking mode (default), send waits until there is some sending buffer space available.
+In non-blocking mode, send returns immediately and returns error if the sending queue limit
+is already limited.</p>
+
+<p>If UDT_SNDTIMEO is set and the socket is in blocking mode, send only waits a limited time
+specified by UDT_SNDTIMEO option. If there is still no buffer space available when the
+timer expires, error will be returned. UDT_SNDTIMEO has no effect for non-blocking socket.</p>
+
+<h1 id="returns" class='section-header'><a
+                           href="#returns">Returns</a></h1>
+<p>On success, returns the actual size of the data that as been sent.  Otherwise, a UdtError
+is returned with specific error information.</p>
+
+<p>If UDT_SNDTIMEO is set to a positive value, zero will be returned if no data is sent before
+the time expires.</p>
+</div><h4 id='method.recvmsg' class='method'><code>fn <a href='#method.recvmsg' class='fnname'>recvmsg</a>(&amp;mut self, len: <a href='https://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a>) -&gt; <a class='enum' href='https://doc.rust-lang.org/nightly/core/result/enum.Result.html' title='core::result::Result'>Result</a>&lt;<a class='struct' href='https://doc.rust-lang.org/nightly/collections/vec/struct.Vec.html' title='collections::vec::Vec'>Vec</a>&lt;<a href='https://doc.rust-lang.org/nightly/std/primitive.u8.html'>u8</a>&gt;, <a class='struct' href='../udt/struct.UdtError.html' title='udt::UdtError'>UdtError</a>&gt;</code></h4>
+<div class='docblock'><p>The recvmsg method receives a valid message.</p>
+
+<p>The recvmsg method reads a message from the protocol buffer. The UDT socket must be in
+SOCK_DGRAM mode in order to send or receive messages. Message is the minimum data unit in
+this situation. Each recvmsg will read no more than one message, even if the message is
+smaller than the size of buf and there are more messages available. On the other hand, if
+the buf is not enough to hold the first message, only part of the message will be copied
+into the buffer, but the message will still be discarded after this recvmsg call.</p>
+
+<p>In blocking mode (default), recvmsg waits until there is a valid message received into the
+receiver buffer. In non-blocking mode, recvmsg returns immediately and returns error if no
+message available.</p>
+
+<p>If UDT_RCVTIMEO is set and the socket is in blocking mode, recvmsg only waits a limited
+time specified by UDT_RCVTIMEO option. If there is still no message available when the
+timer expires, error will be returned. UDT_RCVTIMEO has no effect for non-blocking socket.</p>
+
+<h1 id="returns" class='section-header'><a
+                           href="#returns">Returns</a></h1>
+<p>On success, recvmsg returns the actual size of received message. Otherwise UDT::ERROR is
+returned and specific error information can be retrieved by getlasterror. If UDT_RCVTIMEO
+is set to a positive value, zero will be returned if no message is received before the
+timer expires.</p>
+</div><h4 id='method.recv' class='method'><code>fn <a href='#method.recv' class='fnname'>recv</a>(&amp;mut self, buf: <a href='https://doc.rust-lang.org/nightly/std/primitive.slice.html'>&amp;mut [</a><a href='https://doc.rust-lang.org/nightly/std/primitive.u8.html'>u8</a><a href='https://doc.rust-lang.org/nightly/std/primitive.slice.html'>]</a>, len: <a href='https://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a>) -&gt; <a class='enum' href='https://doc.rust-lang.org/nightly/core/result/enum.Result.html' title='core::result::Result'>Result</a>&lt;<a href='https://doc.rust-lang.org/nightly/std/primitive.i32.html'>i32</a>, <a class='struct' href='../udt/struct.UdtError.html' title='udt::UdtError'>UdtError</a>&gt;</code></h4>
+<div class='docblock'><p>Reads a certain amount of data into a local memory buffer.</p>
+
+<p>The recv method reads certain amount of data from the protocol buffer. If there is not
+enough data in the buffer, recv only reads the available data in the protocol buffer and
+returns the actual size of data received. However, recv will never read more data than the
+buffer size indicates by len.</p>
+
+<p>In blocking mode (default), recv waits until there is some data received into the receiver
+buffer. In non-blocking mode, recv returns immediately and returns error if no data
+available.</p>
+
+<p>If UDT_RCVTIMEO is set and the socket is in blocking mode, recv only waits a limited time
+specified by UDT_RCVTIMEO option. If there is still no data available when the timer
+expires, error will be returned. UDT_RCVTIMEO has no effect for non-blocking socket.</p>
+</div><h4 id='method.getsockopt' class='method'><code>fn <a href='#method.getsockopt' class='fnname'>getsockopt</a>&lt;B: <a class='trait' href='https://doc.rust-lang.org/nightly/core/default/trait.Default.html' title='core::default::Default'>Default</a>, T: <a class='trait' href='../udt/trait.UdtOption.html' title='udt::UdtOption'>UdtOption</a>&lt;B&gt;&gt;(&amp;mut self, opt: T) -&gt; <a class='enum' href='https://doc.rust-lang.org/nightly/core/result/enum.Result.html' title='core::result::Result'>Result</a>&lt;B, <a class='struct' href='../udt/struct.UdtError.html' title='udt::UdtError'>UdtError</a>&gt;</code></h4>
+<div class='docblock'><p>Gets UDT options</p>
+
+<p>See the <code>UdtOpts</code> module for all the supported option types.  </p>
+
+<h1 id="example" class='section-header'><a
+                           href="#example">Example</a></h1><pre class='rust rust-example-rendered'>
+<span class='kw'>use</span> <span class='ident'>udt</span>::<span class='op'>*</span>;
+
+<span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>sock</span> <span class='op'>=</span> <span class='ident'>UdtSocket</span>::<span class='ident'>new</span>(<span class='ident'>SocketFamily</span>::<span class='ident'>AFInet</span>, <span class='ident'>SocketType</span>::<span class='ident'>Stream</span>).<span class='ident'>unwrap</span>();
+<span class='kw'>let</span> <span class='ident'>recv_buf</span>: <span class='ident'>i32</span> <span class='op'>=</span> <span class='ident'>sock</span>.<span class='ident'>getsockopt</span>(<span class='ident'>UdtOpts</span>::<span class='ident'>UDP_RCVBUF</span>).<span class='ident'>unwrap</span>();</pre>
+</div><h4 id='method.setsockopt' class='method'><code>fn <a href='#method.setsockopt' class='fnname'>setsockopt</a>&lt;B, T: <a class='trait' href='../udt/trait.UdtOption.html' title='udt::UdtOption'>UdtOption</a>&lt;B&gt;&gt;(&amp;mut self, opt: T, value: B) -&gt; <a class='enum' href='https://doc.rust-lang.org/nightly/core/result/enum.Result.html' title='core::result::Result'>Result</a>&lt;<a href='https://doc.rust-lang.org/nightly/std/primitive.tuple.html'>()</a>, <a class='struct' href='../udt/struct.UdtError.html' title='udt::UdtError'>UdtError</a>&gt;</code></h4>
+<div class='docblock'><p>Sets UDT options</p>
+
+<p>See the <code>UdtOpts</code> module for all the supported option types.  </p>
+</div></div><h2 id='implementations'>Trait Implementations</h2><h3 id='derived_implementations'>Derived Implementations </h3><h3 class='impl'><code>impl <a class='trait' href='https://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html' title='core::fmt::Debug'>Debug</a> for <a class='struct' href='../udt/struct.UdtSocket.html' title='udt::UdtSocket'>UdtSocket</a></code></h3><div class='impl-items'><h4 id='method.fmt' class='method'><code>fn <a href='https://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html#method.fmt' class='fnname'>fmt</a>(&amp;self, __arg_0: &amp;mut <a class='struct' href='https://doc.rust-lang.org/nightly/core/fmt/struct.Formatter.html' title='core::fmt::Formatter'>Formatter</a>) -&gt; <a class='type' href='https://doc.rust-lang.org/nightly/core/fmt/type.Result.html' title='core::fmt::Result'>Result</a></code></h4>
+</div></section>
+    <section id='search' class="content hidden"></section>
+
+    <section class="footer"></section>
+
+    <div id="help" class="hidden">
+        <div>
+            <div class="shortcuts">
+                <h1>Keyboard Shortcuts</h1>
+
+                <dl>
+                    <dt>?</dt>
+                    <dd>Show this help dialog</dd>
+                    <dt>S</dt>
+                    <dd>Focus the search field</dd>
+                    <dt>&larrb;</dt>
+                    <dd>Move up in search results</dd>
+                    <dt>&rarrb;</dt>
+                    <dd>Move down in search results</dd>
+                    <dt>&#9166;</dt>
+                    <dd>Go to active search result</dd>
+                </dl>
+            </div>
+
+            <div class="infos">
+                <h1>Search Tricks</h1>
+
+                <p>
+                    Prefix searches with a type followed by a colon (e.g.
+                    <code>fn:</code>) to restrict the search to a given type.
+                </p>
+
+                <p>
+                    Accepted types are: <code>fn</code>, <code>mod</code>,
+                    <code>struct</code>, <code>enum</code>,
+                    <code>trait</code>, <code>type</code>, <code>macro</code>,
+                    and <code>const</code>.
+                </p>
+
+                <p>
+                    Search functions by type signature (e.g.
+                    <code>vec -> usize</code>)
+                </p>
+            </div>
+        </div>
+    </div>
+
+    
+
+    <script>
+        window.rootPath = "../";
+        window.currentCrate = "udt";
+        window.playgroundUrl = "";
+    </script>
+    <script src="../jquery.js"></script>
+    <script src="../main.js"></script>
+    
+    <script async src="../search-index.js"></script>
+</body>
+</html>

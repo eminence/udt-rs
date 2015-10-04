@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="generator" content="rustdoc">
+    <meta name="description" content="API documentation for the Rust `UdtOpts` mod in crate `udt`.">
+    <meta name="keywords" content="rust, rustlang, rust-lang, UdtOpts">
+
+    <title>udt::UdtOpts - Rust</title>
+
+    <link rel="stylesheet" type="text/css" href="../../main.css">
+
+    
+    
+</head>
+<body class="rustdoc">
+    <!--[if lte IE 8]>
+    <div class="warning">
+        This old browser is unsupported and will most likely display funky
+        things.
+    </div>
+    <![endif]-->
+
+    
+
+    <section class="sidebar">
+        
+        <p class='location'><a href='../index.html'>udt</a></p><script>window.sidebarCurrent = {name: 'UdtOpts', ty: 'mod', relpath: '../'};</script><script defer src="../sidebar-items.js"></script>
+    </section>
+
+    <nav class="sub">
+        <form class="search-form js-only">
+            <div class="search-container">
+                <input class="search-input" name="search"
+                       autocomplete="off"
+                       placeholder="Click or press ‘S’ to search, ‘?’ for more options…"
+                       type="search">
+            </div>
+        </form>
+    </nav>
+
+    <section id='main' class="content mod">
+<h1 class='fqn'><span class='in-band'>Module <a href='../index.html'>udt</a>::<wbr><a class='mod' href=''>UdtOpts</a></span><span class='out-of-band'><span id='render-detail'>
+            <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
+                [<span class='inner'>&#x2212;</span>]
+            </a>
+        </span><a id='src-256' class='srclink' href='../../src/udt/lib.rs.html#104-209' title='goto source code'>[src]</a></span></h1>
+<div class='docblock'><p>Various options that can be passed to <code>getsockopt</code> or <code>setsockopt</code></p>
+
+<p>These are typed in such a way so that when they are used with <code>getsockopt</code> or <code>setsockopt</code>,
+they will require the right data type.</p>
+
+<h1 id="examples" class='section-header'><a
+                           href="#examples">Examples</a></h1><pre class='rust rust-example-rendered'>
+<span class='kw'>use</span> <span class='ident'>udt</span>::<span class='op'>*</span>;
+
+<span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>sock</span> <span class='op'>=</span> <span class='ident'>UdtSocket</span>::<span class='ident'>new</span>(<span class='ident'>SocketFamily</span>::<span class='ident'>AFInet</span>, <span class='ident'>SocketType</span>::<span class='ident'>Stream</span>).<span class='ident'>unwrap</span>();
+<span class='kw'>let</span> <span class='ident'>recv_buf</span>: <span class='ident'>i32</span> <span class='op'>=</span> <span class='ident'>sock</span>.<span class='ident'>getsockopt</span>(<span class='ident'>UdtOpts</span>::<span class='ident'>UDT_RCVBUF</span>).<span class='ident'>unwrap</span>();
+<span class='kw'>let</span> <span class='ident'>rendezvous</span>: <span class='ident'>bool</span> <span class='op'>=</span> <span class='ident'>sock</span>.<span class='ident'>getsockopt</span>(<span class='ident'>UdtOpts</span>::<span class='ident'>UDT_RENDEZVOUS</span>).<span class='ident'>unwrap</span>();
+</pre>
+</div><h2 id='structs' class='section-header'><a href="#structs">Structs</a></h2>
+<table>
+                    <tr class=' module-item'>
+                        <td><a class='struct' href='struct.UDP_RCVBUF.html'
+                               title='udt::UdtOpts::UDP_RCVBUF'>UDP_RCVBUF</a></td>
+                        <td class='docblock short'>
+                             <p>UDP socket receiver buffer size (bytes)</p>
+
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='struct' href='struct.UDP_SNDBUF.html'
+                               title='udt::UdtOpts::UDP_SNDBUF'>UDP_SNDBUF</a></td>
+                        <td class='docblock short'>
+                             <p>UDP socket sender buffer size (bytes)</p>
+
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='struct' href='struct.UDT_EVENT.html'
+                               title='udt::UdtOpts::UDT_EVENT'>UDT_EVENT</a></td>
+                        <td class='docblock short'>
+                             <p>The EPOLL events available to this socket.    Read only.</p>
+
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='struct' href='struct.UDT_FC.html'
+                               title='udt::UdtOpts::UDT_FC'>UDT_FC</a></td>
+                        <td class='docblock short'>
+                             <p>Maximum window size (packets)</p>
+
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='struct' href='struct.UDT_LINGER.html'
+                               title='udt::UdtOpts::UDT_LINGER'>UDT_LINGER</a></td>
+                        <td class='docblock short'>
+                             <p>Linger time on close().</p>
+
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='struct' href='struct.UDT_MAXBW.html'
+                               title='udt::UdtOpts::UDT_MAXBW'>UDT_MAXBW</a></td>
+                        <td class='docblock short'>
+                             <p>Maximum bandwidth that one single UDT connection can use (bytes per second).</p>
+
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='struct' href='struct.UDT_MSS.html'
+                               title='udt::UdtOpts::UDT_MSS'>UDT_MSS</a></td>
+                        <td class='docblock short'>
+                             <p>Maximum Packet size (bytes)</p>
+
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='struct' href='struct.UDT_RCVBUF.html'
+                               title='udt::UdtOpts::UDT_RCVBUF'>UDT_RCVBUF</a></td>
+                        <td class='docblock short'>
+                             <p>UDT receiver buffer size limit (bytes)</p>
+
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='struct' href='struct.UDT_RCVDATA.html'
+                               title='udt::UdtOpts::UDT_RCVDATA'>UDT_RCVDATA</a></td>
+                        <td class='docblock short'>
+                             <p>Size of data available to read, in the receiving buffer.  Read only.</p>
+
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='struct' href='struct.UDT_RCVSYN.html'
+                               title='udt::UdtOpts::UDT_RCVSYN'>UDT_RCVSYN</a></td>
+                        <td class='docblock short'>
+                             <p>Synchronization mode for receiving.</p>
+
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='struct' href='struct.UDT_RCVTIMEO.html'
+                               title='udt::UdtOpts::UDT_RCVTIMEO'>UDT_RCVTIMEO</a></td>
+                        <td class='docblock short'>
+                             <p>Receiving call timeout (milliseconds).</p>
+
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='struct' href='struct.UDT_RENDEZVOUS.html'
+                               title='udt::UdtOpts::UDT_RENDEZVOUS'>UDT_RENDEZVOUS</a></td>
+                        <td class='docblock short'>
+                             <p>Rendezvous connection setup.</p>
+
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='struct' href='struct.UDT_REUSEADDR.html'
+                               title='udt::UdtOpts::UDT_REUSEADDR'>UDT_REUSEADDR</a></td>
+                        <td class='docblock short'>
+                             <p>Reuse an existing address or create a new one.</p>
+
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='struct' href='struct.UDT_SNDBUF.html'
+                               title='udt::UdtOpts::UDT_SNDBUF'>UDT_SNDBUF</a></td>
+                        <td class='docblock short'>
+                             <p>UDT sender buffer size limit (bytes)</p>
+
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='struct' href='struct.UDT_SNDDATA.html'
+                               title='udt::UdtOpts::UDT_SNDDATA'>UDT_SNDDATA</a></td>
+                        <td class='docblock short'>
+                             <p>Size of pending data in the sending buffer.   Read only.</p>
+
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='struct' href='struct.UDT_SNDSYN.html'
+                               title='udt::UdtOpts::UDT_SNDSYN'>UDT_SNDSYN</a></td>
+                        <td class='docblock short'>
+                             <p>Synchronization mode of data sending</p>
+
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='struct' href='struct.UDT_SNDTIMEO.html'
+                               title='udt::UdtOpts::UDT_SNDTIMEO'>UDT_SNDTIMEO</a></td>
+                        <td class='docblock short'>
+                             <p>Sending call timeout (milliseconds).</p>
+
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='struct' href='struct.UDT_STATE.html'
+                               title='udt::UdtOpts::UDT_STATE'>UDT_STATE</a></td>
+                        <td class='docblock short'>
+                             <p>Current status of the UDT socket. Read only.</p>
+
+                        </td>
+                    </tr>
+                </table></section>
+    <section id='search' class="content hidden"></section>
+
+    <section class="footer"></section>
+
+    <div id="help" class="hidden">
+        <div>
+            <div class="shortcuts">
+                <h1>Keyboard Shortcuts</h1>
+
+                <dl>
+                    <dt>?</dt>
+                    <dd>Show this help dialog</dd>
+                    <dt>S</dt>
+                    <dd>Focus the search field</dd>
+                    <dt>&larrb;</dt>
+                    <dd>Move up in search results</dd>
+                    <dt>&rarrb;</dt>
+                    <dd>Move down in search results</dd>
+                    <dt>&#9166;</dt>
+                    <dd>Go to active search result</dd>
+                </dl>
+            </div>
+
+            <div class="infos">
+                <h1>Search Tricks</h1>
+
+                <p>
+                    Prefix searches with a type followed by a colon (e.g.
+                    <code>fn:</code>) to restrict the search to a given type.
+                </p>
+
+                <p>
+                    Accepted types are: <code>fn</code>, <code>mod</code>,
+                    <code>struct</code>, <code>enum</code>,
+                    <code>trait</code>, <code>type</code>, <code>macro</code>,
+                    and <code>const</code>.
+                </p>
+
+                <p>
+                    Search functions by type signature (e.g.
+                    <code>vec -> usize</code>)
+                </p>
+            </div>
+        </div>
+    </div>
+
+    
+
+    <script>
+        window.rootPath = "../../";
+        window.currentCrate = "udt";
+        window.playgroundUrl = "";
+    </script>
+    <script src="../../jquery.js"></script>
+    <script src="../../main.js"></script>
+    
+    <script async src="../../search-index.js"></script>
+</body>
+</html>

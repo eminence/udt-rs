@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="generator" content="rustdoc">
+    <meta name="description" content="API documentation for the Rust `Tool` struct in crate `gcc`.">
+    <meta name="keywords" content="rust, rustlang, rust-lang, Tool">
+
+    <title>gcc::Tool - Rust</title>
+
+    <link rel="stylesheet" type="text/css" href="../main.css">
+
+    
+    
+</head>
+<body class="rustdoc">
+    <!--[if lte IE 8]>
+    <div class="warning">
+        This old browser is unsupported and will most likely display funky
+        things.
+    </div>
+    <![endif]-->
+
+    
+
+    <section class="sidebar">
+        
+        <p class='location'><a href='index.html'>gcc</a></p><script>window.sidebarCurrent = {name: 'Tool', ty: 'struct', relpath: ''};</script><script defer src="sidebar-items.js"></script>
+    </section>
+
+    <nav class="sub">
+        <form class="search-form js-only">
+            <div class="search-container">
+                <input class="search-input" name="search"
+                       autocomplete="off"
+                       placeholder="Click or press ‘S’ to search, ‘?’ for more options…"
+                       type="search">
+            </div>
+        </form>
+    </nav>
+
+    <section id='main' class="content struct">
+<h1 class='fqn'><span class='in-band'>Struct <a href='index.html'>gcc</a>::<wbr><a class='struct' href=''>Tool</a></span><span class='out-of-band'><span id='render-detail'>
+            <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
+                [<span class='inner'>&#x2212;</span>]
+            </a>
+        </span><a id='src-116' class='srclink' href='../src/gcc/lib.rs.html#88-92' title='goto source code'>[src]</a></span></h1>
+<pre class='rust struct'>pub struct Tool {
+    // some fields omitted
+}</pre><div class='docblock'><p>Configuration used to represent an invocation of a C compiler.</p>
+
+<p>This can be used to figure out what compiler is in use, what the arguments
+to it are, and what the environment variables look like for the compiler.
+This can be used to further configure other build systems (e.g. forward
+along CC and/or CFLAGS) or the <code>to_command</code> method can be used to run the
+compiler itself.</p>
+</div><h2 id='methods'>Methods</h2><h3 class='impl'><code>impl <a class='struct' href='../gcc/struct.Tool.html' title='gcc::Tool'>Tool</a></code></h3><div class='impl-items'><h4 id='method.to_command' class='method'><code>fn <a href='#method.to_command' class='fnname'>to_command</a>(&amp;self) -&gt; <a class='struct' href='https://doc.rust-lang.org/nightly/std/process/struct.Command.html' title='std::process::Command'>Command</a></code></h4>
+<div class='docblock'><p>Converts this compiler into a <code>Command</code> that&#39;s ready to be run.</p>
+
+<p>This is useful for when the compiler needs to be executed and the
+command returned will already have the initial arguments and environment
+variables configured.</p>
+</div><h4 id='method.path' class='method'><code>fn <a href='#method.path' class='fnname'>path</a>(&amp;self) -&gt; &amp;<a class='struct' href='https://doc.rust-lang.org/nightly/std/path/struct.Path.html' title='std::path::Path'>Path</a></code></h4>
+<div class='docblock'><p>Returns the path for this compiler.</p>
+
+<p>Note that this may not be a path to a file on the filesystem, e.g. &quot;cc&quot;,
+but rather something which will be resolved when a process is spawned.</p>
+</div><h4 id='method.args' class='method'><code>fn <a href='#method.args' class='fnname'>args</a>(&amp;self) -&gt; <a href='https://doc.rust-lang.org/nightly/std/primitive.slice.html'>&amp;[</a><a class='struct' href='https://doc.rust-lang.org/nightly/std/ffi/os_str/struct.OsString.html' title='std::ffi::os_str::OsString'>OsString</a><a href='https://doc.rust-lang.org/nightly/std/primitive.slice.html'>]</a></code></h4>
+<div class='docblock'><p>Returns the default set of arguments to the compiler needed to produce
+executables for the target this compiler generates.</p>
+</div><h4 id='method.env' class='method'><code>fn <a href='#method.env' class='fnname'>env</a>(&amp;self) -&gt; <a href='https://doc.rust-lang.org/nightly/std/primitive.slice.html'>&amp;[</a><a href='https://doc.rust-lang.org/nightly/std/primitive.tuple.html'>(<a class='struct' href='https://doc.rust-lang.org/nightly/std/ffi/os_str/struct.OsString.html' title='std::ffi::os_str::OsString'>OsString</a>, <a class='struct' href='https://doc.rust-lang.org/nightly/std/ffi/os_str/struct.OsString.html' title='std::ffi::os_str::OsString'>OsString</a>)</a><a href='https://doc.rust-lang.org/nightly/std/primitive.slice.html'>]</a></code></h4>
+<div class='docblock'><p>Returns the set of environment variables needed for this compiler to
+operate.</p>
+
+<p>This is typically only used for MSVC compilers currently.</p>
+</div></div></section>
+    <section id='search' class="content hidden"></section>
+
+    <section class="footer"></section>
+
+    <div id="help" class="hidden">
+        <div>
+            <div class="shortcuts">
+                <h1>Keyboard Shortcuts</h1>
+
+                <dl>
+                    <dt>?</dt>
+                    <dd>Show this help dialog</dd>
+                    <dt>S</dt>
+                    <dd>Focus the search field</dd>
+                    <dt>&larrb;</dt>
+                    <dd>Move up in search results</dd>
+                    <dt>&rarrb;</dt>
+                    <dd>Move down in search results</dd>
+                    <dt>&#9166;</dt>
+                    <dd>Go to active search result</dd>
+                </dl>
+            </div>
+
+            <div class="infos">
+                <h1>Search Tricks</h1>
+
+                <p>
+                    Prefix searches with a type followed by a colon (e.g.
+                    <code>fn:</code>) to restrict the search to a given type.
+                </p>
+
+                <p>
+                    Accepted types are: <code>fn</code>, <code>mod</code>,
+                    <code>struct</code>, <code>enum</code>,
+                    <code>trait</code>, <code>type</code>, <code>macro</code>,
+                    and <code>const</code>.
+                </p>
+
+                <p>
+                    Search functions by type signature (e.g.
+                    <code>vec -> usize</code>)
+                </p>
+            </div>
+        </div>
+    </div>
+
+    
+
+    <script>
+        window.rootPath = "../";
+        window.currentCrate = "gcc";
+        window.playgroundUrl = "";
+    </script>
+    <script src="../jquery.js"></script>
+    <script src="../main.js"></script>
+    
+    <script async src="../search-index.js"></script>
+</body>
+</html>
