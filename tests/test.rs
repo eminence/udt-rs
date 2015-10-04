@@ -1,8 +1,8 @@
 #![feature(ip_addr)]
 
-extern crate udt_rs;
+extern crate udt;
 
-use udt_rs::*;
+use udt::*;
 
 
 #[test]
@@ -56,11 +56,16 @@ fn test_sendmsg() {
         let my_addr = sock.getsockname().unwrap();
         println!("Server bound to {:?}", my_addr);
 
-        sock.listen().unwrap();
+        sock.listen(5).unwrap();
 
         tx.send(my_addr.port()); 
 
-        let mut new = sock.accept().unwrap();
+        let (mut new, peer) = sock.accept().unwrap();
+        println!("Server recieved connection from {:?}", peer);
+
+        let peer2 = new.getpeername().unwrap();
+        assert_eq!(peer2, peer);
+
 
         let msg = new.recvmsg(100).unwrap();
         assert_eq!(msg.len(), 5);
@@ -119,11 +124,12 @@ fn test_send() {
         let my_addr = sock.getsockname().unwrap();
         println!("Server bound to {:?}", my_addr);
 
-        sock.listen().unwrap();
+        sock.listen(5).unwrap();
 
         tx.send(my_addr.port()); 
 
-        let mut new = sock.accept().unwrap();
+        let (mut new, new_peer) = sock.accept().unwrap();
+        println!("Server recieved connection from {:?}", new_peer);
 
         let mut buf: [u8; 10] = [0; 10];
         assert_eq!(new.recv(&mut buf, 5).unwrap(), 5);

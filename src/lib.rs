@@ -1,6 +1,34 @@
 #![feature(cstr_to_str)]
 #![feature(into_raw_os)]
 
+//! UDT
+//!
+//! Bindings to the UDT4 high performance data data transfer library
+//!
+//! UDT follows closely the BSD socket API, but several of the functions have different semantics.
+//! 
+//! # Examples
+//!
+//! To create a Datagram server, that can send and receive messages:
+//!
+//! ``` no_run
+//!     use std::str::FromStr;
+//!     use std::net::{SocketAddr, SocketAddrV4};
+//!     use udt::*;
+//!
+//!     let localhost = std::net::Ipv4Addr::from_str("127.0.0.1").unwrap();
+//!
+//!     let mut sock = UdtSocket::new(SocketFamily::AFInet, SocketType::Stream).unwrap();
+//!     sock.bind(SocketAddr::V4(SocketAddrV4::new(localhost, 0))).unwrap();
+//!     let my_addr = sock.getsockname().unwrap();
+//!     println!("Server bound to {:?}", my_addr);
+//!     sock.listen(5).unwrap();
+//!     let (mut new_socket, peer) = sock.accept().unwrap();
+//!     println!("Received new connection from peer {:?}", peer);
+//!
+//!
+//! ```
+
 extern crate libudt4_sys as raw;
 
 use std::sync::{Once, ONCE_INIT};
@@ -28,6 +56,12 @@ macro_rules! impl_udt_opt {
     };
 }
 
+/// Initialize the UDT library.  
+///
+/// In particular, starts the background garbage collection thread.  
+/// 
+/// It is safe to call this function multiple times.  A corresponding cleanup function will
+/// automatically be called when the program exists.
 pub fn init() {
     static INIT: Once = ONCE_INIT;
         INIT.call_once(|| unsafe {
@@ -69,6 +103,21 @@ pub struct Linger {
 #[allow(non_snake_case)]
 pub mod UdtOpts {
     //! Various options that can be passed to `getsockopt` or `setsockopt`
+    //!
+    //! These are typed in such a way so that when they are used with `getsockopt` or `setsockopt`,
+    //! they will require the right data type.
+    //!
+    //! # Examples
+    //!
+    //! ``` 
+    //! use udt::*;
+    //!
+    //! let mut sock = UdtSocket::new(SocketFamily::AFInet, SocketType::Stream).unwrap();
+    //! let recv_buf: i32 = sock.getsockopt(UdtOpts::UDT_RCVBUF).unwrap();
+    //! let rendezvous: bool = sock.getsockopt(UdtOpts::UDT_RENDEZVOUS).unwrap();
+    //!
+    //! ```
+    //!
 
     impl_udt_opt!{
         /// Maximum Packet size (bytes)
@@ -285,23 +334,12 @@ impl UdtSocket {
         }
     }
 
-    /// The bind method binds a UDT socket to a known or an available local address.
+    /// Binds a UDT socket to a known or an available local address.
     ///
     /// The bind method is usually to assign a UDT socket a local address, including IP address and
     /// port number. If INADDR_ANY is used, a proper IP address will be used once the UDT
     /// connection is set up. If 0 is used for the port, a randomly available port number will be
     /// used. The method getsockname can be used to retrieve this port number.
-    ///
-    /// The second form of bind allows UDT to bind directly on an existing UDP socket. This is
-    /// usefule for firewall traversing in certain situations: 1) a UDP socket is created and its
-    /// address is learned from a name server, there is no need to close the UDP socket and open a
-    /// UDT socket on the same address again; 2) for certain firewall, especially some on local
-    /// system, the port mapping maybe changed or the "hole" may be closed when a UDP socket is
-    /// closed and reopened, thus it is necessary to use the UDP socket directly in UDT.
-    ///
-    /// Use the second form of bind with caution, as it violates certain programming rules
-    /// regarding code robustness. Once the UDP socket descriptor is passed to UDT, it MUST NOT be
-    /// touched again. DO NOT use this unless you clearly understand how the related systems work.
     ///
     /// The bind call is necessary in all cases except for a socket to listen. If bind is not
     /// called, UDT will automatically bind a socket to a randomly available address when a
@@ -315,10 +353,6 @@ impl UdtSocket {
     /// the port number, bind always creates a new port, no matter what value the UDT_REUSEADDR
     /// sets.
     ///
-    /// # Returns
-    ///
-    /// If the binding is successful, bind returns 0, otherwise it returns UDT::ERROR and the
-    /// specific error information can be retrieved using getlasterror.
     pub fn bind(&mut self, name: std::net::SocketAddr) -> Result<(), UdtError> {
 
         let addr: sockaddr_in = get_sockaddr(name); 
@@ -335,6 +369,18 @@ impl UdtSocket {
         }
     }
 
+    /// Binds a UDT socket to an existing UDP socket.
+    ///
+    /// This second form of bind allows UDT to bind directly on an existing UDP socket. This is
+    /// usefule for firewall traversing in certain situations: 1) a UDP socket is created and its
+    /// address is learned from a name server, there is no need to close the UDP socket and open a
+    /// UDT socket on the same address again; 2) for certain firewall, especially some on local
+    /// system, the port mapping maybe changed or the "hole" may be closed when a UDP socket is
+    /// closed and reopened, thus it is necessary to use the UDP socket directly in UDT.
+    ///
+    /// Use the second form of bind with caution, as it violates certain programming rules
+    /// regarding code robustness. Once the UDP socket descriptor is passed to UDT, it MUST NOT be
+    /// touched again. DO NOT use this unless you clearly understand how the related systems work.
     pub fn bind_from(&mut self, other: std::net::UdpSocket) -> Result<(), UdtError> {
         use std::os::unix::io::IntoRawFd;
         let ret = unsafe {
@@ -348,6 +394,28 @@ impl UdtSocket {
         }
     }
 
+    /// Connects to a server socket (in regular mode) or a peer socket (in rendezvous mode) to set
+    /// up a UDT connection
+    ///
+    /// UDT is connection oriented, for both of its `Stream` and `Datagram` mode. `connect` must
+    /// be called in order to set up a UDT connection. The name parameter is the address of the
+    /// server or the peer side. In regular (default) client/server mode, the server side must has
+    /// called bind and listen. In rendezvous mode, both sides must call bind and connect to each
+    /// other at (approximately) the same time. Rendezvous connect may not be used for more than
+    /// one connections on the same UDP port pair, in which case UDT_REUSEADDR may be set to false.
+    ///
+    /// UDT connect takes at least one round trip to finish. This may become a bottleneck if
+    /// applications frequently connect and disconnect to the same address.
+    ///
+    /// When UDT_RCVSYN is set to false, the connect call will return immediately and perform the
+    /// actual connection setup at background. Applications may use epoll to wait for the connect
+    /// to complete.
+    ///
+    /// When connect fails, the UDT socket can still be used to connect again. However, if the
+    /// socket was not bound before, it may be bound implicitly, as mentioned above, even if the
+    /// connect fails. In addition, in the situation when the connect call fails, the UDT socket
+    /// will not be automatically released, it is the applications' responsibility to close the
+    /// socket, if the socket is not needed anymore (e.g., to re-connect).
     pub fn connect(&mut self, name: std::net::SocketAddr) -> Result<(), UdtError> {
         let addr = get_sockaddr(name);
         let ret = unsafe {
@@ -364,8 +432,17 @@ impl UdtSocket {
 
     }
 
-    pub fn listen(&mut self) -> Result<(), UdtError> {
-        let ret = unsafe { raw::udt_listen(self._sock, 5) };
+    /// Enables a user UDT entity to wait for clients to connect.
+    ///
+    /// The listen method lets a UDT socket enter a listening state.  The sock must call `bind`
+    /// before a `listen` call.  In addition, if the socket is enabled for rendezvous mode, neither
+    /// listen nor accept can be used on the socket.  A UDT socket can call `listen` more than
+    /// once, in which case only the first call is effective, while all subsequent calls will be
+    /// ignored if the socket is already in the listening state.
+    ///
+    /// `backlog` specifies the maximum number of pending connections.
+    pub fn listen(&mut self, backlog: i32) -> Result<(), UdtError> {
+        let ret = unsafe { raw::udt_listen(self._sock, backlog) };
 
         if ret == raw::SUCCESS {
             Ok(())
@@ -374,16 +451,55 @@ impl UdtSocket {
         }
     }
 
-    pub fn accept(&mut self) -> Result<UdtSocket, UdtError> {
-        use std::ptr;
-        let ret = unsafe { raw::udt_accept(self._sock, ptr::null_mut(), ptr::null_mut()) };
+    /// Retrieves an incoming connection.
+    ///
+    /// Once a UDT socket is in listening state, it accepts new connections and maintains the
+    /// pending connections in a queue. An accept call retrieves the first connection in the queue,
+    /// removes it from the queue, and returns the associate socket descriptor.
+    ///
+    /// If there is no connections in the queue when accept is called, a blocking socket will wait
+    /// until a new connection is set up, whereas a non-blocking socket will return immediately
+    /// with an error.
+    ///
+    /// The accepted sockets will inherit all proper attributes from the listening socket.
+    ///
+    /// # Returns
+    ///
+    /// Returns a tuple containing the new UdtSocket and a `SockAddr` structure containing the
+    /// address of the new peer
+    pub fn accept(&mut self) -> Result<(UdtSocket, SocketAddr), UdtError> {
+        let mut peer = sockaddr { sa_family: 0, sa_data: [0; 14]};
+        let mut size: i32 = size_of::<sockaddr>() as i32;
+        let ret = unsafe { raw::udt_accept(self._sock, &mut peer, &mut size) };
+        assert_eq!(size, size_of::<sockaddr>() as i32);
         if ret == raw::INVALID_SOCK {
             Err(get_last_err())
         } else {
-            Ok(UdtSocket::wrap_raw(ret))
+            let new_sock = UdtSocket::wrap_raw(ret);
+            let addr = sockaddr_to_socketaddr(peer);
+            Ok((new_sock, addr))
         }
     }
 
+
+    /// Close a UDT connection
+    ///
+    /// The close method gracefully shutdowns the UDT connection and releases all related data
+    /// structures associated with the UDT socket. If there is no connection associated with the
+    /// socket, close simply release the socket resources.
+    ///
+    /// On a blocking socket, if UDT_LINGER is non-zero, the close call will wait until all data in
+    /// the sending buffer are sent out or the waiting time has exceeded the expiration time set by
+    /// UDT_LINGER. However, if UDT_SYNSND is set to false (i.e., non-blocking sending), close will
+    /// return immediately and any linger data will be sent at background until the linger timer
+    /// expires.
+    ///
+    /// The closing UDT socket will send a shutdown message to the peer side so that the peer
+    /// socket will also be closed. This is a best-effort message. If the message is not
+    /// successfully delivered, the peer side will also be closed after a time-out. In UDT,
+    /// shutdown is not supported.
+    ///
+    /// All sockets should be closed if they are not used any more.
     pub fn close(self) -> Result<(), UdtError> {
         let ret = unsafe { raw::udt_close(self._sock) };
         if ret == raw::SUCCESS {
@@ -394,6 +510,10 @@ impl UdtSocket {
     }
 
 
+    /// Retrieves the address information of the peer side of a connected UDT socket
+    ///
+    /// The getpeername retrieves the address of the peer side associated to the connection. The
+    /// UDT socket must be connected at the time when this method is called.
     pub fn getpeername(&mut self) -> Result<std::net::SocketAddr, UdtError> {
         let mut name = sockaddr { sa_family: 0, sa_data: [0; 14]};
         let mut size: i32 = size_of::<sockaddr>() as i32;
@@ -567,6 +687,20 @@ impl UdtSocket {
         }
     }
 
+    /// Reads a certain amount of data into a local memory buffer.
+    ///
+    /// The recv method reads certain amount of data from the protocol buffer. If there is not
+    /// enough data in the buffer, recv only reads the available data in the protocol buffer and
+    /// returns the actual size of data received. However, recv will never read more data than the
+    /// buffer size indicates by len.
+    ///
+    /// In blocking mode (default), recv waits until there is some data received into the receiver
+    /// buffer. In non-blocking mode, recv returns immediately and returns error if no data
+    /// available.
+    ///
+    /// If UDT_RCVTIMEO is set and the socket is in blocking mode, recv only waits a limited time
+    /// specified by UDT_RCVTIMEO option. If there is still no data available when the timer
+    /// expires, error will be returned. UDT_RCVTIMEO has no effect for non-blocking socket.
     pub fn recv(&mut self, buf: &mut [u8], len: usize) -> Result<i32, UdtError> {
         let ret = unsafe {
             raw::udt_recv(self._sock, buf.as_mut_ptr(), len as i32, 0)
@@ -580,6 +714,18 @@ impl UdtSocket {
 
     }
 
+    /// Gets UDT options
+    ///
+    /// See the `UdtOpts` module for all the supported option types.  
+    ///
+    /// # Example
+    ///
+    /// ```
+    /// use udt::*;
+    ///
+    /// let mut sock = UdtSocket::new(SocketFamily::AFInet, SocketType::Stream).unwrap();
+    /// let recv_buf: i32 = sock.getsockopt(UdtOpts::UDP_RCVBUF).unwrap();
+    /// ```
     pub fn getsockopt<B: Default, T: UdtOption<B>>(&mut self, opt: T) -> Result<B, UdtError> {
         let mut val: B = unsafe{ std::mem::zeroed() };
         let val_p: *mut B = &mut val;
@@ -596,6 +742,9 @@ impl UdtSocket {
 
     }
 
+    /// Sets UDT options
+    ///
+    /// See the `UdtOpts` module for all the supported option types.  
     pub fn setsockopt<B, T: UdtOption<B>>(&mut self, opt: T, value: B) -> Result<(), UdtError> {
         let ty: raw::UDTOpt = opt.get_type();
         let val_p: *const B = &value;
