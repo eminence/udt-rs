@@ -4,6 +4,8 @@ version = "0.1.0"
 authors = ["Andrew Chin <achin@eminence32.net>"]
 keywords = ["udp", "socket", "udt", "udt4"]
 readme = "README.md"
+repository = "https://github.com/eminence/udt-rs"
+homepage = "https://github.com/eminence/udt-rs"
 description = """
 Bindings to udt, a high performance data transfer protocol (based on UDP)
 """

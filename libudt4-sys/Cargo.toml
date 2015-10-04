@@ -6,6 +6,7 @@ version = "0.1.0"
 links = "udt4wrap"
 description = "Native bindings to a C wrapper around the UDT library"
 license = "BSD"
+repository = "https://github.com/eminence/udt-rs"
 
 [lib]
 name = "libudt4_sys"
