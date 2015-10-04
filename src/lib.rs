@@ -43,6 +43,8 @@ use std::ffi::{CStr};
 use std::net::SocketAddr;
 use std::net::SocketAddrV4;
 
+pub use raw::UdtStatus;
+
 
 // makes defining the UdtOpts mod a little less messy
 macro_rules! impl_udt_opt {
@@ -75,7 +77,10 @@ pub fn init() {
 }
 
 /// A UDT Socket
-#[derive(Debug)]
+///
+/// Internally, a UDT socket is represented as a 32-bit int.  As such, a `UdtSocket` can be copied
+/// and cloned
+#[derive(Debug, PartialEq, Copy, Clone)]
 pub struct UdtSocket {
     _sock: raw::UDTSOCKET, 
 }
@@ -760,7 +765,118 @@ impl UdtSocket {
         } else {
             Err(get_last_err())
         }
+    }
 
+    pub fn getstate(&mut self) -> UdtStatus {
+        unsafe { raw::udt_getsockstate(self._sock) }
     }
 }
 
+/// Used with the `epoll*` methods of a UDTSocket
+pub struct Epoll {
+    eid: c_int,
+
+    // poll requires us to pass in an array to receive a list of sockets.
+    // instead of allocating one every time we call into poll, we create
+    // two vecs and re-use them.  this means that while the UDT api is
+    // thread safe, this impl of epoll is not.
+    num_sock: usize,
+    rd_vec: Vec<c_int>,
+    wr_vec: Vec<c_int>
+
+}
+
+impl Epoll {
+    /// Creates a new Epoll object
+    pub fn create() -> Result<Epoll, UdtError> {
+       let ret = unsafe { raw::udt_epoll_create() }; 
+       if ret < 0 {
+           Err(get_last_err())
+       } else {
+            Ok(Epoll{eid: ret, num_sock: 0, rd_vec: Vec::new(), wr_vec: Vec::new()})
+       }
+
+    }
+
+    /// Adds a UdtSocket to an epoll
+    pub fn add_usock(&mut self, socket: &UdtSocket) -> Result<(), UdtError> {
+        use std::ptr::null;
+        let ret = unsafe { raw::udt_epoll_add_usock(self.eid, socket._sock, null()) };
+        if ret == 0 {
+            println!("Added UdpSocket={} to epoll", socket._sock);
+            self.num_sock += 1;
+            self.wr_vec.push(-1);
+            self.rd_vec.push(-1);
+            Ok(())
+        } else {
+            Err(get_last_err())
+        }
+    }
+
+    /// Removes a UdtSocket from an epoll
+    ///
+    /// If the socket isn't part of the epoll, there is no error
+    pub fn remove_usock(&mut self, socket: &UdtSocket) -> Result<(), UdtError> {
+        let ret = unsafe { raw::udt_epoll_remove_usock(self.eid, socket._sock) };
+        if ret == 0 {
+            self.num_sock -= 1;
+            Ok(())
+        } else {
+            Err(get_last_err())
+        }
+    }
+
+    /// Wait for events
+    ///
+    /// Timeout is in milliseconds.  If negative, wait forever.  If zero, return immediately.
+    pub fn wait(&mut self, timeout: i64, write: bool) -> Result<(Vec<UdtSocket>, Vec<UdtSocket>), UdtError> {
+        use std::ptr::null_mut;
+        let mut rnum : c_int = self.rd_vec.len() as c_int;
+        let mut wnum : c_int= self.wr_vec.len() as c_int;
+        
+        let wr_vec_ptr = if !write {
+            wnum = 0;
+            std::ptr::null_mut()
+        } else {
+            self.wr_vec.as_mut_ptr()
+        };
+
+
+        let ret = unsafe {
+            raw::udt_epoll_wait2(self.eid,
+                                 self.rd_vec.as_mut_ptr(), &mut rnum,
+                                 wr_vec_ptr, &mut wnum,
+                                 timeout,
+                                 null_mut(), null_mut(), null_mut(), null_mut() // no support for polling sys sockets right now
+                                 )
+        };
+        println!("epoll returned {:?}", ret);
+        println!("rnum={}, wnum={}", rnum, wnum);
+        if ret < 0 {
+            let e = get_last_err();
+            if e.err_code != 6003 {
+                return Err(get_last_err());
+            } else {
+                rnum = 0;
+                wnum = 0;
+            }
+        }
+        for v in (0..rnum) {
+            println!("rnum[{}] = {}", v, self.rd_vec[v as usize]);
+        }
+        for v in (0..wnum) {
+            println!("wnum[{}] = {}", v, self.wr_vec[v as usize]);
+        }
+
+        let mut rds = Vec::with_capacity(rnum as usize);
+        rds.extend(self.rd_vec.iter().take(rnum as usize).map(|&x| UdtSocket::wrap_raw(x)));
+
+        let mut wrs = Vec::with_capacity(wnum as usize);
+        wrs.extend(self.wr_vec.iter().take(wnum as usize).map(|&x| UdtSocket::wrap_raw(x)));
+        Ok( (rds, wrs) )
+
+
+
+    }
+
+}

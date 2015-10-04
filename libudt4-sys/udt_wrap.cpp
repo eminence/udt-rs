@@ -36,10 +36,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "udt.h"
 #include "udt_wrap.h"
 
-uint16_t _htons(uint16_t hostshort) {
-    return htons(hostshort);
-}
-
 int udt_startup()
 {
    return UDT::startup();

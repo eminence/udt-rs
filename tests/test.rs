@@ -165,3 +165,99 @@ fn test_send() {
 
 
 }
+
+
+#[test]
+fn test_epoll() {
+    use std::thread::spawn;
+    use std::net::SocketAddr;
+    use std::net::IpAddr;
+    use std::str::FromStr;
+    use std::sync::mpsc::channel;
+    use std::thread::sleep_ms;
+
+    init();
+
+    let localhost = IpAddr::from_str("127.0.0.1").unwrap();
+
+    // the server will bind to a random port and pass it back for the client to connect to
+    let (tx, rx) = channel();
+
+    // spawn the server
+    let server = spawn(move || {
+        let mut sock = UdtSocket::new(SocketFamily::AFInet, SocketType::Datagram).unwrap();
+        sock.bind(SocketAddr::new(localhost, 0)).unwrap();
+        let my_addr = sock.getsockname().unwrap();
+        println!("Server bound to {:?}", my_addr);
+
+        sock.listen(5).unwrap();
+
+        tx.send(my_addr.port()); 
+
+        let mut epoll = Epoll::create().unwrap();
+
+        epoll.add_usock(&sock).unwrap();
+
+        let mut counter = 0;
+        loop { 
+            let (pending_rd, pending_wr) = epoll.wait(1000, true).unwrap();
+            println!("Pending sockets: {:?} {:?}", pending_rd, pending_wr);
+            
+            let rd_len = pending_rd.len();
+            for mut s in pending_rd {
+                if s == sock {
+                    println!("trying to accept new sock");
+                    let (mut new, peer) = sock.accept().unwrap();
+                    println!("Server recieved connection from {:?}", peer);
+                    epoll.add_usock(&new).unwrap();
+                } else {
+                    let msg = s.recvmsg(100).unwrap();
+                    let msg_string = String::from_utf8(msg).unwrap();
+                    println!("Received message: {:?}", msg_string);
+                }
+
+            }
+
+            for mut s in pending_wr {
+                let state = s.getstate();
+                if rd_len == 0 && (state == UdtStatus::BROKEN || state == UdtStatus::CLOSED || state == UdtStatus::NONEXIST) {
+                    epoll.remove_usock(&s);
+                    return;
+                }
+                println!("Sock {:?} is in state {:?}", s, state);
+            }
+            sleep_ms(100);
+            counter += 1;
+            assert!(counter < 500);
+        }
+
+
+        sock.close();
+
+
+    });
+
+    let client = spawn(move || {
+        let port = rx.recv().unwrap();
+        println!("Client connecting to port {:?}", port);
+        let mut sock = UdtSocket::new(SocketFamily::AFInet, SocketType::Datagram).unwrap();
+        sock.connect(SocketAddr::new(localhost, port)).unwrap();
+
+        sock.sendmsg("hello".as_bytes()).unwrap();
+
+        sleep_ms(3000);
+        sock.sendmsg("world".as_bytes()).unwrap();
+        sock.sendmsg("done.".as_bytes()).unwrap();
+
+        sock.close();
+
+
+    });
+
+    server.join();
+    client.join();
+
+
+
+}
+

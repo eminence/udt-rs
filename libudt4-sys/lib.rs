@@ -4,6 +4,7 @@ use libc::{c_int, c_char, c_void, c_uchar};
 use libc::sockaddr;
 
 pub type UDTSOCKET = c_int;
+pub type SYSSOCKET = c_int;
 
 
 pub const SUCCESS : c_int = 0;   //success operation.
@@ -47,6 +48,13 @@ pub const INVALID_SOCK: c_int = -1;
 pub const UDT_ERROR: c_int = -1;
 
 #[repr(C)]
+pub enum EPOLLOpt {
+    UDT_EPOLL_IN = 0x1,
+    UDT_EPOLL_OUT = 0x4,
+    UDT_EPOLL_ERR = 0x8
+}
+
+#[repr(C)]
 pub enum UDTOpt {
 #[allow(non_camel_case_types)]
    UDT_MSS,             // the Maximum Transfer Unit
@@ -72,6 +80,21 @@ pub enum UDTOpt {
    UDT_RCVDATA		// size of data available for recv
 }
 
+#[derive(Debug, Clone, Copy, PartialEq)]
+#[repr(C)]
+pub enum UdtStatus {
+    INIT = 1,
+    OPENED,
+    LISTENING,
+    CONNECTING,
+    CONNECTED,
+    BROKEN,
+    CLOSING,
+    CLOSED,
+    NONEXIST
+}
+
+
 pub type SOCKOPT = UDTOpt;
 
 extern {
@@ -95,6 +118,19 @@ extern {
 
     pub fn udt_recv(u: UDTSOCKET, buf: *mut c_uchar, len: c_int, flags: c_int) -> c_int;
     pub fn udt_recvmsg(u: UDTSOCKET, but: *mut c_uchar, len: c_int) -> c_int;
+
+    pub fn udt_epoll_create() -> c_int;
+    pub fn udt_epoll_add_usock(eid: c_int, usock: UDTSOCKET, events: *const c_int) -> c_int;
+    pub fn udt_epoll_add_ssock(eid: c_int, ssock: SYSSOCKET, events: *const c_int) -> c_int;
+
+    pub fn udt_epoll_remove_usock(eid: c_int, usock: UDTSOCKET) -> c_int;
+    pub fn udt_epoll_remove_ssock(eid: c_int, ssock: SYSSOCKET) -> c_int;
+
+    pub fn udt_epoll_wait2(eid: c_int, readfs: *mut UDTSOCKET, rnum: *mut c_int, writefs: *mut UDTSOCKET, wnum: *mut c_int, msTimeOut: i64,
+                        lrfds: *mut SYSSOCKET, lrnum: *mut c_int, lwfds: *mut SYSSOCKET, lwnum: *mut c_int) -> c_int;
+    pub fn udt_epoll_release(eid: c_int) -> c_int;
+
+    pub fn udt_getsockstate(u: UDTSOCKET) -> UdtStatus;
 
 
     pub fn udt_getlasterror_code() -> c_int;
