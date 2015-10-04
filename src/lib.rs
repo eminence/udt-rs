@@ -1,6 +1,3 @@
-#![feature(cstr_to_str)]
-#![feature(into_raw_os)]
-
 //! UDT
 //!
 //! Bindings to the UDT4 high performance data data transfer library
@@ -217,7 +214,7 @@ pub mod UdtOpts {
 fn get_last_err() -> UdtError {
     let msg = unsafe{ CStr::from_ptr(raw::udt_getlasterror_desc()) };
     UdtError{err_code: unsafe{ raw::udt_getlasterror_code() as i32},
-    err_msg: msg.to_string_lossy().into_owned()}
+    err_msg: String::from_utf8_lossy(msg.to_bytes()).into_owned()}
 }
 
 #[repr(C)]
@@ -265,6 +262,7 @@ impl SocketType {
 
 
 // SocketAddr to sockaddr_in
+#[cfg(target_os="linux")]
 fn get_sockaddr(name: SocketAddr) -> sockaddr_in {
     if let SocketAddr::V4(v4) = name {
         println!("binding to {:?}", v4);
@@ -276,6 +274,28 @@ fn get_sockaddr(name: SocketAddr) -> sockaddr_in {
         // construct a sockaddr_in
          sockaddr_in {
             sin_family: AF_INET as u16,
+            sin_port: v4.port().to_be(),
+            sin_addr: in_addr{s_addr: addr_b},
+            sin_zero: [0; 8]
+      }
+    } else {
+        panic!("ipv6 not implemented (yet) in this binding");
+    }
+}
+
+#[cfg(target_os="macos")]
+fn get_sockaddr(name: SocketAddr) -> sockaddr_in {
+    if let SocketAddr::V4(v4) = name {
+        println!("binding to {:?}", v4);
+        let addr_bytes = v4.ip().octets();
+        let addr_b: u32 = ((addr_bytes[3] as u32) << 24)  + 
+            ((addr_bytes[2] as u32) << 16)  + 
+            ((addr_bytes[1] as u32) << 8 )  + 
+            ( addr_bytes[0] as u32);
+        // construct a sockaddr_in
+         sockaddr_in {
+            sin_len: std::mem::size_of::<sockaddr_in>() as u8,
+            sin_family: AF_INET as u8,
             sin_port: v4.port().to_be(),
             sin_addr: in_addr{s_addr: addr_b},
             sin_zero: [0; 8]
@@ -387,10 +407,10 @@ impl UdtSocket {
     /// regarding code robustness. Once the UDP socket descriptor is passed to UDT, it MUST NOT be
     /// touched again. DO NOT use this unless you clearly understand how the related systems work.
     pub fn bind_from(&mut self, other: std::net::UdpSocket) -> Result<(), UdtError> {
-        use std::os::unix::io::IntoRawFd;
+        use std::os::unix::io::AsRawFd;
         let ret = unsafe {
             raw::udt_bind2(self._sock,
-                          other.into_raw_fd())
+                          other.as_raw_fd())
         };
         if ret == raw::SUCCESS {
             Ok(())
@@ -473,7 +493,7 @@ impl UdtSocket {
     /// Returns a tuple containing the new UdtSocket and a `SockAddr` structure containing the
     /// address of the new peer
     pub fn accept(&mut self) -> Result<(UdtSocket, SocketAddr), UdtError> {
-        let mut peer = sockaddr { sa_family: 0, sa_data: [0; 14]};
+        let mut peer = unsafe { std::mem::zeroed() };
         let mut size: i32 = size_of::<sockaddr>() as i32;
         let ret = unsafe { raw::udt_accept(self._sock, &mut peer, &mut size) };
         assert_eq!(size, size_of::<sockaddr>() as i32);
@@ -520,7 +540,7 @@ impl UdtSocket {
     /// The getpeername retrieves the address of the peer side associated to the connection. The
     /// UDT socket must be connected at the time when this method is called.
     pub fn getpeername(&mut self) -> Result<std::net::SocketAddr, UdtError> {
-        let mut name = sockaddr { sa_family: 0, sa_data: [0; 14]};
+        let mut name = unsafe { std::mem::zeroed() };
         let mut size: i32 = size_of::<sockaddr>() as i32;
         let ret = unsafe { raw::udt_getpeername(self._sock,&mut name, &mut size) };
         assert_eq!(size as usize, size_of::<sockaddr>());
@@ -555,7 +575,7 @@ impl UdtSocket {
     /// the multi-path effect. In this case, the UDT socket must be explicitly bound to one of
     /// the local addresses.
     pub fn getsockname(&mut self) -> Result<std::net::SocketAddr, UdtError> {
-        let mut name = sockaddr { sa_family: 0, sa_data: [0; 14]};
+        let mut name = unsafe { std::mem::zeroed() };
         let mut size: i32 = size_of::<sockaddr>() as i32;
         let ret = unsafe { raw::udt_getsockname(self._sock,&mut name, &mut size) };
 

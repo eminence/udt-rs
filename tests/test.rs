@@ -1,5 +1,3 @@
-#![feature(ip_addr)]
-
 extern crate udt;
 
 use udt::*;
@@ -37,14 +35,14 @@ fn test_setsockopt() {
 #[test]
 fn test_sendmsg() {
     use std::thread::spawn;
-    use std::net::SocketAddr;
-    use std::net::IpAddr;
+    use std::net::{SocketAddr, SocketAddrV4};
+    use std::net::Ipv4Addr;
     use std::str::FromStr;
     use std::sync::mpsc::channel;
 
     init();
 
-    let localhost = IpAddr::from_str("127.0.0.1").unwrap();
+    let localhost = Ipv4Addr::from_str("127.0.0.1").unwrap();
 
     // the server will bind to a random port and pass it back for the client to connect to
     let (tx, rx) = channel();
@@ -52,7 +50,7 @@ fn test_sendmsg() {
     // spawn the server
     let server = spawn(move || {
         let mut sock = UdtSocket::new(SocketFamily::AFInet, SocketType::Datagram).unwrap();
-        sock.bind(SocketAddr::new(localhost, 0)).unwrap();
+        sock.bind(SocketAddr::V4(SocketAddrV4::new(localhost, 0))).unwrap();
         let my_addr = sock.getsockname().unwrap();
         println!("Server bound to {:?}", my_addr);
 
@@ -82,7 +80,7 @@ fn test_sendmsg() {
         let port = rx.recv().unwrap();
         println!("Client connecting to port {:?}", port);
         let mut sock = UdtSocket::new(SocketFamily::AFInet, SocketType::Datagram).unwrap();
-        sock.connect(SocketAddr::new(localhost, port)).unwrap();
+        sock.connect(SocketAddr::V4(SocketAddrV4::new(localhost, port))).unwrap();
 
         sock.sendmsg("hello".as_bytes()).unwrap();
         let msg = sock.recvmsg(1024).unwrap();
@@ -105,14 +103,14 @@ fn test_sendmsg() {
 #[test]
 fn test_send() {
     use std::thread::spawn;
-    use std::net::SocketAddr;
-    use std::net::IpAddr;
+    use std::net::{SocketAddr, SocketAddrV4};
+    use std::net::Ipv4Addr;
     use std::str::FromStr;
     use std::sync::mpsc::channel;
 
     init();
 
-    let localhost = IpAddr::from_str("127.0.0.1").unwrap();
+    let localhost = Ipv4Addr::from_str("127.0.0.1").unwrap();
 
     // the server will bind to a random port and pass it back for the client to connect to
     let (tx, rx) = channel();
@@ -120,7 +118,7 @@ fn test_send() {
     // spawn the server
     let server = spawn(move || {
         let mut sock = UdtSocket::new(SocketFamily::AFInet, SocketType::Stream).unwrap();
-        sock.bind(SocketAddr::new(localhost, 0)).unwrap();
+        sock.bind(SocketAddr::V4(SocketAddrV4::new(localhost, 0))).unwrap();
         let my_addr = sock.getsockname().unwrap();
         println!("Server bound to {:?}", my_addr);
 
@@ -149,7 +147,7 @@ fn test_send() {
         let port = rx.recv().unwrap();
         println!("Client connecting to port {:?}", port);
         let mut sock = UdtSocket::new(SocketFamily::AFInet, SocketType::Stream).unwrap();
-        sock.connect(SocketAddr::new(localhost, port)).unwrap();
+        sock.connect(SocketAddr::V4(SocketAddrV4::new(localhost, port))).unwrap();
 
         assert_eq!(sock.send("hello".as_bytes()).unwrap(), 5);
         assert_eq!(sock.send("world".as_bytes()).unwrap(), 5);
@@ -170,15 +168,15 @@ fn test_send() {
 #[test]
 fn test_epoll() {
     use std::thread::spawn;
-    use std::net::SocketAddr;
-    use std::net::IpAddr;
+    use std::net::{SocketAddr, SocketAddrV4};
+    use std::net::Ipv4Addr;
     use std::str::FromStr;
     use std::sync::mpsc::channel;
     use std::thread::sleep_ms;
 
     init();
 
-    let localhost = IpAddr::from_str("127.0.0.1").unwrap();
+    let localhost = Ipv4Addr::from_str("127.0.0.1").unwrap();
 
     // the server will bind to a random port and pass it back for the client to connect to
     let (tx, rx) = channel();
@@ -186,7 +184,7 @@ fn test_epoll() {
     // spawn the server
     let server = spawn(move || {
         let mut sock = UdtSocket::new(SocketFamily::AFInet, SocketType::Datagram).unwrap();
-        sock.bind(SocketAddr::new(localhost, 0)).unwrap();
+        sock.bind(SocketAddr::V4(SocketAddrV4::new(localhost, 0))).unwrap();
         let my_addr = sock.getsockname().unwrap();
         println!("Server bound to {:?}", my_addr);
 
@@ -241,7 +239,7 @@ fn test_epoll() {
         let port = rx.recv().unwrap();
         println!("Client connecting to port {:?}", port);
         let mut sock = UdtSocket::new(SocketFamily::AFInet, SocketType::Datagram).unwrap();
-        sock.connect(SocketAddr::new(localhost, port)).unwrap();
+        sock.connect(SocketAddr::V4(SocketAddrV4::new(localhost, port))).unwrap();
 
         sock.sendmsg("hello".as_bytes()).unwrap();
 
