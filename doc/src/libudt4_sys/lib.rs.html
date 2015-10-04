@@ -153,6 +153,42 @@
 <span id="111">111</span>
 <span id="112">112</span>
 <span id="113">113</span>
+<span id="114">114</span>
+<span id="115">115</span>
+<span id="116">116</span>
+<span id="117">117</span>
+<span id="118">118</span>
+<span id="119">119</span>
+<span id="120">120</span>
+<span id="121">121</span>
+<span id="122">122</span>
+<span id="123">123</span>
+<span id="124">124</span>
+<span id="125">125</span>
+<span id="126">126</span>
+<span id="127">127</span>
+<span id="128">128</span>
+<span id="129">129</span>
+<span id="130">130</span>
+<span id="131">131</span>
+<span id="132">132</span>
+<span id="133">133</span>
+<span id="134">134</span>
+<span id="135">135</span>
+<span id="136">136</span>
+<span id="137">137</span>
+<span id="138">138</span>
+<span id="139">139</span>
+<span id="140">140</span>
+<span id="141">141</span>
+<span id="142">142</span>
+<span id="143">143</span>
+<span id="144">144</span>
+<span id="145">145</span>
+<span id="146">146</span>
+<span id="147">147</span>
+<span id="148">148</span>
+<span id="149">149</span>
 </pre><pre class='rust '>
 <span class='kw'>extern</span> <span class='kw'>crate</span> <span class='ident'>libc</span>;
 
@@ -160,6 +196,7 @@
 <span class='kw'>use</span> <span class='ident'>libc</span>::<span class='ident'>sockaddr</span>;
 
 <span class='kw'>pub</span> <span class='kw'>type</span> <span class='ident'>UDTSOCKET</span> <span class='op'>=</span> <span class='ident'>c_int</span>;
+<span class='kw'>pub</span> <span class='kw'>type</span> <span class='ident'>SYSSOCKET</span> <span class='op'>=</span> <span class='ident'>c_int</span>;
 
 
 <span class='kw'>pub</span> <span class='kw'>const</span> <span class='ident'>SUCCESS</span> : <span class='ident'>c_int</span> <span class='op'>=</span> <span class='number'>0</span>;   <span class='comment'>//success operation.</span>
@@ -203,6 +240,13 @@
 <span class='kw'>pub</span> <span class='kw'>const</span> <span class='ident'>UDT_ERROR</span>: <span class='ident'>c_int</span> <span class='op'>=</span> <span class='op'>-</span><span class='number'>1</span>;
 
 <span class='attribute'>#[<span class='ident'>repr</span>(<span class='ident'>C</span>)]</span>
+<span class='kw'>pub</span> <span class='kw'>enum</span> <span class='ident'>EPOLLOpt</span> {
+    <span class='ident'>UDT_EPOLL_IN</span> <span class='op'>=</span> <span class='number'>0x1</span>,
+    <span class='ident'>UDT_EPOLL_OUT</span> <span class='op'>=</span> <span class='number'>0x4</span>,
+    <span class='ident'>UDT_EPOLL_ERR</span> <span class='op'>=</span> <span class='number'>0x8</span>
+}
+
+<span class='attribute'>#[<span class='ident'>repr</span>(<span class='ident'>C</span>)]</span>
 <span class='kw'>pub</span> <span class='kw'>enum</span> <span class='ident'>UDTOpt</span> {
 <span class='attribute'>#[<span class='ident'>allow</span>(<span class='ident'>non_camel_case_types</span>)]</span>
    <span class='ident'>UDT_MSS</span>,             <span class='comment'>// the Maximum Transfer Unit</span>
@@ -228,6 +272,21 @@
    <span class='ident'>UDT_RCVDATA</span>		<span class='comment'>// size of data available for recv</span>
 }
 
+<span class='attribute'>#[<span class='ident'>derive</span>(<span class='ident'>Debug</span>, <span class='ident'>Clone</span>, <span class='ident'>Copy</span>, <span class='ident'>PartialEq</span>)]</span>
+<span class='attribute'>#[<span class='ident'>repr</span>(<span class='ident'>C</span>)]</span>
+<span class='kw'>pub</span> <span class='kw'>enum</span> <span class='ident'>UdtStatus</span> {
+    <span class='ident'>INIT</span> <span class='op'>=</span> <span class='number'>1</span>,
+    <span class='ident'>OPENED</span>,
+    <span class='ident'>LISTENING</span>,
+    <span class='ident'>CONNECTING</span>,
+    <span class='ident'>CONNECTED</span>,
+    <span class='ident'>BROKEN</span>,
+    <span class='ident'>CLOSING</span>,
+    <span class='ident'>CLOSED</span>,
+    <span class='ident'>NONEXIST</span>
+}
+
+
 <span class='kw'>pub</span> <span class='kw'>type</span> <span class='ident'>SOCKOPT</span> <span class='op'>=</span> <span class='ident'>UDTOpt</span>;
 
 <span class='kw'>extern</span> {
@@ -251,6 +310,19 @@
 
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>udt_recv</span>(<span class='ident'>u</span>: <span class='ident'>UDTSOCKET</span>, <span class='ident'>buf</span>: <span class='op'>*</span><span class='kw-2'>mut</span> <span class='ident'>c_uchar</span>, <span class='ident'>len</span>: <span class='ident'>c_int</span>, <span class='ident'>flags</span>: <span class='ident'>c_int</span>) <span class='op'>-&gt;</span> <span class='ident'>c_int</span>;
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>udt_recvmsg</span>(<span class='ident'>u</span>: <span class='ident'>UDTSOCKET</span>, <span class='ident'>but</span>: <span class='op'>*</span><span class='kw-2'>mut</span> <span class='ident'>c_uchar</span>, <span class='ident'>len</span>: <span class='ident'>c_int</span>) <span class='op'>-&gt;</span> <span class='ident'>c_int</span>;
+
+    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>udt_epoll_create</span>() <span class='op'>-&gt;</span> <span class='ident'>c_int</span>;
+    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>udt_epoll_add_usock</span>(<span class='ident'>eid</span>: <span class='ident'>c_int</span>, <span class='ident'>usock</span>: <span class='ident'>UDTSOCKET</span>, <span class='ident'>events</span>: <span class='op'>*</span><span class='kw'>const</span> <span class='ident'>c_int</span>) <span class='op'>-&gt;</span> <span class='ident'>c_int</span>;
+    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>udt_epoll_add_ssock</span>(<span class='ident'>eid</span>: <span class='ident'>c_int</span>, <span class='ident'>ssock</span>: <span class='ident'>SYSSOCKET</span>, <span class='ident'>events</span>: <span class='op'>*</span><span class='kw'>const</span> <span class='ident'>c_int</span>) <span class='op'>-&gt;</span> <span class='ident'>c_int</span>;
+
+    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>udt_epoll_remove_usock</span>(<span class='ident'>eid</span>: <span class='ident'>c_int</span>, <span class='ident'>usock</span>: <span class='ident'>UDTSOCKET</span>) <span class='op'>-&gt;</span> <span class='ident'>c_int</span>;
+    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>udt_epoll_remove_ssock</span>(<span class='ident'>eid</span>: <span class='ident'>c_int</span>, <span class='ident'>ssock</span>: <span class='ident'>SYSSOCKET</span>) <span class='op'>-&gt;</span> <span class='ident'>c_int</span>;
+
+    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>udt_epoll_wait2</span>(<span class='ident'>eid</span>: <span class='ident'>c_int</span>, <span class='ident'>readfs</span>: <span class='op'>*</span><span class='kw-2'>mut</span> <span class='ident'>UDTSOCKET</span>, <span class='ident'>rnum</span>: <span class='op'>*</span><span class='kw-2'>mut</span> <span class='ident'>c_int</span>, <span class='ident'>writefs</span>: <span class='op'>*</span><span class='kw-2'>mut</span> <span class='ident'>UDTSOCKET</span>, <span class='ident'>wnum</span>: <span class='op'>*</span><span class='kw-2'>mut</span> <span class='ident'>c_int</span>, <span class='ident'>msTimeOut</span>: <span class='ident'>i64</span>,
+                        <span class='ident'>lrfds</span>: <span class='op'>*</span><span class='kw-2'>mut</span> <span class='ident'>SYSSOCKET</span>, <span class='ident'>lrnum</span>: <span class='op'>*</span><span class='kw-2'>mut</span> <span class='ident'>c_int</span>, <span class='ident'>lwfds</span>: <span class='op'>*</span><span class='kw-2'>mut</span> <span class='ident'>SYSSOCKET</span>, <span class='ident'>lwnum</span>: <span class='op'>*</span><span class='kw-2'>mut</span> <span class='ident'>c_int</span>) <span class='op'>-&gt;</span> <span class='ident'>c_int</span>;
+    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>udt_epoll_release</span>(<span class='ident'>eid</span>: <span class='ident'>c_int</span>) <span class='op'>-&gt;</span> <span class='ident'>c_int</span>;
+
+    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>udt_getsockstate</span>(<span class='ident'>u</span>: <span class='ident'>UDTSOCKET</span>) <span class='op'>-&gt;</span> <span class='ident'>UdtStatus</span>;
 
 
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>udt_getlasterror_code</span>() <span class='op'>-&gt;</span> <span class='ident'>c_int</span>;
