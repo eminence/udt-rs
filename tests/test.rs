@@ -92,8 +92,8 @@ fn test_sendmsg() {
 
     });
 
-    server.join();
-    client.join();
+    server.join().unwrap();
+    client.join().unwrap();
 
 
 
@@ -158,8 +158,8 @@ fn test_send() {
 
     });
 
-    server.join();
-    client.join();
+    server.join().unwrap();
+    client.join().unwrap();
 
 
 }
@@ -252,8 +252,8 @@ fn test_epoll() {
 
     });
 
-    server.join();
-    client.join();
+    server.join().unwrap();
+    client.join().unwrap();
 
 
 
