@@ -26,6 +26,8 @@
 //!
 //! ```
 
+#[macro_use]
+extern crate log;
 extern crate libudt4_sys as raw;
 
 use std::sync::{Once, ONCE_INIT};
@@ -64,7 +66,7 @@ macro_rules! impl_udt_opt {
 pub fn init() {
     static INIT: Once = ONCE_INIT;
         INIT.call_once(|| unsafe {
-            println!("did INIT");
+            trace!("did INIT");
             raw::udt_startup();
             assert_eq!(libc::atexit(shutdown), 0);
         });
@@ -265,7 +267,7 @@ impl SocketType {
 #[cfg(target_os="linux")]
 fn get_sockaddr(name: SocketAddr) -> sockaddr_in {
     if let SocketAddr::V4(v4) = name {
-        println!("binding to {:?}", v4);
+        trace!("binding to {:?}", v4);
         let addr_bytes = v4.ip().octets();
         let addr_b: u32 = ((addr_bytes[3] as u32) << 24)  + 
             ((addr_bytes[2] as u32) << 16)  + 
@@ -286,7 +288,7 @@ fn get_sockaddr(name: SocketAddr) -> sockaddr_in {
 #[cfg(target_os="macos")]
 fn get_sockaddr(name: SocketAddr) -> sockaddr_in {
     if let SocketAddr::V4(v4) = name {
-        println!("binding to {:?}", v4);
+        trace!("binding to {:?}", v4);
         let addr_bytes = v4.ip().octets();
         let addr_b: u32 = ((addr_bytes[3] as u32) << 24)  + 
             ((addr_bytes[2] as u32) << 16)  + 
@@ -448,7 +450,7 @@ impl UdtSocket {
                              std::mem::transmute(&addr),
                              size_of::<sockaddr_in>() as i32)
         };
-        println!("connect returned  {:?}", ret);
+        trace!("connect returned  {:?}", ret);
         if ret == raw::SUCCESS {
             Ok(())
         } else {
@@ -823,7 +825,7 @@ impl Epoll {
         use std::ptr::null;
         let ret = unsafe { raw::udt_epoll_add_usock(self.eid, socket._sock, null()) };
         if ret == 0 {
-            println!("Added UdpSocket={} to epoll", socket._sock);
+            trace!("Added UdpSocket={} to epoll", socket._sock);
             self.num_sock += 1;
             self.wr_vec.push(-1);
             self.rd_vec.push(-1);
@@ -870,8 +872,8 @@ impl Epoll {
                                  null_mut(), null_mut(), null_mut(), null_mut() // no support for polling sys sockets right now
                                  )
         };
-        println!("epoll returned {:?}", ret);
-        println!("rnum={}, wnum={}", rnum, wnum);
+        trace!("epoll returned {:?}", ret);
+        trace!("rnum={}, wnum={}", rnum, wnum);
         if ret < 0 {
             let e = get_last_err();
             if e.err_code != 6003 {
@@ -882,10 +884,10 @@ impl Epoll {
             }
         }
         for v in (0..rnum) {
-            println!("rnum[{}] = {}", v, self.rd_vec[v as usize]);
+            trace!("rnum[{}] = {}", v, self.rd_vec[v as usize]);
         }
         for v in (0..wnum) {
-            println!("wnum[{}] = {}", v, self.wr_vec[v as usize]);
+            trace!("wnum[{}] = {}", v, self.wr_vec[v as usize]);
         }
 
         let mut rds = Vec::with_capacity(rnum as usize);
@@ -917,7 +919,7 @@ fn test_udt_bind() {
     let mut sock = UdtSocket::new(SocketFamily::AFInet, SocketType::Stream).unwrap();
     let localhost = Ipv4Addr::from_str("127.0.0.1").unwrap();
     if cfg!(target_os="macos") {
-        println!("Lowering buffer sizes on OSX");
+        trace!("Lowering buffer sizes on OSX");
         sock.setsockopt(UdtOpts::UDP_RCVBUF, 8192).unwrap();
         sock.setsockopt(UdtOpts::UDP_SNDBUF, 8192).unwrap();
     }

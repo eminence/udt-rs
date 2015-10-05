@@ -1,4 +1,6 @@
 extern crate udt;
+#[macro_use]
+extern crate log;
 
 use udt::*;
 
@@ -64,14 +66,14 @@ fn test_sendmsg() {
         do_platform_specific_init(&mut sock);
         sock.bind(SocketAddr::V4(SocketAddrV4::new(localhost, 0))).unwrap();
         let my_addr = sock.getsockname().unwrap();
-        println!("Server bound to {:?}", my_addr);
+        debug!("Server bound to {:?}", my_addr);
 
         sock.listen(5).unwrap();
 
         tx.send(my_addr.port()); 
 
         let (mut new, peer) = sock.accept().unwrap();
-        println!("Server recieved connection from {:?}", peer);
+        debug!("Server recieved connection from {:?}", peer);
 
         let peer2 = new.getpeername().unwrap();
         assert_eq!(peer2, peer);
@@ -90,7 +92,7 @@ fn test_sendmsg() {
 
     let client = spawn(move || {
         let port = rx.recv().unwrap();
-        println!("Client connecting to port {:?}", port);
+        debug!("Client connecting to port {:?}", port);
         let mut sock = UdtSocket::new(SocketFamily::AFInet, SocketType::Datagram).unwrap();
         do_platform_specific_init(&mut sock);
         sock.connect(SocketAddr::V4(SocketAddrV4::new(localhost, port))).unwrap();
@@ -134,14 +136,14 @@ fn test_send() {
         do_platform_specific_init(&mut sock);
         sock.bind(SocketAddr::V4(SocketAddrV4::new(localhost, 0))).unwrap();
         let my_addr = sock.getsockname().unwrap();
-        println!("Server bound to {:?}", my_addr);
+        debug!("Server bound to {:?}", my_addr);
 
         sock.listen(5).unwrap();
 
         tx.send(my_addr.port()); 
 
         let (mut new, new_peer) = sock.accept().unwrap();
-        println!("Server recieved connection from {:?}", new_peer);
+        debug!("Server recieved connection from {:?}", new_peer);
 
         let mut buf: [u8; 10] = [0; 10];
         assert_eq!(new.recv(&mut buf, 5).unwrap(), 5);
@@ -159,7 +161,7 @@ fn test_send() {
 
     let client = spawn(move || {
         let port = rx.recv().unwrap();
-        println!("Client connecting to port {:?}", port);
+        debug!("Client connecting to port {:?}", port);
         let mut sock = UdtSocket::new(SocketFamily::AFInet, SocketType::Stream).unwrap();
         do_platform_specific_init(&mut sock);
         sock.connect(SocketAddr::V4(SocketAddrV4::new(localhost, port))).unwrap();
@@ -202,7 +204,7 @@ fn test_epoll() {
         do_platform_specific_init(&mut sock);
         sock.bind(SocketAddr::V4(SocketAddrV4::new(localhost, 0))).unwrap();
         let my_addr = sock.getsockname().unwrap();
-        println!("Server bound to {:?}", my_addr);
+        debug!("Server bound to {:?}", my_addr);
 
         sock.listen(5).unwrap();
 
@@ -215,19 +217,19 @@ fn test_epoll() {
         let mut counter = 0;
         loop { 
             let (pending_rd, pending_wr) = epoll.wait(1000, true).unwrap();
-            println!("Pending sockets: {:?} {:?}", pending_rd, pending_wr);
+            debug!("Pending sockets: {:?} {:?}", pending_rd, pending_wr);
             
             let rd_len = pending_rd.len();
             for mut s in pending_rd {
                 if s == sock {
-                    println!("trying to accept new sock");
+                    debug!("trying to accept new sock");
                     let (mut new, peer) = sock.accept().unwrap();
-                    println!("Server recieved connection from {:?}", peer);
+                    debug!("Server recieved connection from {:?}", peer);
                     epoll.add_usock(&new).unwrap();
                 } else {
                     let msg = s.recvmsg(100).unwrap();
                     let msg_string = String::from_utf8(msg).unwrap();
-                    println!("Received message: {:?}", msg_string);
+                    debug!("Received message: {:?}", msg_string);
                 }
 
             }
@@ -238,7 +240,7 @@ fn test_epoll() {
                     epoll.remove_usock(&s);
                     return;
                 }
-                println!("Sock {:?} is in state {:?}", s, state);
+                debug!("Sock {:?} is in state {:?}", s, state);
             }
             sleep_ms(100);
             counter += 1;
@@ -253,7 +255,7 @@ fn test_epoll() {
 
     let client = spawn(move || {
         let port = rx.recv().unwrap();
-        println!("Client connecting to port {:?}", port);
+        debug!("Client connecting to port {:?}", port);
         let mut sock = UdtSocket::new(SocketFamily::AFInet, SocketType::Datagram).unwrap();
         do_platform_specific_init(&mut sock);
         sock.connect(SocketAddr::V4(SocketAddrV4::new(localhost, port))).unwrap();

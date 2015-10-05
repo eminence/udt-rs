@@ -1,9 +1,7 @@
 extern crate gcc;
 
-use std::env;
 use std::path::PathBuf;
-use std::fs::{read_dir, PathExt};
-use std::io;
+use std::fs::{read_dir};
 
 
 fn main() {
@@ -24,7 +22,6 @@ fn main() {
         }
     }
 
-    println!("{:?}", cpp_files);
     // g++ -fPIC -Wall -Wextra -DLINUX -finline-functions -O3 -fno-strict-aliasing -fvisibility=hidden -DAMD64 ccc.cpp -c
     let mut cfg = gcc::Config::new();
     for file in cpp_files {

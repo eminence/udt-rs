@@ -14,3 +14,4 @@ license = "BSD-3-Clause"
 [dependencies]
 libudt4-sys = {path = "libudt4-sys", version="0.1"}
 libc = "0.1"
+log = "0.3"
