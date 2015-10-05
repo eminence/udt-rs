@@ -2,11 +2,21 @@ extern crate udt;
 
 use udt::*;
 
+#[cfg(target_os="linux")]
+fn do_platform_specific_init(sock: &mut UdtSocket) {}
+
+#[cfg(target_os="macos")]
+fn do_platform_specific_init(sock: &mut UdtSocket) {
+    sock.setsockopt(UdtOpts::UDP_RCVBUF, 8192).unwrap();
+    sock.setsockopt(UdtOpts::UDP_SNDBUF, 8192).unwrap();
+}
+
 
 #[test]
 fn test_getsockopt() {
     init();
     let mut sock = UdtSocket::new(SocketFamily::AFInet, SocketType::Datagram).unwrap();
+    do_platform_specific_init(&mut sock);
 
     // test some defaults
     assert_eq!(sock.getsockopt(UdtOpts::UDT_MSS).unwrap(), 1500 as i32);
@@ -23,6 +33,7 @@ fn test_getsockopt() {
 fn test_setsockopt() {
     init();
     let mut sock = UdtSocket::new(SocketFamily::AFInet, SocketType::Datagram).unwrap();
+    do_platform_specific_init(&mut sock);
 
     assert_eq!(sock.getsockopt(UdtOpts::UDT_MSS).unwrap(), 1500);
     sock.setsockopt(UdtOpts::UDT_MSS, 1400).unwrap();
@@ -50,6 +61,7 @@ fn test_sendmsg() {
     // spawn the server
     let server = spawn(move || {
         let mut sock = UdtSocket::new(SocketFamily::AFInet, SocketType::Datagram).unwrap();
+        do_platform_specific_init(&mut sock);
         sock.bind(SocketAddr::V4(SocketAddrV4::new(localhost, 0))).unwrap();
         let my_addr = sock.getsockname().unwrap();
         println!("Server bound to {:?}", my_addr);
@@ -80,6 +92,7 @@ fn test_sendmsg() {
         let port = rx.recv().unwrap();
         println!("Client connecting to port {:?}", port);
         let mut sock = UdtSocket::new(SocketFamily::AFInet, SocketType::Datagram).unwrap();
+        do_platform_specific_init(&mut sock);
         sock.connect(SocketAddr::V4(SocketAddrV4::new(localhost, port))).unwrap();
 
         sock.sendmsg("hello".as_bytes()).unwrap();
@@ -118,6 +131,7 @@ fn test_send() {
     // spawn the server
     let server = spawn(move || {
         let mut sock = UdtSocket::new(SocketFamily::AFInet, SocketType::Stream).unwrap();
+        do_platform_specific_init(&mut sock);
         sock.bind(SocketAddr::V4(SocketAddrV4::new(localhost, 0))).unwrap();
         let my_addr = sock.getsockname().unwrap();
         println!("Server bound to {:?}", my_addr);
@@ -147,6 +161,7 @@ fn test_send() {
         let port = rx.recv().unwrap();
         println!("Client connecting to port {:?}", port);
         let mut sock = UdtSocket::new(SocketFamily::AFInet, SocketType::Stream).unwrap();
+        do_platform_specific_init(&mut sock);
         sock.connect(SocketAddr::V4(SocketAddrV4::new(localhost, port))).unwrap();
 
         assert_eq!(sock.send("hello".as_bytes()).unwrap(), 5);
@@ -184,6 +199,7 @@ fn test_epoll() {
     // spawn the server
     let server = spawn(move || {
         let mut sock = UdtSocket::new(SocketFamily::AFInet, SocketType::Datagram).unwrap();
+        do_platform_specific_init(&mut sock);
         sock.bind(SocketAddr::V4(SocketAddrV4::new(localhost, 0))).unwrap();
         let my_addr = sock.getsockname().unwrap();
         println!("Server bound to {:?}", my_addr);
@@ -239,6 +255,7 @@ fn test_epoll() {
         let port = rx.recv().unwrap();
         println!("Client connecting to port {:?}", port);
         let mut sock = UdtSocket::new(SocketFamily::AFInet, SocketType::Datagram).unwrap();
+        do_platform_specific_init(&mut sock);
         sock.connect(SocketAddr::V4(SocketAddrV4::new(localhost, port))).unwrap();
 
         sock.sendmsg("hello".as_bytes()).unwrap();

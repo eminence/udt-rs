@@ -900,3 +900,26 @@ impl Epoll {
     }
 
 }
+
+
+#[test]
+fn test_udt_socket() {
+    init();
+    let mut sock = UdtSocket::new(SocketFamily::AFInet, SocketType::Stream).unwrap();
+}
+
+#[test]
+fn test_udt_bind() {
+    use std::net::Ipv4Addr;
+    use std::str::FromStr;
+
+    init();
+    let mut sock = UdtSocket::new(SocketFamily::AFInet, SocketType::Stream).unwrap();
+    let localhost = Ipv4Addr::from_str("127.0.0.1").unwrap();
+    if cfg!(target_os="macos") {
+        println!("Lowering buffer sizes on OSX");
+        sock.setsockopt(UdtOpts::UDP_RCVBUF, 8192).unwrap();
+        sock.setsockopt(UdtOpts::UDP_SNDBUF, 8192).unwrap();
+    }
+    sock.bind(SocketAddr::V4(SocketAddrV4::new(localhost, 0))).or_else(|e| Err(panic!("Failed to bind to {:?} --> {:?}", localhost, e)));
+}
