@@ -70,7 +70,7 @@ fn test_sendmsg() {
 
         sock.listen(5).unwrap();
 
-        tx.send(my_addr.port()); 
+        tx.send(my_addr.port()).unwrap();
 
         let (mut new, peer) = sock.accept().unwrap();
         debug!("Server recieved connection from {:?}", peer);
@@ -84,8 +84,8 @@ fn test_sendmsg() {
         assert_eq!(msg, "hello".as_bytes());
         new.sendmsg("world".as_bytes()).unwrap();
 
-        new.close();
-        sock.close();
+        new.close().unwrap();
+        sock.close().unwrap();
 
 
     });
@@ -102,7 +102,7 @@ fn test_sendmsg() {
         assert_eq!(msg.len(), 5);
         assert_eq!(msg, "world".as_bytes());
 
-        sock.close();
+        sock.close().unwrap();
 
 
     });
@@ -140,7 +140,7 @@ fn test_send() {
 
         sock.listen(5).unwrap();
 
-        tx.send(my_addr.port()); 
+        tx.send(my_addr.port()).unwrap();
 
         let (mut new, new_peer) = sock.accept().unwrap();
         debug!("Server recieved connection from {:?}", new_peer);
@@ -153,8 +153,8 @@ fn test_send() {
         assert_eq!(&buf[5..], "world".as_bytes());
         assert_eq!(&buf, "helloworld".as_bytes());
 
-        new.close();
-        sock.close();
+        new.close().unwrap();
+        sock.close().unwrap();
 
 
     });
@@ -170,7 +170,7 @@ fn test_send() {
         assert_eq!(sock.send("world".as_bytes()).unwrap(), 5);
 
 
-        sock.close();
+        sock.close().unwrap();
 
 
     });
@@ -208,7 +208,7 @@ fn test_epoll() {
 
         sock.listen(5).unwrap();
 
-        tx.send(my_addr.port()); 
+        tx.send(my_addr.port()).unwrap();
 
         let mut epoll = Epoll::create().unwrap();
 
@@ -223,7 +223,7 @@ fn test_epoll() {
             for mut s in pending_rd {
                 if s == sock {
                     debug!("trying to accept new sock");
-                    let (mut new, peer) = sock.accept().unwrap();
+                    let (new, peer) = sock.accept().unwrap();
                     debug!("Server recieved connection from {:?}", peer);
                     epoll.add_usock(&new).unwrap();
                 } else {
@@ -237,7 +237,7 @@ fn test_epoll() {
             for mut s in pending_wr {
                 let state = s.getstate();
                 if rd_len == 0 && (state == UdtStatus::BROKEN || state == UdtStatus::CLOSED || state == UdtStatus::NONEXIST) {
-                    epoll.remove_usock(&s);
+                    epoll.remove_usock(&s).unwrap();
                     return;
                 }
                 debug!("Sock {:?} is in state {:?}", s, state);
@@ -246,9 +246,6 @@ fn test_epoll() {
             counter += 1;
             assert!(counter < 500);
         }
-
-
-        sock.close();
 
 
     });
@@ -266,7 +263,7 @@ fn test_epoll() {
         sock.sendmsg("world".as_bytes()).unwrap();
         sock.sendmsg("done.".as_bytes()).unwrap();
 
-        sock.close();
+        sock.close().unwrap();
 
 
     });
