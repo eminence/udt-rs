@@ -802,7 +802,6 @@ pub struct Epoll {
     // instead of allocating one every time we call into poll, we create
     // two vecs and re-use them.  this means that while the UDT api is
     // thread safe, this impl of epoll is not.
-    num_sock: usize,
     rd_vec: Vec<c_int>,
     wr_vec: Vec<c_int>
 
@@ -815,7 +814,7 @@ impl Epoll {
        if ret < 0 {
            Err(get_last_err())
        } else {
-            Ok(Epoll{eid: ret, num_sock: 0, rd_vec: Vec::new(), wr_vec: Vec::new()})
+            Ok(Epoll{eid: ret, rd_vec: Vec::new(), wr_vec: Vec::new()})
        }
 
     }
@@ -826,7 +825,6 @@ impl Epoll {
         let ret = unsafe { raw::udt_epoll_add_usock(self.eid, socket._sock, null()) };
         if ret == 0 {
             trace!("Added UdpSocket={} to epoll", socket._sock);
-            self.num_sock += 1;
             self.wr_vec.push(-1);
             self.rd_vec.push(-1);
             Ok(())
@@ -841,7 +839,6 @@ impl Epoll {
     pub fn remove_usock(&mut self, socket: &UdtSocket) -> Result<(), UdtError> {
         let ret = unsafe { raw::udt_epoll_remove_usock(self.eid, socket._sock) };
         if ret == 0 {
-            self.num_sock -= 1;
             Ok(())
         } else {
             Err(get_last_err())
