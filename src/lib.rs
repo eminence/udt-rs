@@ -28,6 +28,8 @@
 
 #[macro_use]
 extern crate log;
+#[macro_use]
+extern crate bitflags;
 extern crate libudt4_sys as raw;
 
 use std::sync::{Once, ONCE_INIT};
@@ -44,6 +46,13 @@ use std::net::SocketAddrV4;
 
 pub use raw::UdtStatus;
 
+bitflags! {
+    flags EpollEvents: c_int {
+        const UDT_EPOLL_IN = 0x1,
+        const UDT_EPOLL_OUT = 0x4,
+        const UDT_EPOLL_ERR = 0x8
+    }
+}
 
 // makes defining the UdtOpts mod a little less messy
 macro_rules! impl_udt_opt {
@@ -820,9 +829,18 @@ impl Epoll {
     }
 
     /// Adds a UdtSocket to an epoll
-    pub fn add_usock(&mut self, socket: &UdtSocket) -> Result<(), UdtError> {
+    ///
+    /// `events` can be any combination of `UDT_EPOLL_IN`, `UDT_EPOLL_OUT`, and `UDT_EPOLL_ERR`
+    pub fn add_usock(&mut self, socket: &UdtSocket, events: Option<EpollEvents>) -> Result<(), UdtError> {
         use std::ptr::null;
-        let ret = unsafe { raw::udt_epoll_add_usock(self.eid, socket._sock, null()) };
+
+        let ret = match events {
+            None => unsafe { raw::udt_epoll_add_usock(self.eid, socket._sock, null()) },
+            Some(val) =>  {
+                let b: c_int = val.bits();
+                unsafe { raw::udt_epoll_add_usock(self.eid, socket._sock, &b) }
+            }
+        };
         if ret == 0 {
             trace!("Added UdpSocket={} to epoll", socket._sock);
             self.wr_vec.push(-1);
@@ -848,6 +866,12 @@ impl Epoll {
     /// Wait for events
     ///
     /// Timeout is in milliseconds.  If negative, wait forever.  If zero, return immediately.
+    ///
+    /// If `write` is false, the list of sockets for writing will always be null. 
+    ///
+    /// # Returns
+    ///
+    /// A tuple of sockets to be read and sockets to be written (or have exceptions)
     pub fn wait(&mut self, timeout: i64, write: bool) -> Result<(Vec<UdtSocket>, Vec<UdtSocket>), UdtError> {
         use std::ptr::null_mut;
         let mut rnum : c_int = self.rd_vec.len() as c_int;
