@@ -4,12 +4,12 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="generator" content="rustdoc">
-    <meta name="description" content="API documentation for the Rust `UDT_FC` struct in crate `udt`.">
-    <meta name="keywords" content="rust, rustlang, rust-lang, UDT_FC">
+    <meta name="description" content="API documentation for the Rust `bitflags` crate.">
+    <meta name="keywords" content="rust, rustlang, rust-lang, bitflags">
 
-    <title>udt::UdtOpts::UDT_FC - Rust</title>
+    <title>bitflags - Rust</title>
 
-    <link rel="stylesheet" type="text/css" href="../../main.css">
+    <link rel="stylesheet" type="text/css" href="../main.css">
 
     
     
@@ -26,7 +26,7 @@
 
     <section class="sidebar">
         
-        <p class='location'><a href='../index.html'>udt</a>::<wbr><a href='index.html'>UdtOpts</a></p><script>window.sidebarCurrent = {name: 'UDT_FC', ty: 'struct', relpath: ''};</script><script defer src="sidebar-items.js"></script>
+        <p class='location'></p><script>window.sidebarCurrent = {name: 'bitflags', ty: 'mod', relpath: '../'};</script>
     </section>
 
     <nav class="sub">
@@ -40,18 +40,25 @@
         </form>
     </nav>
 
-    <section id='main' class="content struct">
-<h1 class='fqn'><span class='in-band'>Struct <a href='../index.html'>udt</a>::<wbr><a href='index.html'>UdtOpts</a>::<wbr><a class='struct' href=''>UDT_FC</a></span><span class='out-of-band'><span id='render-detail'>
+    <section id='main' class="content mod">
+<h1 class='fqn'><span class='in-band'>Crate <a class='mod' href=''>bitflags</a></span><span class='out-of-band'><span id='render-detail'>
             <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
                 [<span class='inner'>&#x2212;</span>]
             </a>
-        </span><a id='src-1457' class='srclink' href='../../src/udt/lib.rs.html#62' title='goto source code'>[src]</a></span></h1>
-<pre class='rust struct'>pub struct UDT_FC;</pre><div class='docblock'><p>Maximum window size (packets)</p>
+        </span><a id='src-0' class='srclink' href='../src/bitflags/lib.rs.html#11-581' title='goto source code'>[src]</a></span></h1>
+<div class='docblock'><p>A typesafe bitmask flag generator.</p>
+</div><h2 id='macros' class='section-header'><a href="#macros">Macros</a></h2>
+<table>
+                    <tr class=' module-item'>
+                        <td><a class='macro' href='macro.bitflags!.html'
+                               title='bitflags::bitflags!'>bitflags!</a></td>
+                        <td class='docblock short'>
+                             <p>The <code>bitflags!</code> macro generates a <code>struct</code> that holds a set of C-style
+bitmask flags. It is useful for creating typesafe wrappers for C APIs.</p>
 
-<p>Default 25600. Do NOT change this unless you know what you are doing. Must change this
-before modifying the buffer sizes.</p>
-</div><h2 id='implementations'>Trait Implementations</h2><h3 class='impl'><code>impl <a class='trait' href='../../udt/trait.UdtOption.html' title='udt::UdtOption'>UdtOption</a>&lt;<a href='https://doc.rust-lang.org/nightly/std/primitive.i32.html'>i32</a>&gt; for <a class='struct' href='../../udt/UdtOpts/struct.UDT_FC.html' title='udt::UdtOpts::UDT_FC'>UDT_FC</a></code></h3><div class='impl-items'><h4 id='method.get_type' class='method'><code>fn <a href='../../udt/trait.UdtOption.html#method.get_type' class='fnname'>get_type</a>(&amp;self) -&gt; <a class='enum' href='../../raw/enum.UDTOpt.html' title='raw::UDTOpt'>UDTOpt</a></code></h4>
-</div></section>
+                        </td>
+                    </tr>
+                </table></section>
     <section id='search' class="content hidden"></section>
 
     <section class="footer"></section>
@@ -101,13 +108,13 @@ before modifying the buffer sizes.</p>
     
 
     <script>
-        window.rootPath = "../../";
-        window.currentCrate = "udt";
+        window.rootPath = "../";
+        window.currentCrate = "bitflags";
         window.playgroundUrl = "";
     </script>
-    <script src="../../jquery.js"></script>
-    <script src="../../main.js"></script>
+    <script src="../jquery.js"></script>
+    <script src="../main.js"></script>
     
-    <script async src="../../search-index.js"></script>
+    <script async src="../search-index.js"></script>
 </body>
 </html>
