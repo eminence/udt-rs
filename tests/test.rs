@@ -1,3 +1,5 @@
+#![feature(result_expect)]
+
 extern crate udt;
 #[macro_use]
 extern crate log;
@@ -308,7 +310,8 @@ fn test_epoll2() {
         epoll.add_usock(&sock, Some(UDT_EPOLL_ERR | UDT_EPOLL_IN)).unwrap();
 
         let mut counter = 0;
-        loop { 
+        let mut outer = true;
+        while outer { 
             let (pending_rd, pending_wr) = epoll.wait(1000, true).unwrap();
             println!("Pending sockets: {:?} {:?}", pending_rd, pending_wr);
             
@@ -320,9 +323,14 @@ fn test_epoll2() {
                     println!("Server recieved connection from {:?}", peer);
                     epoll.add_usock(&new, Some(UDT_EPOLL_ERR | UDT_EPOLL_IN)).unwrap();
                 } else {
-                    let msg = s.recvmsg(100).unwrap();
-                    let msg_string = String::from_utf8(msg).unwrap();
-                    println!("Received message: {:?}", msg_string);
+                    if let Ok(msg) = s.recvmsg(100) {
+                        let msg_string = String::from_utf8(msg).unwrap();
+                        println!("Received message: {:?}", msg_string);
+                    } else {
+                        println!("Error on recieve, removing usock");
+                        epoll.remove_usock(&s).unwrap();
+                        outer = false;
+                    }
                 }
 
             }
@@ -365,6 +373,42 @@ fn test_epoll2() {
 
     server.join().unwrap();
     client.join().unwrap();
+
+
+
+}
+
+#[test]
+fn test_epoll3() {
+    use std::thread::spawn;
+    use std::net::{SocketAddr, SocketAddrV4};
+    use std::net::Ipv4Addr;
+    use std::str::FromStr;
+    use std::sync::mpsc::channel;
+    use std::thread::sleep_ms;
+
+    init();
+
+    let localhost = Ipv4Addr::from_str("127.0.0.1").unwrap();
+
+    // spawn the server
+    let server = spawn(move || {
+        let mut sock = UdtSocket::new(SocketFamily::AFInet, SocketType::Datagram).unwrap();
+        do_platform_specific_init(&mut sock);
+        sock.bind(SocketAddr::V4(SocketAddrV4::new(localhost, 0))).unwrap();
+        let my_addr = sock.getsockname().unwrap();
+        println!("Server bound to {:?}", my_addr);
+
+        sock.listen(5).unwrap();
+
+        let mut epoll = Epoll::create().unwrap();
+        println!("Epoll {:?} created", epoll);
+
+        epoll.add_usock(&sock, None).unwrap();
+        epoll.remove_usock(&sock).unwrap();
+        epoll.add_usock(&sock, None).unwrap();
+    });
+    server.join().unwrap();
 
 
 

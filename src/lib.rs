@@ -804,6 +804,7 @@ impl UdtSocket {
 }
 
 /// Used with the `epoll*` methods of a UDTSocket
+#[derive(Debug)]
 pub struct Epoll {
     eid: c_int,
 
@@ -945,4 +946,30 @@ fn test_udt_bind() {
         sock.setsockopt(UdtOpts::UDP_SNDBUF, 8192).unwrap();
     }
     sock.bind(SocketAddr::V4(SocketAddrV4::new(localhost, 0))).or_else(|e| Err(panic!("Failed to bind to {:?} --> {:?}", localhost, e)));
+}
+
+#[test]
+fn test_udt_socket_state() {
+    use std::net::Ipv4Addr;
+    use std::str::FromStr;
+    use std::thread::sleep_ms;
+
+    init();
+    let mut sock = UdtSocket::new(SocketFamily::AFInet, SocketType::Stream).unwrap();
+    assert_eq!(sock.getstate(), UdtStatus::INIT);
+    
+    let localhost = Ipv4Addr::from_str("127.0.0.1").unwrap();
+    
+    sock.bind(SocketAddr::V4(SocketAddrV4::new(localhost, 0))).or_else(|e| Err(panic!("Failed to bind to {:?} --> {:?}", localhost, e)));
+    assert_eq!(sock.getstate(), UdtStatus::OPENED);
+    sock.listen(5).unwrap();
+    assert_eq!(sock.getstate(), UdtStatus::LISTENING);
+    sock.close();
+    assert_eq!(sock.getstate(), UdtStatus::BROKEN);
+    sleep_ms(4500);
+    // after some time, the sock transitions to CLOSED and then NONEXIST
+    // THe LISTENING -> CLOSED transition is made after a 3 second timeout
+    assert!(sock.getstate() == UdtStatus::NONEXIST || sock.getstate() == UdtStatus::CLOSED);
+
+
 }
