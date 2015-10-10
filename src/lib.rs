@@ -88,7 +88,7 @@ pub fn init() {
 ///
 /// Internally, a UDT socket is represented as a 32-bit int.  As such, a `UdtSocket` can be copied
 /// and cloned
-#[derive(Debug, PartialEq, Copy, Clone)]
+#[derive(Debug, PartialEq, Eq, Copy, Clone, Hash)]
 pub struct UdtSocket {
     _sock: raw::UDTSOCKET, 
 }
