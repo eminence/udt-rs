@@ -988,6 +988,38 @@
 <span id="946">946</span>
 <span id="947">947</span>
 <span id="948">948</span>
+<span id="949">949</span>
+<span id="950">950</span>
+<span id="951">951</span>
+<span id="952">952</span>
+<span id="953">953</span>
+<span id="954">954</span>
+<span id="955">955</span>
+<span id="956">956</span>
+<span id="957">957</span>
+<span id="958">958</span>
+<span id="959">959</span>
+<span id="960">960</span>
+<span id="961">961</span>
+<span id="962">962</span>
+<span id="963">963</span>
+<span id="964">964</span>
+<span id="965">965</span>
+<span id="966">966</span>
+<span id="967">967</span>
+<span id="968">968</span>
+<span id="969">969</span>
+<span id="970">970</span>
+<span id="971">971</span>
+<span id="972">972</span>
+<span id="973">973</span>
+<span id="974">974</span>
+<span id="975">975</span>
+<span id="976">976</span>
+<span id="977">977</span>
+<span id="978">978</span>
+<span id="979">979</span>
+<span id="980">980</span>
 </pre><pre class='rust '>
 <span class='doccomment'>//! UDT</span>
 <span class='doccomment'>//!</span>
@@ -1006,7 +1038,7 @@
 <span class='doccomment'>//!</span>
 <span class='doccomment'>//!     let localhost = std::net::Ipv4Addr::from_str(&quot;127.0.0.1&quot;).unwrap();</span>
 <span class='doccomment'>//!</span>
-<span class='doccomment'>//!     let mut sock = UdtSocket::new(SocketFamily::AFInet, SocketType::Stream).unwrap();</span>
+<span class='doccomment'>//!     let sock = UdtSocket::new(SocketFamily::AFInet, SocketType::Stream).unwrap();</span>
 <span class='doccomment'>//!     sock.bind(SocketAddr::V4(SocketAddrV4::new(localhost, 0))).unwrap();</span>
 <span class='doccomment'>//!     let my_addr = sock.getsockname().unwrap();</span>
 <span class='doccomment'>//!     println!(&quot;Server bound to {:?}&quot;, my_addr);</span>
@@ -1079,7 +1111,7 @@
 <span class='doccomment'>///</span>
 <span class='doccomment'>/// Internally, a UDT socket is represented as a 32-bit int.  As such, a `UdtSocket` can be copied</span>
 <span class='doccomment'>/// and cloned</span>
-<span class='attribute'>#[<span class='ident'>derive</span>(<span class='ident'>Debug</span>, <span class='ident'>PartialEq</span>, <span class='ident'>Copy</span>, <span class='ident'>Clone</span>)]</span>
+<span class='attribute'>#[<span class='ident'>derive</span>(<span class='ident'>Debug</span>, <span class='ident'>PartialEq</span>, <span class='ident'>Eq</span>, <span class='ident'>Copy</span>, <span class='ident'>Clone</span>, <span class='ident'>Hash</span>)]</span>
 <span class='kw'>pub</span> <span class='kw'>struct</span> <span class='ident'>UdtSocket</span> {
     <span class='ident'>_sock</span>: <span class='ident'>raw</span>::<span class='ident'>UDTSOCKET</span>, 
 }
@@ -1116,7 +1148,7 @@
     <span class='doccomment'>//! ``` </span>
     <span class='doccomment'>//! use udt::*;</span>
     <span class='doccomment'>//!</span>
-    <span class='doccomment'>//! let mut sock = UdtSocket::new(SocketFamily::AFInet, SocketType::Stream).unwrap();</span>
+    <span class='doccomment'>//! let sock = UdtSocket::new(SocketFamily::AFInet, SocketType::Stream).unwrap();</span>
     <span class='doccomment'>//! let recv_buf: i32 = sock.getsockopt(UdtOpts::UDT_RCVBUF).unwrap();</span>
     <span class='doccomment'>//! let rendezvous: bool = sock.getsockopt(UdtOpts::UDT_RENDEZVOUS).unwrap();</span>
     <span class='doccomment'>//!</span>
@@ -1380,7 +1412,7 @@
     <span class='doccomment'>/// the port number, bind always creates a new port, no matter what value the UDT_REUSEADDR</span>
     <span class='doccomment'>/// sets.</span>
     <span class='doccomment'>///</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>bind</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>name</span>: <span class='ident'>std</span>::<span class='ident'>net</span>::<span class='ident'>SocketAddr</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span>(), <span class='ident'>UdtError</span><span class='op'>&gt;</span> {
+    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>bind</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='ident'>name</span>: <span class='ident'>std</span>::<span class='ident'>net</span>::<span class='ident'>SocketAddr</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span>(), <span class='ident'>UdtError</span><span class='op'>&gt;</span> {
 
         <span class='kw'>let</span> <span class='ident'>addr</span>: <span class='ident'>sockaddr_in</span> <span class='op'>=</span> <span class='ident'>get_sockaddr</span>(<span class='ident'>name</span>); 
         <span class='kw'>let</span> <span class='ident'>ret</span> <span class='op'>=</span> <span class='kw'>unsafe</span> {
@@ -1408,7 +1440,7 @@
     <span class='doccomment'>/// Use the second form of bind with caution, as it violates certain programming rules</span>
     <span class='doccomment'>/// regarding code robustness. Once the UDP socket descriptor is passed to UDT, it MUST NOT be</span>
     <span class='doccomment'>/// touched again. DO NOT use this unless you clearly understand how the related systems work.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>bind_from</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>other</span>: <span class='ident'>std</span>::<span class='ident'>net</span>::<span class='ident'>UdpSocket</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span>(), <span class='ident'>UdtError</span><span class='op'>&gt;</span> {
+    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>bind_from</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='ident'>other</span>: <span class='ident'>std</span>::<span class='ident'>net</span>::<span class='ident'>UdpSocket</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span>(), <span class='ident'>UdtError</span><span class='op'>&gt;</span> {
         <span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>os</span>::<span class='ident'>unix</span>::<span class='ident'>io</span>::<span class='ident'>AsRawFd</span>;
         <span class='kw'>let</span> <span class='ident'>ret</span> <span class='op'>=</span> <span class='kw'>unsafe</span> {
             <span class='ident'>raw</span>::<span class='ident'>udt_bind2</span>(<span class='self'>self</span>.<span class='ident'>_sock</span>,
@@ -1443,7 +1475,7 @@
     <span class='doccomment'>/// connect fails. In addition, in the situation when the connect call fails, the UDT socket</span>
     <span class='doccomment'>/// will not be automatically released, it is the applications&#39; responsibility to close the</span>
     <span class='doccomment'>/// socket, if the socket is not needed anymore (e.g., to re-connect).</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>connect</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>name</span>: <span class='ident'>std</span>::<span class='ident'>net</span>::<span class='ident'>SocketAddr</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span>(), <span class='ident'>UdtError</span><span class='op'>&gt;</span> {
+    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>connect</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='ident'>name</span>: <span class='ident'>std</span>::<span class='ident'>net</span>::<span class='ident'>SocketAddr</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span>(), <span class='ident'>UdtError</span><span class='op'>&gt;</span> {
         <span class='kw'>let</span> <span class='ident'>addr</span> <span class='op'>=</span> <span class='ident'>get_sockaddr</span>(<span class='ident'>name</span>);
         <span class='kw'>let</span> <span class='ident'>ret</span> <span class='op'>=</span> <span class='kw'>unsafe</span> {
             <span class='ident'>raw</span>::<span class='ident'>udt_connect</span>(<span class='self'>self</span>.<span class='ident'>_sock</span>,
@@ -1468,7 +1500,7 @@
     <span class='doccomment'>/// ignored if the socket is already in the listening state.</span>
     <span class='doccomment'>///</span>
     <span class='doccomment'>/// `backlog` specifies the maximum number of pending connections.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>listen</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>backlog</span>: <span class='ident'>i32</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span>(), <span class='ident'>UdtError</span><span class='op'>&gt;</span> {
+    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>listen</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='ident'>backlog</span>: <span class='ident'>i32</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span>(), <span class='ident'>UdtError</span><span class='op'>&gt;</span> {
         <span class='kw'>let</span> <span class='ident'>ret</span> <span class='op'>=</span> <span class='kw'>unsafe</span> { <span class='ident'>raw</span>::<span class='ident'>udt_listen</span>(<span class='self'>self</span>.<span class='ident'>_sock</span>, <span class='ident'>backlog</span>) };
 
         <span class='kw'>if</span> <span class='ident'>ret</span> <span class='op'>==</span> <span class='ident'>raw</span>::<span class='ident'>SUCCESS</span> {
@@ -1494,7 +1526,7 @@
     <span class='doccomment'>///</span>
     <span class='doccomment'>/// Returns a tuple containing the new UdtSocket and a `SockAddr` structure containing the</span>
     <span class='doccomment'>/// address of the new peer</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>accept</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span>(<span class='ident'>UdtSocket</span>, <span class='ident'>SocketAddr</span>), <span class='ident'>UdtError</span><span class='op'>&gt;</span> {
+    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>accept</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span>(<span class='ident'>UdtSocket</span>, <span class='ident'>SocketAddr</span>), <span class='ident'>UdtError</span><span class='op'>&gt;</span> {
         <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>peer</span> <span class='op'>=</span> <span class='kw'>unsafe</span> { <span class='ident'>std</span>::<span class='ident'>mem</span>::<span class='ident'>zeroed</span>() };
         <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>size</span>: <span class='ident'>i32</span> <span class='op'>=</span> <span class='ident'>size_of</span>::<span class='op'>&lt;</span><span class='ident'>sockaddr</span><span class='op'>&gt;</span>() <span class='kw'>as</span> <span class='ident'>i32</span>;
         <span class='kw'>let</span> <span class='ident'>ret</span> <span class='op'>=</span> <span class='kw'>unsafe</span> { <span class='ident'>raw</span>::<span class='ident'>udt_accept</span>(<span class='self'>self</span>.<span class='ident'>_sock</span>, <span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='ident'>peer</span>, <span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='ident'>size</span>) };
@@ -1541,7 +1573,7 @@
     <span class='doccomment'>///</span>
     <span class='doccomment'>/// The getpeername retrieves the address of the peer side associated to the connection. The</span>
     <span class='doccomment'>/// UDT socket must be connected at the time when this method is called.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>getpeername</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span><span class='ident'>std</span>::<span class='ident'>net</span>::<span class='ident'>SocketAddr</span>, <span class='ident'>UdtError</span><span class='op'>&gt;</span> {
+    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>getpeername</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span><span class='ident'>std</span>::<span class='ident'>net</span>::<span class='ident'>SocketAddr</span>, <span class='ident'>UdtError</span><span class='op'>&gt;</span> {
         <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>name</span> <span class='op'>=</span> <span class='kw'>unsafe</span> { <span class='ident'>std</span>::<span class='ident'>mem</span>::<span class='ident'>zeroed</span>() };
         <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>size</span>: <span class='ident'>i32</span> <span class='op'>=</span> <span class='ident'>size_of</span>::<span class='op'>&lt;</span><span class='ident'>sockaddr</span><span class='op'>&gt;</span>() <span class='kw'>as</span> <span class='ident'>i32</span>;
         <span class='kw'>let</span> <span class='ident'>ret</span> <span class='op'>=</span> <span class='kw'>unsafe</span> { <span class='ident'>raw</span>::<span class='ident'>udt_getpeername</span>(<span class='self'>self</span>.<span class='ident'>_sock</span>,<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='ident'>name</span>, <span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='ident'>size</span>) };
@@ -1576,7 +1608,7 @@
     <span class='doccomment'>/// one of them can be routed to the destination address, UDT may not behave properly due to</span>
     <span class='doccomment'>/// the multi-path effect. In this case, the UDT socket must be explicitly bound to one of</span>
     <span class='doccomment'>/// the local addresses.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>getsockname</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span><span class='ident'>std</span>::<span class='ident'>net</span>::<span class='ident'>SocketAddr</span>, <span class='ident'>UdtError</span><span class='op'>&gt;</span> {
+    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>getsockname</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span><span class='ident'>std</span>::<span class='ident'>net</span>::<span class='ident'>SocketAddr</span>, <span class='ident'>UdtError</span><span class='op'>&gt;</span> {
         <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>name</span> <span class='op'>=</span> <span class='kw'>unsafe</span> { <span class='ident'>std</span>::<span class='ident'>mem</span>::<span class='ident'>zeroed</span>() };
         <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>size</span>: <span class='ident'>i32</span> <span class='op'>=</span> <span class='ident'>size_of</span>::<span class='op'>&lt;</span><span class='ident'>sockaddr</span><span class='op'>&gt;</span>() <span class='kw'>as</span> <span class='ident'>i32</span>;
         <span class='kw'>let</span> <span class='ident'>ret</span> <span class='op'>=</span> <span class='kw'>unsafe</span> { <span class='ident'>raw</span>::<span class='ident'>udt_getsockname</span>(<span class='self'>self</span>.<span class='ident'>_sock</span>,<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='ident'>name</span>, <span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='ident'>size</span>) };
@@ -1625,7 +1657,7 @@
     <span class='doccomment'>/// should be equal to len. Otherwise UDT::ERROR is returned and specific error information can</span>
     <span class='doccomment'>/// be retrieved by getlasterror. If UDT_SNDTIMEO is set to a positive value, zero will be</span>
     <span class='doccomment'>/// returned if the message cannot be sent before the timer expires.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>sendmsg</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>buf</span>: <span class='kw-2'>&amp;</span>[<span class='ident'>u8</span>]) <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span><span class='ident'>i32</span>, <span class='ident'>UdtError</span><span class='op'>&gt;</span> {
+    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>sendmsg</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='ident'>buf</span>: <span class='kw-2'>&amp;</span>[<span class='ident'>u8</span>]) <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span><span class='ident'>i32</span>, <span class='ident'>UdtError</span><span class='op'>&gt;</span> {
 
         <span class='kw'>let</span> <span class='ident'>ret</span> <span class='op'>=</span> <span class='kw'>unsafe</span> {
             <span class='ident'>raw</span>::<span class='ident'>udt_sendmsg</span>(<span class='self'>self</span>.<span class='ident'>_sock</span>, 
@@ -1663,7 +1695,7 @@
     <span class='doccomment'>///</span>
     <span class='doccomment'>/// If UDT_SNDTIMEO is set to a positive value, zero will be returned if no data is sent before</span>
     <span class='doccomment'>/// the time expires.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>send</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>buf</span>: <span class='kw-2'>&amp;</span>[<span class='ident'>u8</span>]) <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span><span class='ident'>i32</span>, <span class='ident'>UdtError</span><span class='op'>&gt;</span> {
+    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>send</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='ident'>buf</span>: <span class='kw-2'>&amp;</span>[<span class='ident'>u8</span>]) <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span><span class='ident'>i32</span>, <span class='ident'>UdtError</span><span class='op'>&gt;</span> {
 
         <span class='kw'>let</span> <span class='ident'>ret</span> <span class='op'>=</span> <span class='kw'>unsafe</span> { <span class='ident'>raw</span>::<span class='ident'>udt_send</span>(<span class='self'>self</span>.<span class='ident'>_sock</span>, <span class='ident'>buf</span>.<span class='ident'>as_ptr</span>(), <span class='ident'>buf</span>.<span class='ident'>len</span>() <span class='kw'>as</span> <span class='ident'>i32</span>, <span class='number'>0</span>) };
         <span class='kw'>if</span> <span class='ident'>ret</span> <span class='op'>==</span> <span class='ident'>raw</span>::<span class='ident'>UDT_ERROR</span> {
@@ -1698,7 +1730,7 @@
     <span class='doccomment'>/// returned and specific error information can be retrieved by getlasterror. If UDT_RCVTIMEO</span>
     <span class='doccomment'>/// is set to a positive value, zero will be returned if no message is received before the</span>
     <span class='doccomment'>/// timer expires.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>recvmsg</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>len</span>: <span class='ident'>usize</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span><span class='ident'>Vec</span><span class='op'>&lt;</span><span class='ident'>u8</span><span class='op'>&gt;</span>, <span class='ident'>UdtError</span><span class='op'>&gt;</span> {
+    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>recvmsg</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='ident'>len</span>: <span class='ident'>usize</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span><span class='ident'>Vec</span><span class='op'>&lt;</span><span class='ident'>u8</span><span class='op'>&gt;</span>, <span class='ident'>UdtError</span><span class='op'>&gt;</span> {
         <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>v</span>: <span class='ident'>Vec</span><span class='op'>&lt;</span><span class='ident'>u8</span><span class='op'>&gt;</span> <span class='op'>=</span> <span class='ident'>Vec</span>::<span class='ident'>with_capacity</span>(<span class='ident'>len</span>);
         <span class='ident'>v</span>.<span class='ident'>extend</span>(<span class='ident'>std</span>::<span class='ident'>iter</span>::<span class='ident'>repeat</span>(<span class='number'>0</span> <span class='kw'>as</span> <span class='ident'>u8</span>).<span class='ident'>take</span>(<span class='ident'>len</span>).<span class='ident'>collect</span>::<span class='op'>&lt;</span><span class='ident'>Vec</span><span class='op'>&lt;</span><span class='ident'>u8</span><span class='op'>&gt;&gt;</span>());
         <span class='kw'>let</span> <span class='ident'>ret</span> <span class='op'>=</span> <span class='kw'>unsafe</span> {
@@ -1728,7 +1760,7 @@
     <span class='doccomment'>/// If UDT_RCVTIMEO is set and the socket is in blocking mode, recv only waits a limited time</span>
     <span class='doccomment'>/// specified by UDT_RCVTIMEO option. If there is still no data available when the timer</span>
     <span class='doccomment'>/// expires, error will be returned. UDT_RCVTIMEO has no effect for non-blocking socket.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>recv</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>buf</span>: <span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> [<span class='ident'>u8</span>], <span class='ident'>len</span>: <span class='ident'>usize</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span><span class='ident'>i32</span>, <span class='ident'>UdtError</span><span class='op'>&gt;</span> {
+    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>recv</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='ident'>buf</span>: <span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> [<span class='ident'>u8</span>], <span class='ident'>len</span>: <span class='ident'>usize</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span><span class='ident'>i32</span>, <span class='ident'>UdtError</span><span class='op'>&gt;</span> {
         <span class='kw'>let</span> <span class='ident'>ret</span> <span class='op'>=</span> <span class='kw'>unsafe</span> {
             <span class='ident'>raw</span>::<span class='ident'>udt_recv</span>(<span class='self'>self</span>.<span class='ident'>_sock</span>, <span class='ident'>buf</span>.<span class='ident'>as_mut_ptr</span>(), <span class='ident'>len</span> <span class='kw'>as</span> <span class='ident'>i32</span>, <span class='number'>0</span>)
         };
@@ -1750,10 +1782,10 @@
     <span class='doccomment'>/// ```</span>
     <span class='doccomment'>/// use udt::*;</span>
     <span class='doccomment'>///</span>
-    <span class='doccomment'>/// let mut sock = UdtSocket::new(SocketFamily::AFInet, SocketType::Stream).unwrap();</span>
+    <span class='doccomment'>/// let sock = UdtSocket::new(SocketFamily::AFInet, SocketType::Stream).unwrap();</span>
     <span class='doccomment'>/// let recv_buf: i32 = sock.getsockopt(UdtOpts::UDP_RCVBUF).unwrap();</span>
     <span class='doccomment'>/// ```</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>getsockopt</span><span class='op'>&lt;</span><span class='ident'>B</span>: <span class='ident'>Default</span>, <span class='ident'>T</span>: <span class='ident'>UdtOption</span><span class='op'>&lt;</span><span class='ident'>B</span><span class='op'>&gt;&gt;</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>opt</span>: <span class='ident'>T</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span><span class='ident'>B</span>, <span class='ident'>UdtError</span><span class='op'>&gt;</span> {
+    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>getsockopt</span><span class='op'>&lt;</span><span class='ident'>B</span>: <span class='ident'>Default</span>, <span class='ident'>T</span>: <span class='ident'>UdtOption</span><span class='op'>&lt;</span><span class='ident'>B</span><span class='op'>&gt;&gt;</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='ident'>opt</span>: <span class='ident'>T</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span><span class='ident'>B</span>, <span class='ident'>UdtError</span><span class='op'>&gt;</span> {
         <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>val</span>: <span class='ident'>B</span> <span class='op'>=</span> <span class='kw'>unsafe</span>{ <span class='ident'>std</span>::<span class='ident'>mem</span>::<span class='ident'>zeroed</span>() };
         <span class='kw'>let</span> <span class='ident'>val_p</span>: <span class='op'>*</span><span class='kw-2'>mut</span> <span class='ident'>B</span> <span class='op'>=</span> <span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='ident'>val</span>;
         <span class='kw'>let</span> <span class='ident'>ty</span>: <span class='ident'>raw</span>::<span class='ident'>UDTOpt</span> <span class='op'>=</span> <span class='ident'>opt</span>.<span class='ident'>get_type</span>();
@@ -1772,7 +1804,7 @@
     <span class='doccomment'>/// Sets UDT options</span>
     <span class='doccomment'>///</span>
     <span class='doccomment'>/// See the `UdtOpts` module for all the supported option types.  </span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>setsockopt</span><span class='op'>&lt;</span><span class='ident'>B</span>, <span class='ident'>T</span>: <span class='ident'>UdtOption</span><span class='op'>&lt;</span><span class='ident'>B</span><span class='op'>&gt;&gt;</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>opt</span>: <span class='ident'>T</span>, <span class='ident'>value</span>: <span class='ident'>B</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span>(), <span class='ident'>UdtError</span><span class='op'>&gt;</span> {
+    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>setsockopt</span><span class='op'>&lt;</span><span class='ident'>B</span>, <span class='ident'>T</span>: <span class='ident'>UdtOption</span><span class='op'>&lt;</span><span class='ident'>B</span><span class='op'>&gt;&gt;</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='ident'>opt</span>: <span class='ident'>T</span>, <span class='ident'>value</span>: <span class='ident'>B</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span>(), <span class='ident'>UdtError</span><span class='op'>&gt;</span> {
         <span class='kw'>let</span> <span class='ident'>ty</span>: <span class='ident'>raw</span>::<span class='ident'>UDTOpt</span> <span class='op'>=</span> <span class='ident'>opt</span>.<span class='ident'>get_type</span>();
         <span class='kw'>let</span> <span class='ident'>val_p</span>: <span class='op'>*</span><span class='kw'>const</span> <span class='ident'>B</span> <span class='op'>=</span> <span class='kw-2'>&amp;</span><span class='ident'>value</span>;
         <span class='kw'>let</span> <span class='ident'>size</span>: <span class='ident'>c_int</span> <span class='op'>=</span> <span class='ident'>size_of</span>::<span class='op'>&lt;</span><span class='ident'>B</span><span class='op'>&gt;</span>() <span class='kw'>as</span> <span class='ident'>i32</span>;
@@ -1789,12 +1821,13 @@
         }
     }
 
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>getstate</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>UdtStatus</span> {
+    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>getstate</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>UdtStatus</span> {
         <span class='kw'>unsafe</span> { <span class='ident'>raw</span>::<span class='ident'>udt_getsockstate</span>(<span class='self'>self</span>.<span class='ident'>_sock</span>) }
     }
 }
 
 <span class='doccomment'>/// Used with the `epoll*` methods of a UDTSocket</span>
+<span class='attribute'>#[<span class='ident'>derive</span>(<span class='ident'>Debug</span>)]</span>
 <span class='kw'>pub</span> <span class='kw'>struct</span> <span class='ident'>Epoll</span> {
     <span class='ident'>eid</span>: <span class='ident'>c_int</span>,
 
@@ -1845,7 +1878,7 @@
     <span class='doccomment'>/// Removes a UdtSocket from an epoll</span>
     <span class='doccomment'>///</span>
     <span class='doccomment'>/// If the socket isn&#39;t part of the epoll, there is no error</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>remove_usock</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>socket</span>: <span class='kw-2'>&amp;</span><span class='ident'>UdtSocket</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span>(), <span class='ident'>UdtError</span><span class='op'>&gt;</span> {
+    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>remove_usock</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='ident'>socket</span>: <span class='kw-2'>&amp;</span><span class='ident'>UdtSocket</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span>(), <span class='ident'>UdtError</span><span class='op'>&gt;</span> {
         <span class='kw'>let</span> <span class='ident'>ret</span> <span class='op'>=</span> <span class='kw'>unsafe</span> { <span class='ident'>raw</span>::<span class='ident'>udt_epoll_remove_usock</span>(<span class='self'>self</span>.<span class='ident'>eid</span>, <span class='ident'>socket</span>.<span class='ident'>_sock</span>) };
         <span class='kw'>if</span> <span class='ident'>ret</span> <span class='op'>==</span> <span class='number'>0</span> {
             <span class='prelude-val'>Ok</span>(())
@@ -1919,7 +1952,7 @@
 <span class='attribute'>#[<span class='ident'>test</span>]</span>
 <span class='kw'>fn</span> <span class='ident'>test_udt_socket</span>() {
     <span class='ident'>init</span>();
-    <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>sock</span> <span class='op'>=</span> <span class='ident'>UdtSocket</span>::<span class='ident'>new</span>(<span class='ident'>SocketFamily</span>::<span class='ident'>AFInet</span>, <span class='ident'>SocketType</span>::<span class='ident'>Stream</span>).<span class='ident'>unwrap</span>();
+    <span class='kw'>let</span> <span class='ident'>sock</span> <span class='op'>=</span> <span class='ident'>UdtSocket</span>::<span class='ident'>new</span>(<span class='ident'>SocketFamily</span>::<span class='ident'>AFInet</span>, <span class='ident'>SocketType</span>::<span class='ident'>Stream</span>).<span class='ident'>unwrap</span>();
 }
 
 <span class='attribute'>#[<span class='ident'>test</span>]</span>
@@ -1928,7 +1961,7 @@
     <span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>str</span>::<span class='ident'>FromStr</span>;
 
     <span class='ident'>init</span>();
-    <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>sock</span> <span class='op'>=</span> <span class='ident'>UdtSocket</span>::<span class='ident'>new</span>(<span class='ident'>SocketFamily</span>::<span class='ident'>AFInet</span>, <span class='ident'>SocketType</span>::<span class='ident'>Stream</span>).<span class='ident'>unwrap</span>();
+    <span class='kw'>let</span> <span class='ident'>sock</span> <span class='op'>=</span> <span class='ident'>UdtSocket</span>::<span class='ident'>new</span>(<span class='ident'>SocketFamily</span>::<span class='ident'>AFInet</span>, <span class='ident'>SocketType</span>::<span class='ident'>Stream</span>).<span class='ident'>unwrap</span>();
     <span class='kw'>let</span> <span class='ident'>localhost</span> <span class='op'>=</span> <span class='ident'>Ipv4Addr</span>::<span class='ident'>from_str</span>(<span class='string'>&quot;127.0.0.1&quot;</span>).<span class='ident'>unwrap</span>();
     <span class='kw'>if</span> <span class='macro'>cfg</span><span class='macro'>!</span>(<span class='ident'>target_os</span><span class='op'>=</span><span class='string'>&quot;macos&quot;</span>) {
         <span class='macro'>trace</span><span class='macro'>!</span>(<span class='string'>&quot;Lowering buffer sizes on OSX&quot;</span>);
@@ -1936,6 +1969,37 @@
         <span class='ident'>sock</span>.<span class='ident'>setsockopt</span>(<span class='ident'>UdtOpts</span>::<span class='ident'>UDP_SNDBUF</span>, <span class='number'>8192</span>).<span class='ident'>unwrap</span>();
     }
     <span class='ident'>sock</span>.<span class='ident'>bind</span>(<span class='ident'>SocketAddr</span>::<span class='ident'>V4</span>(<span class='ident'>SocketAddrV4</span>::<span class='ident'>new</span>(<span class='ident'>localhost</span>, <span class='number'>0</span>))).<span class='ident'>or_else</span>(<span class='op'>|</span><span class='ident'>e</span><span class='op'>|</span> <span class='prelude-val'>Err</span>(<span class='macro'>panic</span><span class='macro'>!</span>(<span class='string'>&quot;Failed to bind to {:?} --&gt; {:?}&quot;</span>, <span class='ident'>localhost</span>, <span class='ident'>e</span>)));
+}
+
+<span class='attribute'>#[<span class='ident'>test</span>]</span>
+<span class='kw'>fn</span> <span class='ident'>test_udt_socket_state</span>() {
+    <span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>net</span>::<span class='ident'>Ipv4Addr</span>;
+    <span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>str</span>::<span class='ident'>FromStr</span>;
+    <span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>thread</span>::<span class='ident'>sleep_ms</span>;
+
+    <span class='ident'>init</span>();
+    <span class='kw'>let</span> <span class='ident'>sock</span> <span class='op'>=</span> <span class='ident'>UdtSocket</span>::<span class='ident'>new</span>(<span class='ident'>SocketFamily</span>::<span class='ident'>AFInet</span>, <span class='ident'>SocketType</span>::<span class='ident'>Stream</span>).<span class='ident'>unwrap</span>();
+    <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>sock</span>.<span class='ident'>getstate</span>(), <span class='ident'>UdtStatus</span>::<span class='ident'>INIT</span>);
+    <span class='kw'>if</span> <span class='macro'>cfg</span><span class='macro'>!</span>(<span class='ident'>target_os</span><span class='op'>=</span><span class='string'>&quot;macos&quot;</span>) {
+        <span class='macro'>trace</span><span class='macro'>!</span>(<span class='string'>&quot;Lowering buffer sizes on OSX&quot;</span>);
+        <span class='ident'>sock</span>.<span class='ident'>setsockopt</span>(<span class='ident'>UdtOpts</span>::<span class='ident'>UDP_RCVBUF</span>, <span class='number'>8192</span>).<span class='ident'>unwrap</span>();
+        <span class='ident'>sock</span>.<span class='ident'>setsockopt</span>(<span class='ident'>UdtOpts</span>::<span class='ident'>UDP_SNDBUF</span>, <span class='number'>8192</span>).<span class='ident'>unwrap</span>();
+    }
+    
+    <span class='kw'>let</span> <span class='ident'>localhost</span> <span class='op'>=</span> <span class='ident'>Ipv4Addr</span>::<span class='ident'>from_str</span>(<span class='string'>&quot;127.0.0.1&quot;</span>).<span class='ident'>unwrap</span>();
+    
+    <span class='ident'>sock</span>.<span class='ident'>bind</span>(<span class='ident'>SocketAddr</span>::<span class='ident'>V4</span>(<span class='ident'>SocketAddrV4</span>::<span class='ident'>new</span>(<span class='ident'>localhost</span>, <span class='number'>0</span>))).<span class='ident'>or_else</span>(<span class='op'>|</span><span class='ident'>e</span><span class='op'>|</span> <span class='prelude-val'>Err</span>(<span class='macro'>panic</span><span class='macro'>!</span>(<span class='string'>&quot;Failed to bind to {:?} --&gt; {:?}&quot;</span>, <span class='ident'>localhost</span>, <span class='ident'>e</span>)));
+    <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>sock</span>.<span class='ident'>getstate</span>(), <span class='ident'>UdtStatus</span>::<span class='ident'>OPENED</span>);
+    <span class='ident'>sock</span>.<span class='ident'>listen</span>(<span class='number'>5</span>).<span class='ident'>unwrap</span>();
+    <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>sock</span>.<span class='ident'>getstate</span>(), <span class='ident'>UdtStatus</span>::<span class='ident'>LISTENING</span>);
+    <span class='ident'>sock</span>.<span class='ident'>close</span>();
+    <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>sock</span>.<span class='ident'>getstate</span>(), <span class='ident'>UdtStatus</span>::<span class='ident'>BROKEN</span>);
+    <span class='ident'>sleep_ms</span>(<span class='number'>4500</span>);
+    <span class='comment'>// after some time, the sock transitions to CLOSED and then NONEXIST</span>
+    <span class='comment'>// THe LISTENING -&gt; CLOSED transition is made after a 3 second timeout</span>
+    <span class='macro'>assert</span><span class='macro'>!</span>(<span class='ident'>sock</span>.<span class='ident'>getstate</span>() <span class='op'>==</span> <span class='ident'>UdtStatus</span>::<span class='ident'>NONEXIST</span> <span class='op'>||</span> <span class='ident'>sock</span>.<span class='ident'>getstate</span>() <span class='op'>==</span> <span class='ident'>UdtStatus</span>::<span class='ident'>CLOSED</span>);
+
+
 }
 </pre>
 </section>

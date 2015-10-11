@@ -45,7 +45,7 @@
             <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
                 [<span class='inner'>&#x2212;</span>]
             </a>
-        </span><a id='src-0' class='srclink' href='../src/udt/lib.rs.html#1-948' title='goto source code'>[src]</a></span></h1>
+        </span><a id='src-0' class='srclink' href='../src/udt/lib.rs.html#1-980' title='goto source code'>[src]</a></span></h1>
 <div class='docblock'><p>UDT</p>
 
 <p>Bindings to the UDT4 high performance data data transfer library</p>
@@ -62,7 +62,7 @@
 
     <span class='kw'>let</span> <span class='ident'>localhost</span> <span class='op'>=</span> <span class='ident'>std</span>::<span class='ident'>net</span>::<span class='ident'>Ipv4Addr</span>::<span class='ident'>from_str</span>(<span class='string'>&quot;127.0.0.1&quot;</span>).<span class='ident'>unwrap</span>();
 
-    <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>sock</span> <span class='op'>=</span> <span class='ident'>UdtSocket</span>::<span class='ident'>new</span>(<span class='ident'>SocketFamily</span>::<span class='ident'>AFInet</span>, <span class='ident'>SocketType</span>::<span class='ident'>Stream</span>).<span class='ident'>unwrap</span>();
+    <span class='kw'>let</span> <span class='ident'>sock</span> <span class='op'>=</span> <span class='ident'>UdtSocket</span>::<span class='ident'>new</span>(<span class='ident'>SocketFamily</span>::<span class='ident'>AFInet</span>, <span class='ident'>SocketType</span>::<span class='ident'>Stream</span>).<span class='ident'>unwrap</span>();
     <span class='ident'>sock</span>.<span class='ident'>bind</span>(<span class='ident'>SocketAddr</span>::<span class='ident'>V4</span>(<span class='ident'>SocketAddrV4</span>::<span class='ident'>new</span>(<span class='ident'>localhost</span>, <span class='number'>0</span>))).<span class='ident'>unwrap</span>();
     <span class='kw'>let</span> <span class='ident'>my_addr</span> <span class='op'>=</span> <span class='ident'>sock</span>.<span class='ident'>getsockname</span>().<span class='ident'>unwrap</span>();
     <span class='macro'>println</span><span class='macro'>!</span>(<span class='string'>&quot;Server bound to {:?}&quot;</span>, <span class='ident'>my_addr</span>);
