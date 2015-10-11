@@ -1,5 +1,3 @@
-#![feature(result_expect)]
-
 extern crate udt;
 #[macro_use]
 extern crate log;
@@ -7,6 +5,7 @@ extern crate log;
 use udt::*;
 
 #[cfg(target_os="linux")]
+#[allow(unused_variables)]
 fn do_platform_specific_init(sock: &mut UdtSocket) {}
 
 #[cfg(target_os="macos")]
@@ -74,7 +73,7 @@ fn test_sendmsg() {
 
         tx.send(my_addr.port()).unwrap();
 
-        let (mut new, peer) = sock.accept().unwrap();
+        let (new, peer) = sock.accept().unwrap();
         debug!("Server recieved connection from {:?}", peer);
 
         let peer2 = new.getpeername().unwrap();
@@ -144,7 +143,7 @@ fn test_send() {
 
         tx.send(my_addr.port()).unwrap();
 
-        let (mut new, new_peer) = sock.accept().unwrap();
+        let (new, new_peer) = sock.accept().unwrap();
         debug!("Server recieved connection from {:?}", new_peer);
 
         let mut buf: [u8; 10] = [0; 10];
@@ -222,7 +221,7 @@ fn test_epoll() {
             debug!("Pending sockets: {:?} {:?}", pending_rd, pending_wr);
             
             let rd_len = pending_rd.len();
-            for mut s in pending_rd {
+            for s in pending_rd {
                 if s == sock {
                     debug!("trying to accept new sock");
                     let (new, peer) = sock.accept().unwrap();
@@ -236,7 +235,7 @@ fn test_epoll() {
 
             }
 
-            for mut s in pending_wr {
+            for s in pending_wr {
                 let state = s.getstate();
                 if rd_len == 0 && (state == UdtStatus::BROKEN || state == UdtStatus::CLOSED || state == UdtStatus::NONEXIST) {
                     epoll.remove_usock(&s).unwrap();
@@ -316,7 +315,7 @@ fn test_epoll2() {
             println!("Pending sockets: {:?} {:?}", pending_rd, pending_wr);
             
             let rd_len = pending_rd.len();
-            for mut s in pending_rd {
+            for s in pending_rd {
                 if s == sock {
                     println!("trying to accept new sock");
                     let (new, peer) = sock.accept().unwrap();
@@ -335,7 +334,7 @@ fn test_epoll2() {
 
             }
 
-            for mut s in pending_wr {
+            for s in pending_wr {
                 let state = s.getstate();
                 println!("state: {:?}", state);
                 if rd_len == 0 && (state == UdtStatus::BROKEN || state == UdtStatus::CLOSED || state == UdtStatus::NONEXIST) {
@@ -384,8 +383,6 @@ fn test_epoll3() {
     use std::net::{SocketAddr, SocketAddrV4};
     use std::net::Ipv4Addr;
     use std::str::FromStr;
-    use std::sync::mpsc::channel;
-    use std::thread::sleep_ms;
 
     init();
 

@@ -15,7 +15,7 @@
 //!
 //!     let localhost = std::net::Ipv4Addr::from_str("127.0.0.1").unwrap();
 //!
-//!     let mut sock = UdtSocket::new(SocketFamily::AFInet, SocketType::Stream).unwrap();
+//!     let sock = UdtSocket::new(SocketFamily::AFInet, SocketType::Stream).unwrap();
 //!     sock.bind(SocketAddr::V4(SocketAddrV4::new(localhost, 0))).unwrap();
 //!     let my_addr = sock.getsockname().unwrap();
 //!     println!("Server bound to {:?}", my_addr);
@@ -125,7 +125,7 @@ pub mod UdtOpts {
     //! ``` 
     //! use udt::*;
     //!
-    //! let mut sock = UdtSocket::new(SocketFamily::AFInet, SocketType::Stream).unwrap();
+    //! let sock = UdtSocket::new(SocketFamily::AFInet, SocketType::Stream).unwrap();
     //! let recv_buf: i32 = sock.getsockopt(UdtOpts::UDT_RCVBUF).unwrap();
     //! let rendezvous: bool = sock.getsockopt(UdtOpts::UDT_RENDEZVOUS).unwrap();
     //!
@@ -389,7 +389,7 @@ impl UdtSocket {
     /// the port number, bind always creates a new port, no matter what value the UDT_REUSEADDR
     /// sets.
     ///
-    pub fn bind(&mut self, name: std::net::SocketAddr) -> Result<(), UdtError> {
+    pub fn bind(&self, name: std::net::SocketAddr) -> Result<(), UdtError> {
 
         let addr: sockaddr_in = get_sockaddr(name); 
         let ret = unsafe {
@@ -417,7 +417,7 @@ impl UdtSocket {
     /// Use the second form of bind with caution, as it violates certain programming rules
     /// regarding code robustness. Once the UDP socket descriptor is passed to UDT, it MUST NOT be
     /// touched again. DO NOT use this unless you clearly understand how the related systems work.
-    pub fn bind_from(&mut self, other: std::net::UdpSocket) -> Result<(), UdtError> {
+    pub fn bind_from(&self, other: std::net::UdpSocket) -> Result<(), UdtError> {
         use std::os::unix::io::AsRawFd;
         let ret = unsafe {
             raw::udt_bind2(self._sock,
@@ -452,7 +452,7 @@ impl UdtSocket {
     /// connect fails. In addition, in the situation when the connect call fails, the UDT socket
     /// will not be automatically released, it is the applications' responsibility to close the
     /// socket, if the socket is not needed anymore (e.g., to re-connect).
-    pub fn connect(&mut self, name: std::net::SocketAddr) -> Result<(), UdtError> {
+    pub fn connect(&self, name: std::net::SocketAddr) -> Result<(), UdtError> {
         let addr = get_sockaddr(name);
         let ret = unsafe {
             raw::udt_connect(self._sock,
@@ -477,7 +477,7 @@ impl UdtSocket {
     /// ignored if the socket is already in the listening state.
     ///
     /// `backlog` specifies the maximum number of pending connections.
-    pub fn listen(&mut self, backlog: i32) -> Result<(), UdtError> {
+    pub fn listen(&self, backlog: i32) -> Result<(), UdtError> {
         let ret = unsafe { raw::udt_listen(self._sock, backlog) };
 
         if ret == raw::SUCCESS {
@@ -503,7 +503,7 @@ impl UdtSocket {
     ///
     /// Returns a tuple containing the new UdtSocket and a `SockAddr` structure containing the
     /// address of the new peer
-    pub fn accept(&mut self) -> Result<(UdtSocket, SocketAddr), UdtError> {
+    pub fn accept(&self) -> Result<(UdtSocket, SocketAddr), UdtError> {
         let mut peer = unsafe { std::mem::zeroed() };
         let mut size: i32 = size_of::<sockaddr>() as i32;
         let ret = unsafe { raw::udt_accept(self._sock, &mut peer, &mut size) };
@@ -550,7 +550,7 @@ impl UdtSocket {
     ///
     /// The getpeername retrieves the address of the peer side associated to the connection. The
     /// UDT socket must be connected at the time when this method is called.
-    pub fn getpeername(&mut self) -> Result<std::net::SocketAddr, UdtError> {
+    pub fn getpeername(&self) -> Result<std::net::SocketAddr, UdtError> {
         let mut name = unsafe { std::mem::zeroed() };
         let mut size: i32 = size_of::<sockaddr>() as i32;
         let ret = unsafe { raw::udt_getpeername(self._sock,&mut name, &mut size) };
@@ -585,7 +585,7 @@ impl UdtSocket {
     /// one of them can be routed to the destination address, UDT may not behave properly due to
     /// the multi-path effect. In this case, the UDT socket must be explicitly bound to one of
     /// the local addresses.
-    pub fn getsockname(&mut self) -> Result<std::net::SocketAddr, UdtError> {
+    pub fn getsockname(&self) -> Result<std::net::SocketAddr, UdtError> {
         let mut name = unsafe { std::mem::zeroed() };
         let mut size: i32 = size_of::<sockaddr>() as i32;
         let ret = unsafe { raw::udt_getsockname(self._sock,&mut name, &mut size) };
@@ -634,7 +634,7 @@ impl UdtSocket {
     /// should be equal to len. Otherwise UDT::ERROR is returned and specific error information can
     /// be retrieved by getlasterror. If UDT_SNDTIMEO is set to a positive value, zero will be
     /// returned if the message cannot be sent before the timer expires.
-    pub fn sendmsg(&mut self, buf: &[u8]) -> Result<i32, UdtError> {
+    pub fn sendmsg(&self, buf: &[u8]) -> Result<i32, UdtError> {
 
         let ret = unsafe {
             raw::udt_sendmsg(self._sock, 
@@ -672,7 +672,7 @@ impl UdtSocket {
     ///
     /// If UDT_SNDTIMEO is set to a positive value, zero will be returned if no data is sent before
     /// the time expires.
-    pub fn send(&mut self, buf: &[u8]) -> Result<i32, UdtError> {
+    pub fn send(&self, buf: &[u8]) -> Result<i32, UdtError> {
 
         let ret = unsafe { raw::udt_send(self._sock, buf.as_ptr(), buf.len() as i32, 0) };
         if ret == raw::UDT_ERROR {
@@ -707,7 +707,7 @@ impl UdtSocket {
     /// returned and specific error information can be retrieved by getlasterror. If UDT_RCVTIMEO
     /// is set to a positive value, zero will be returned if no message is received before the
     /// timer expires.
-    pub fn recvmsg(&mut self, len: usize) -> Result<Vec<u8>, UdtError> {
+    pub fn recvmsg(&self, len: usize) -> Result<Vec<u8>, UdtError> {
         let mut v: Vec<u8> = Vec::with_capacity(len);
         v.extend(std::iter::repeat(0 as u8).take(len).collect::<Vec<u8>>());
         let ret = unsafe {
@@ -737,7 +737,7 @@ impl UdtSocket {
     /// If UDT_RCVTIMEO is set and the socket is in blocking mode, recv only waits a limited time
     /// specified by UDT_RCVTIMEO option. If there is still no data available when the timer
     /// expires, error will be returned. UDT_RCVTIMEO has no effect for non-blocking socket.
-    pub fn recv(&mut self, buf: &mut [u8], len: usize) -> Result<i32, UdtError> {
+    pub fn recv(&self, buf: &mut [u8], len: usize) -> Result<i32, UdtError> {
         let ret = unsafe {
             raw::udt_recv(self._sock, buf.as_mut_ptr(), len as i32, 0)
         };
@@ -759,10 +759,10 @@ impl UdtSocket {
     /// ```
     /// use udt::*;
     ///
-    /// let mut sock = UdtSocket::new(SocketFamily::AFInet, SocketType::Stream).unwrap();
+    /// let sock = UdtSocket::new(SocketFamily::AFInet, SocketType::Stream).unwrap();
     /// let recv_buf: i32 = sock.getsockopt(UdtOpts::UDP_RCVBUF).unwrap();
     /// ```
-    pub fn getsockopt<B: Default, T: UdtOption<B>>(&mut self, opt: T) -> Result<B, UdtError> {
+    pub fn getsockopt<B: Default, T: UdtOption<B>>(&self, opt: T) -> Result<B, UdtError> {
         let mut val: B = unsafe{ std::mem::zeroed() };
         let val_p: *mut B = &mut val;
         let ty: raw::UDTOpt = opt.get_type();
@@ -781,7 +781,7 @@ impl UdtSocket {
     /// Sets UDT options
     ///
     /// See the `UdtOpts` module for all the supported option types.  
-    pub fn setsockopt<B, T: UdtOption<B>>(&mut self, opt: T, value: B) -> Result<(), UdtError> {
+    pub fn setsockopt<B, T: UdtOption<B>>(&self, opt: T, value: B) -> Result<(), UdtError> {
         let ty: raw::UDTOpt = opt.get_type();
         let val_p: *const B = &value;
         let size: c_int = size_of::<B>() as i32;
@@ -798,7 +798,7 @@ impl UdtSocket {
         }
     }
 
-    pub fn getstate(&mut self) -> UdtStatus {
+    pub fn getstate(&self) -> UdtStatus {
         unsafe { raw::udt_getsockstate(self._sock) }
     }
 }
@@ -855,7 +855,7 @@ impl Epoll {
     /// Removes a UdtSocket from an epoll
     ///
     /// If the socket isn't part of the epoll, there is no error
-    pub fn remove_usock(&mut self, socket: &UdtSocket) -> Result<(), UdtError> {
+    pub fn remove_usock(&self, socket: &UdtSocket) -> Result<(), UdtError> {
         let ret = unsafe { raw::udt_epoll_remove_usock(self.eid, socket._sock) };
         if ret == 0 {
             Ok(())
@@ -929,7 +929,7 @@ impl Epoll {
 #[test]
 fn test_udt_socket() {
     init();
-    let mut sock = UdtSocket::new(SocketFamily::AFInet, SocketType::Stream).unwrap();
+    let sock = UdtSocket::new(SocketFamily::AFInet, SocketType::Stream).unwrap();
 }
 
 #[test]
@@ -938,7 +938,7 @@ fn test_udt_bind() {
     use std::str::FromStr;
 
     init();
-    let mut sock = UdtSocket::new(SocketFamily::AFInet, SocketType::Stream).unwrap();
+    let sock = UdtSocket::new(SocketFamily::AFInet, SocketType::Stream).unwrap();
     let localhost = Ipv4Addr::from_str("127.0.0.1").unwrap();
     if cfg!(target_os="macos") {
         trace!("Lowering buffer sizes on OSX");
@@ -955,8 +955,13 @@ fn test_udt_socket_state() {
     use std::thread::sleep_ms;
 
     init();
-    let mut sock = UdtSocket::new(SocketFamily::AFInet, SocketType::Stream).unwrap();
+    let sock = UdtSocket::new(SocketFamily::AFInet, SocketType::Stream).unwrap();
     assert_eq!(sock.getstate(), UdtStatus::INIT);
+    if cfg!(target_os="macos") {
+        trace!("Lowering buffer sizes on OSX");
+        sock.setsockopt(UdtOpts::UDP_RCVBUF, 8192).unwrap();
+        sock.setsockopt(UdtOpts::UDP_SNDBUF, 8192).unwrap();
+    }
     
     let localhost = Ipv4Addr::from_str("127.0.0.1").unwrap();
     
