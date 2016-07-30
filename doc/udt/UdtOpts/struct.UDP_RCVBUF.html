@@ -9,7 +9,9 @@
 
     <title>udt::UdtOpts::UDP_RCVBUF - Rust</title>
 
+    <link rel="stylesheet" type="text/css" href="../../rustdoc.css">
     <link rel="stylesheet" type="text/css" href="../../main.css">
+    
 
     
     
@@ -24,10 +26,10 @@
 
     
 
-    <section class="sidebar">
+    <nav class="sidebar">
         
         <p class='location'><a href='../index.html'>udt</a>::<wbr><a href='index.html'>UdtOpts</a></p><script>window.sidebarCurrent = {name: 'UDP_RCVBUF', ty: 'struct', relpath: ''};</script><script defer src="sidebar-items.js"></script>
-    </section>
+    </nav>
 
     <nav class="sub">
         <form class="search-form js-only">
@@ -42,23 +44,26 @@
 
     <section id='main' class="content struct">
 <h1 class='fqn'><span class='in-band'>Struct <a href='../index.html'>udt</a>::<wbr><a href='index.html'>UdtOpts</a>::<wbr><a class='struct' href=''>UDP_RCVBUF</a></span><span class='out-of-band'><span id='render-detail'>
-            <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
-                [<span class='inner'>&#x2212;</span>]
-            </a>
-        </span><a id='src-1576' class='srclink' href='../../src/udt/lib.rs.html#62' title='goto source code'>[src]</a></span></h1>
+                   <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
+                       [<span class='inner'>&#x2212;</span>]
+                   </a>
+               </span><a id='src-272' class='srclink' href='../../src/udt/src/lib.rs.html#89' title='goto source code'>[src]</a></span></h1>
 <pre class='rust struct'>pub struct UDP_RCVBUF;</pre><div class='docblock'><p>UDP socket receiver buffer size (bytes)</p>
 
 <p>Default 1MB (1024000).</p>
-</div><h2 id='implementations'>Trait Implementations</h2><h3 class='impl'><code>impl <a class='trait' href='../../udt/trait.UdtOption.html' title='udt::UdtOption'>UdtOption</a>&lt;<a href='https://doc.rust-lang.org/nightly/std/primitive.i32.html'>i32</a>&gt; for <a class='struct' href='../../udt/UdtOpts/struct.UDP_RCVBUF.html' title='udt::UdtOpts::UDP_RCVBUF'>UDP_RCVBUF</a></code></h3><div class='impl-items'><h4 id='method.get_type' class='method'><code>fn <a href='../../udt/trait.UdtOption.html#method.get_type' class='fnname'>get_type</a>(&amp;self) -&gt; <a class='enum' href='../../raw/enum.UDTOpt.html' title='raw::UDTOpt'>UDTOpt</a></code></h4>
+</div><h2 id='implementations'>Trait Implementations</h2><h3 class='impl'><span class='in-band'><code>impl <a class='trait' href='../../udt/trait.UdtOption.html' title='udt::UdtOption'>UdtOption</a>&lt;<a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.i32.html'>i32</a>&gt; for <a class='struct' href='../../udt/UdtOpts/struct.UDP_RCVBUF.html' title='udt::UdtOpts::UDP_RCVBUF'>UDP_RCVBUF</a></code></span><span class='out-of-band'><div class='ghost'></div><a id='src-274' class='srclink' href='../../src/udt/src/lib.rs.html#90-92' title='goto source code'>[src]</a></span></h3>
+<div class='impl-items'><h4 id='method.get_type' class='method'><code>fn <a href='../../udt/trait.UdtOption.html#tymethod.get_type' class='fnname'>get_type</a>(&amp;self) -&gt; <a class='enum' href='../../libudt4_sys/enum.UDTOpt.html' title='libudt4_sys::UDTOpt'>UDTOpt</a></code></h4>
 </div></section>
     <section id='search' class="content hidden"></section>
 
     <section class="footer"></section>
 
-    <div id="help" class="hidden">
+    <aside id="help" class="hidden">
         <div>
+            <h1 class="hidden">Help</h1>
+
             <div class="shortcuts">
-                <h1>Keyboard Shortcuts</h1>
+                <h2>Keyboard Shortcuts</h2>
 
                 <dl>
                     <dt>?</dt>
@@ -71,11 +76,13 @@
                     <dd>Move down in search results</dd>
                     <dt>&#9166;</dt>
                     <dd>Go to active search result</dd>
+                    <dt>+</dt>
+                    <dd>Collapse/expand all sections</dd>
                 </dl>
             </div>
 
             <div class="infos">
-                <h1>Search Tricks</h1>
+                <h2>Search Tricks</h2>
 
                 <p>
                     Prefix searches with a type followed by a colon (e.g.
@@ -91,11 +98,11 @@
 
                 <p>
                     Search functions by type signature (e.g.
-                    <code>vec -> usize</code>)
+                    <code>vec -> usize</code> or <code>* -> vec</code>)
                 </p>
             </div>
         </div>
-    </div>
+    </aside>
 
     
 
@@ -107,6 +114,6 @@
     <script src="../../jquery.js"></script>
     <script src="../../main.js"></script>
     
-    <script async src="../../search-index.js"></script>
+    <script defer src="../../search-index.js"></script>
 </body>
 </html>

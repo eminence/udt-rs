@@ -1,0 +1,2186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="generator" content="rustdoc">
+    <meta name="description" content="Source to the Rust file `src/lib.rs`.">
+    <meta name="keywords" content="rust, rustlang, rust-lang">
+
+    <title>lib.rs.html -- source</title>
+
+    <link rel="stylesheet" type="text/css" href="../../../rustdoc.css">
+    <link rel="stylesheet" type="text/css" href="../../../main.css">
+    
+
+    
+    
+</head>
+<body class="rustdoc">
+    <!--[if lte IE 8]>
+    <div class="warning">
+        This old browser is unsupported and will most likely display funky
+        things.
+    </div>
+    <![endif]-->
+
+    
+
+    <nav class="sidebar">
+        
+        
+    </nav>
+
+    <nav class="sub">
+        <form class="search-form js-only">
+            <div class="search-container">
+                <input class="search-input" name="search"
+                       autocomplete="off"
+                       placeholder="Click or press ‘S’ to search, ‘?’ for more options…"
+                       type="search">
+            </div>
+        </form>
+    </nav>
+
+    <section id='main' class="content source"><pre class="line-numbers"><span id="1">   1</span>
+<span id="2">   2</span>
+<span id="3">   3</span>
+<span id="4">   4</span>
+<span id="5">   5</span>
+<span id="6">   6</span>
+<span id="7">   7</span>
+<span id="8">   8</span>
+<span id="9">   9</span>
+<span id="10">  10</span>
+<span id="11">  11</span>
+<span id="12">  12</span>
+<span id="13">  13</span>
+<span id="14">  14</span>
+<span id="15">  15</span>
+<span id="16">  16</span>
+<span id="17">  17</span>
+<span id="18">  18</span>
+<span id="19">  19</span>
+<span id="20">  20</span>
+<span id="21">  21</span>
+<span id="22">  22</span>
+<span id="23">  23</span>
+<span id="24">  24</span>
+<span id="25">  25</span>
+<span id="26">  26</span>
+<span id="27">  27</span>
+<span id="28">  28</span>
+<span id="29">  29</span>
+<span id="30">  30</span>
+<span id="31">  31</span>
+<span id="32">  32</span>
+<span id="33">  33</span>
+<span id="34">  34</span>
+<span id="35">  35</span>
+<span id="36">  36</span>
+<span id="37">  37</span>
+<span id="38">  38</span>
+<span id="39">  39</span>
+<span id="40">  40</span>
+<span id="41">  41</span>
+<span id="42">  42</span>
+<span id="43">  43</span>
+<span id="44">  44</span>
+<span id="45">  45</span>
+<span id="46">  46</span>
+<span id="47">  47</span>
+<span id="48">  48</span>
+<span id="49">  49</span>
+<span id="50">  50</span>
+<span id="51">  51</span>
+<span id="52">  52</span>
+<span id="53">  53</span>
+<span id="54">  54</span>
+<span id="55">  55</span>
+<span id="56">  56</span>
+<span id="57">  57</span>
+<span id="58">  58</span>
+<span id="59">  59</span>
+<span id="60">  60</span>
+<span id="61">  61</span>
+<span id="62">  62</span>
+<span id="63">  63</span>
+<span id="64">  64</span>
+<span id="65">  65</span>
+<span id="66">  66</span>
+<span id="67">  67</span>
+<span id="68">  68</span>
+<span id="69">  69</span>
+<span id="70">  70</span>
+<span id="71">  71</span>
+<span id="72">  72</span>
+<span id="73">  73</span>
+<span id="74">  74</span>
+<span id="75">  75</span>
+<span id="76">  76</span>
+<span id="77">  77</span>
+<span id="78">  78</span>
+<span id="79">  79</span>
+<span id="80">  80</span>
+<span id="81">  81</span>
+<span id="82">  82</span>
+<span id="83">  83</span>
+<span id="84">  84</span>
+<span id="85">  85</span>
+<span id="86">  86</span>
+<span id="87">  87</span>
+<span id="88">  88</span>
+<span id="89">  89</span>
+<span id="90">  90</span>
+<span id="91">  91</span>
+<span id="92">  92</span>
+<span id="93">  93</span>
+<span id="94">  94</span>
+<span id="95">  95</span>
+<span id="96">  96</span>
+<span id="97">  97</span>
+<span id="98">  98</span>
+<span id="99">  99</span>
+<span id="100"> 100</span>
+<span id="101"> 101</span>
+<span id="102"> 102</span>
+<span id="103"> 103</span>
+<span id="104"> 104</span>
+<span id="105"> 105</span>
+<span id="106"> 106</span>
+<span id="107"> 107</span>
+<span id="108"> 108</span>
+<span id="109"> 109</span>
+<span id="110"> 110</span>
+<span id="111"> 111</span>
+<span id="112"> 112</span>
+<span id="113"> 113</span>
+<span id="114"> 114</span>
+<span id="115"> 115</span>
+<span id="116"> 116</span>
+<span id="117"> 117</span>
+<span id="118"> 118</span>
+<span id="119"> 119</span>
+<span id="120"> 120</span>
+<span id="121"> 121</span>
+<span id="122"> 122</span>
+<span id="123"> 123</span>
+<span id="124"> 124</span>
+<span id="125"> 125</span>
+<span id="126"> 126</span>
+<span id="127"> 127</span>
+<span id="128"> 128</span>
+<span id="129"> 129</span>
+<span id="130"> 130</span>
+<span id="131"> 131</span>
+<span id="132"> 132</span>
+<span id="133"> 133</span>
+<span id="134"> 134</span>
+<span id="135"> 135</span>
+<span id="136"> 136</span>
+<span id="137"> 137</span>
+<span id="138"> 138</span>
+<span id="139"> 139</span>
+<span id="140"> 140</span>
+<span id="141"> 141</span>
+<span id="142"> 142</span>
+<span id="143"> 143</span>
+<span id="144"> 144</span>
+<span id="145"> 145</span>
+<span id="146"> 146</span>
+<span id="147"> 147</span>
+<span id="148"> 148</span>
+<span id="149"> 149</span>
+<span id="150"> 150</span>
+<span id="151"> 151</span>
+<span id="152"> 152</span>
+<span id="153"> 153</span>
+<span id="154"> 154</span>
+<span id="155"> 155</span>
+<span id="156"> 156</span>
+<span id="157"> 157</span>
+<span id="158"> 158</span>
+<span id="159"> 159</span>
+<span id="160"> 160</span>
+<span id="161"> 161</span>
+<span id="162"> 162</span>
+<span id="163"> 163</span>
+<span id="164"> 164</span>
+<span id="165"> 165</span>
+<span id="166"> 166</span>
+<span id="167"> 167</span>
+<span id="168"> 168</span>
+<span id="169"> 169</span>
+<span id="170"> 170</span>
+<span id="171"> 171</span>
+<span id="172"> 172</span>
+<span id="173"> 173</span>
+<span id="174"> 174</span>
+<span id="175"> 175</span>
+<span id="176"> 176</span>
+<span id="177"> 177</span>
+<span id="178"> 178</span>
+<span id="179"> 179</span>
+<span id="180"> 180</span>
+<span id="181"> 181</span>
+<span id="182"> 182</span>
+<span id="183"> 183</span>
+<span id="184"> 184</span>
+<span id="185"> 185</span>
+<span id="186"> 186</span>
+<span id="187"> 187</span>
+<span id="188"> 188</span>
+<span id="189"> 189</span>
+<span id="190"> 190</span>
+<span id="191"> 191</span>
+<span id="192"> 192</span>
+<span id="193"> 193</span>
+<span id="194"> 194</span>
+<span id="195"> 195</span>
+<span id="196"> 196</span>
+<span id="197"> 197</span>
+<span id="198"> 198</span>
+<span id="199"> 199</span>
+<span id="200"> 200</span>
+<span id="201"> 201</span>
+<span id="202"> 202</span>
+<span id="203"> 203</span>
+<span id="204"> 204</span>
+<span id="205"> 205</span>
+<span id="206"> 206</span>
+<span id="207"> 207</span>
+<span id="208"> 208</span>
+<span id="209"> 209</span>
+<span id="210"> 210</span>
+<span id="211"> 211</span>
+<span id="212"> 212</span>
+<span id="213"> 213</span>
+<span id="214"> 214</span>
+<span id="215"> 215</span>
+<span id="216"> 216</span>
+<span id="217"> 217</span>
+<span id="218"> 218</span>
+<span id="219"> 219</span>
+<span id="220"> 220</span>
+<span id="221"> 221</span>
+<span id="222"> 222</span>
+<span id="223"> 223</span>
+<span id="224"> 224</span>
+<span id="225"> 225</span>
+<span id="226"> 226</span>
+<span id="227"> 227</span>
+<span id="228"> 228</span>
+<span id="229"> 229</span>
+<span id="230"> 230</span>
+<span id="231"> 231</span>
+<span id="232"> 232</span>
+<span id="233"> 233</span>
+<span id="234"> 234</span>
+<span id="235"> 235</span>
+<span id="236"> 236</span>
+<span id="237"> 237</span>
+<span id="238"> 238</span>
+<span id="239"> 239</span>
+<span id="240"> 240</span>
+<span id="241"> 241</span>
+<span id="242"> 242</span>
+<span id="243"> 243</span>
+<span id="244"> 244</span>
+<span id="245"> 245</span>
+<span id="246"> 246</span>
+<span id="247"> 247</span>
+<span id="248"> 248</span>
+<span id="249"> 249</span>
+<span id="250"> 250</span>
+<span id="251"> 251</span>
+<span id="252"> 252</span>
+<span id="253"> 253</span>
+<span id="254"> 254</span>
+<span id="255"> 255</span>
+<span id="256"> 256</span>
+<span id="257"> 257</span>
+<span id="258"> 258</span>
+<span id="259"> 259</span>
+<span id="260"> 260</span>
+<span id="261"> 261</span>
+<span id="262"> 262</span>
+<span id="263"> 263</span>
+<span id="264"> 264</span>
+<span id="265"> 265</span>
+<span id="266"> 266</span>
+<span id="267"> 267</span>
+<span id="268"> 268</span>
+<span id="269"> 269</span>
+<span id="270"> 270</span>
+<span id="271"> 271</span>
+<span id="272"> 272</span>
+<span id="273"> 273</span>
+<span id="274"> 274</span>
+<span id="275"> 275</span>
+<span id="276"> 276</span>
+<span id="277"> 277</span>
+<span id="278"> 278</span>
+<span id="279"> 279</span>
+<span id="280"> 280</span>
+<span id="281"> 281</span>
+<span id="282"> 282</span>
+<span id="283"> 283</span>
+<span id="284"> 284</span>
+<span id="285"> 285</span>
+<span id="286"> 286</span>
+<span id="287"> 287</span>
+<span id="288"> 288</span>
+<span id="289"> 289</span>
+<span id="290"> 290</span>
+<span id="291"> 291</span>
+<span id="292"> 292</span>
+<span id="293"> 293</span>
+<span id="294"> 294</span>
+<span id="295"> 295</span>
+<span id="296"> 296</span>
+<span id="297"> 297</span>
+<span id="298"> 298</span>
+<span id="299"> 299</span>
+<span id="300"> 300</span>
+<span id="301"> 301</span>
+<span id="302"> 302</span>
+<span id="303"> 303</span>
+<span id="304"> 304</span>
+<span id="305"> 305</span>
+<span id="306"> 306</span>
+<span id="307"> 307</span>
+<span id="308"> 308</span>
+<span id="309"> 309</span>
+<span id="310"> 310</span>
+<span id="311"> 311</span>
+<span id="312"> 312</span>
+<span id="313"> 313</span>
+<span id="314"> 314</span>
+<span id="315"> 315</span>
+<span id="316"> 316</span>
+<span id="317"> 317</span>
+<span id="318"> 318</span>
+<span id="319"> 319</span>
+<span id="320"> 320</span>
+<span id="321"> 321</span>
+<span id="322"> 322</span>
+<span id="323"> 323</span>
+<span id="324"> 324</span>
+<span id="325"> 325</span>
+<span id="326"> 326</span>
+<span id="327"> 327</span>
+<span id="328"> 328</span>
+<span id="329"> 329</span>
+<span id="330"> 330</span>
+<span id="331"> 331</span>
+<span id="332"> 332</span>
+<span id="333"> 333</span>
+<span id="334"> 334</span>
+<span id="335"> 335</span>
+<span id="336"> 336</span>
+<span id="337"> 337</span>
+<span id="338"> 338</span>
+<span id="339"> 339</span>
+<span id="340"> 340</span>
+<span id="341"> 341</span>
+<span id="342"> 342</span>
+<span id="343"> 343</span>
+<span id="344"> 344</span>
+<span id="345"> 345</span>
+<span id="346"> 346</span>
+<span id="347"> 347</span>
+<span id="348"> 348</span>
+<span id="349"> 349</span>
+<span id="350"> 350</span>
+<span id="351"> 351</span>
+<span id="352"> 352</span>
+<span id="353"> 353</span>
+<span id="354"> 354</span>
+<span id="355"> 355</span>
+<span id="356"> 356</span>
+<span id="357"> 357</span>
+<span id="358"> 358</span>
+<span id="359"> 359</span>
+<span id="360"> 360</span>
+<span id="361"> 361</span>
+<span id="362"> 362</span>
+<span id="363"> 363</span>
+<span id="364"> 364</span>
+<span id="365"> 365</span>
+<span id="366"> 366</span>
+<span id="367"> 367</span>
+<span id="368"> 368</span>
+<span id="369"> 369</span>
+<span id="370"> 370</span>
+<span id="371"> 371</span>
+<span id="372"> 372</span>
+<span id="373"> 373</span>
+<span id="374"> 374</span>
+<span id="375"> 375</span>
+<span id="376"> 376</span>
+<span id="377"> 377</span>
+<span id="378"> 378</span>
+<span id="379"> 379</span>
+<span id="380"> 380</span>
+<span id="381"> 381</span>
+<span id="382"> 382</span>
+<span id="383"> 383</span>
+<span id="384"> 384</span>
+<span id="385"> 385</span>
+<span id="386"> 386</span>
+<span id="387"> 387</span>
+<span id="388"> 388</span>
+<span id="389"> 389</span>
+<span id="390"> 390</span>
+<span id="391"> 391</span>
+<span id="392"> 392</span>
+<span id="393"> 393</span>
+<span id="394"> 394</span>
+<span id="395"> 395</span>
+<span id="396"> 396</span>
+<span id="397"> 397</span>
+<span id="398"> 398</span>
+<span id="399"> 399</span>
+<span id="400"> 400</span>
+<span id="401"> 401</span>
+<span id="402"> 402</span>
+<span id="403"> 403</span>
+<span id="404"> 404</span>
+<span id="405"> 405</span>
+<span id="406"> 406</span>
+<span id="407"> 407</span>
+<span id="408"> 408</span>
+<span id="409"> 409</span>
+<span id="410"> 410</span>
+<span id="411"> 411</span>
+<span id="412"> 412</span>
+<span id="413"> 413</span>
+<span id="414"> 414</span>
+<span id="415"> 415</span>
+<span id="416"> 416</span>
+<span id="417"> 417</span>
+<span id="418"> 418</span>
+<span id="419"> 419</span>
+<span id="420"> 420</span>
+<span id="421"> 421</span>
+<span id="422"> 422</span>
+<span id="423"> 423</span>
+<span id="424"> 424</span>
+<span id="425"> 425</span>
+<span id="426"> 426</span>
+<span id="427"> 427</span>
+<span id="428"> 428</span>
+<span id="429"> 429</span>
+<span id="430"> 430</span>
+<span id="431"> 431</span>
+<span id="432"> 432</span>
+<span id="433"> 433</span>
+<span id="434"> 434</span>
+<span id="435"> 435</span>
+<span id="436"> 436</span>
+<span id="437"> 437</span>
+<span id="438"> 438</span>
+<span id="439"> 439</span>
+<span id="440"> 440</span>
+<span id="441"> 441</span>
+<span id="442"> 442</span>
+<span id="443"> 443</span>
+<span id="444"> 444</span>
+<span id="445"> 445</span>
+<span id="446"> 446</span>
+<span id="447"> 447</span>
+<span id="448"> 448</span>
+<span id="449"> 449</span>
+<span id="450"> 450</span>
+<span id="451"> 451</span>
+<span id="452"> 452</span>
+<span id="453"> 453</span>
+<span id="454"> 454</span>
+<span id="455"> 455</span>
+<span id="456"> 456</span>
+<span id="457"> 457</span>
+<span id="458"> 458</span>
+<span id="459"> 459</span>
+<span id="460"> 460</span>
+<span id="461"> 461</span>
+<span id="462"> 462</span>
+<span id="463"> 463</span>
+<span id="464"> 464</span>
+<span id="465"> 465</span>
+<span id="466"> 466</span>
+<span id="467"> 467</span>
+<span id="468"> 468</span>
+<span id="469"> 469</span>
+<span id="470"> 470</span>
+<span id="471"> 471</span>
+<span id="472"> 472</span>
+<span id="473"> 473</span>
+<span id="474"> 474</span>
+<span id="475"> 475</span>
+<span id="476"> 476</span>
+<span id="477"> 477</span>
+<span id="478"> 478</span>
+<span id="479"> 479</span>
+<span id="480"> 480</span>
+<span id="481"> 481</span>
+<span id="482"> 482</span>
+<span id="483"> 483</span>
+<span id="484"> 484</span>
+<span id="485"> 485</span>
+<span id="486"> 486</span>
+<span id="487"> 487</span>
+<span id="488"> 488</span>
+<span id="489"> 489</span>
+<span id="490"> 490</span>
+<span id="491"> 491</span>
+<span id="492"> 492</span>
+<span id="493"> 493</span>
+<span id="494"> 494</span>
+<span id="495"> 495</span>
+<span id="496"> 496</span>
+<span id="497"> 497</span>
+<span id="498"> 498</span>
+<span id="499"> 499</span>
+<span id="500"> 500</span>
+<span id="501"> 501</span>
+<span id="502"> 502</span>
+<span id="503"> 503</span>
+<span id="504"> 504</span>
+<span id="505"> 505</span>
+<span id="506"> 506</span>
+<span id="507"> 507</span>
+<span id="508"> 508</span>
+<span id="509"> 509</span>
+<span id="510"> 510</span>
+<span id="511"> 511</span>
+<span id="512"> 512</span>
+<span id="513"> 513</span>
+<span id="514"> 514</span>
+<span id="515"> 515</span>
+<span id="516"> 516</span>
+<span id="517"> 517</span>
+<span id="518"> 518</span>
+<span id="519"> 519</span>
+<span id="520"> 520</span>
+<span id="521"> 521</span>
+<span id="522"> 522</span>
+<span id="523"> 523</span>
+<span id="524"> 524</span>
+<span id="525"> 525</span>
+<span id="526"> 526</span>
+<span id="527"> 527</span>
+<span id="528"> 528</span>
+<span id="529"> 529</span>
+<span id="530"> 530</span>
+<span id="531"> 531</span>
+<span id="532"> 532</span>
+<span id="533"> 533</span>
+<span id="534"> 534</span>
+<span id="535"> 535</span>
+<span id="536"> 536</span>
+<span id="537"> 537</span>
+<span id="538"> 538</span>
+<span id="539"> 539</span>
+<span id="540"> 540</span>
+<span id="541"> 541</span>
+<span id="542"> 542</span>
+<span id="543"> 543</span>
+<span id="544"> 544</span>
+<span id="545"> 545</span>
+<span id="546"> 546</span>
+<span id="547"> 547</span>
+<span id="548"> 548</span>
+<span id="549"> 549</span>
+<span id="550"> 550</span>
+<span id="551"> 551</span>
+<span id="552"> 552</span>
+<span id="553"> 553</span>
+<span id="554"> 554</span>
+<span id="555"> 555</span>
+<span id="556"> 556</span>
+<span id="557"> 557</span>
+<span id="558"> 558</span>
+<span id="559"> 559</span>
+<span id="560"> 560</span>
+<span id="561"> 561</span>
+<span id="562"> 562</span>
+<span id="563"> 563</span>
+<span id="564"> 564</span>
+<span id="565"> 565</span>
+<span id="566"> 566</span>
+<span id="567"> 567</span>
+<span id="568"> 568</span>
+<span id="569"> 569</span>
+<span id="570"> 570</span>
+<span id="571"> 571</span>
+<span id="572"> 572</span>
+<span id="573"> 573</span>
+<span id="574"> 574</span>
+<span id="575"> 575</span>
+<span id="576"> 576</span>
+<span id="577"> 577</span>
+<span id="578"> 578</span>
+<span id="579"> 579</span>
+<span id="580"> 580</span>
+<span id="581"> 581</span>
+<span id="582"> 582</span>
+<span id="583"> 583</span>
+<span id="584"> 584</span>
+<span id="585"> 585</span>
+<span id="586"> 586</span>
+<span id="587"> 587</span>
+<span id="588"> 588</span>
+<span id="589"> 589</span>
+<span id="590"> 590</span>
+<span id="591"> 591</span>
+<span id="592"> 592</span>
+<span id="593"> 593</span>
+<span id="594"> 594</span>
+<span id="595"> 595</span>
+<span id="596"> 596</span>
+<span id="597"> 597</span>
+<span id="598"> 598</span>
+<span id="599"> 599</span>
+<span id="600"> 600</span>
+<span id="601"> 601</span>
+<span id="602"> 602</span>
+<span id="603"> 603</span>
+<span id="604"> 604</span>
+<span id="605"> 605</span>
+<span id="606"> 606</span>
+<span id="607"> 607</span>
+<span id="608"> 608</span>
+<span id="609"> 609</span>
+<span id="610"> 610</span>
+<span id="611"> 611</span>
+<span id="612"> 612</span>
+<span id="613"> 613</span>
+<span id="614"> 614</span>
+<span id="615"> 615</span>
+<span id="616"> 616</span>
+<span id="617"> 617</span>
+<span id="618"> 618</span>
+<span id="619"> 619</span>
+<span id="620"> 620</span>
+<span id="621"> 621</span>
+<span id="622"> 622</span>
+<span id="623"> 623</span>
+<span id="624"> 624</span>
+<span id="625"> 625</span>
+<span id="626"> 626</span>
+<span id="627"> 627</span>
+<span id="628"> 628</span>
+<span id="629"> 629</span>
+<span id="630"> 630</span>
+<span id="631"> 631</span>
+<span id="632"> 632</span>
+<span id="633"> 633</span>
+<span id="634"> 634</span>
+<span id="635"> 635</span>
+<span id="636"> 636</span>
+<span id="637"> 637</span>
+<span id="638"> 638</span>
+<span id="639"> 639</span>
+<span id="640"> 640</span>
+<span id="641"> 641</span>
+<span id="642"> 642</span>
+<span id="643"> 643</span>
+<span id="644"> 644</span>
+<span id="645"> 645</span>
+<span id="646"> 646</span>
+<span id="647"> 647</span>
+<span id="648"> 648</span>
+<span id="649"> 649</span>
+<span id="650"> 650</span>
+<span id="651"> 651</span>
+<span id="652"> 652</span>
+<span id="653"> 653</span>
+<span id="654"> 654</span>
+<span id="655"> 655</span>
+<span id="656"> 656</span>
+<span id="657"> 657</span>
+<span id="658"> 658</span>
+<span id="659"> 659</span>
+<span id="660"> 660</span>
+<span id="661"> 661</span>
+<span id="662"> 662</span>
+<span id="663"> 663</span>
+<span id="664"> 664</span>
+<span id="665"> 665</span>
+<span id="666"> 666</span>
+<span id="667"> 667</span>
+<span id="668"> 668</span>
+<span id="669"> 669</span>
+<span id="670"> 670</span>
+<span id="671"> 671</span>
+<span id="672"> 672</span>
+<span id="673"> 673</span>
+<span id="674"> 674</span>
+<span id="675"> 675</span>
+<span id="676"> 676</span>
+<span id="677"> 677</span>
+<span id="678"> 678</span>
+<span id="679"> 679</span>
+<span id="680"> 680</span>
+<span id="681"> 681</span>
+<span id="682"> 682</span>
+<span id="683"> 683</span>
+<span id="684"> 684</span>
+<span id="685"> 685</span>
+<span id="686"> 686</span>
+<span id="687"> 687</span>
+<span id="688"> 688</span>
+<span id="689"> 689</span>
+<span id="690"> 690</span>
+<span id="691"> 691</span>
+<span id="692"> 692</span>
+<span id="693"> 693</span>
+<span id="694"> 694</span>
+<span id="695"> 695</span>
+<span id="696"> 696</span>
+<span id="697"> 697</span>
+<span id="698"> 698</span>
+<span id="699"> 699</span>
+<span id="700"> 700</span>
+<span id="701"> 701</span>
+<span id="702"> 702</span>
+<span id="703"> 703</span>
+<span id="704"> 704</span>
+<span id="705"> 705</span>
+<span id="706"> 706</span>
+<span id="707"> 707</span>
+<span id="708"> 708</span>
+<span id="709"> 709</span>
+<span id="710"> 710</span>
+<span id="711"> 711</span>
+<span id="712"> 712</span>
+<span id="713"> 713</span>
+<span id="714"> 714</span>
+<span id="715"> 715</span>
+<span id="716"> 716</span>
+<span id="717"> 717</span>
+<span id="718"> 718</span>
+<span id="719"> 719</span>
+<span id="720"> 720</span>
+<span id="721"> 721</span>
+<span id="722"> 722</span>
+<span id="723"> 723</span>
+<span id="724"> 724</span>
+<span id="725"> 725</span>
+<span id="726"> 726</span>
+<span id="727"> 727</span>
+<span id="728"> 728</span>
+<span id="729"> 729</span>
+<span id="730"> 730</span>
+<span id="731"> 731</span>
+<span id="732"> 732</span>
+<span id="733"> 733</span>
+<span id="734"> 734</span>
+<span id="735"> 735</span>
+<span id="736"> 736</span>
+<span id="737"> 737</span>
+<span id="738"> 738</span>
+<span id="739"> 739</span>
+<span id="740"> 740</span>
+<span id="741"> 741</span>
+<span id="742"> 742</span>
+<span id="743"> 743</span>
+<span id="744"> 744</span>
+<span id="745"> 745</span>
+<span id="746"> 746</span>
+<span id="747"> 747</span>
+<span id="748"> 748</span>
+<span id="749"> 749</span>
+<span id="750"> 750</span>
+<span id="751"> 751</span>
+<span id="752"> 752</span>
+<span id="753"> 753</span>
+<span id="754"> 754</span>
+<span id="755"> 755</span>
+<span id="756"> 756</span>
+<span id="757"> 757</span>
+<span id="758"> 758</span>
+<span id="759"> 759</span>
+<span id="760"> 760</span>
+<span id="761"> 761</span>
+<span id="762"> 762</span>
+<span id="763"> 763</span>
+<span id="764"> 764</span>
+<span id="765"> 765</span>
+<span id="766"> 766</span>
+<span id="767"> 767</span>
+<span id="768"> 768</span>
+<span id="769"> 769</span>
+<span id="770"> 770</span>
+<span id="771"> 771</span>
+<span id="772"> 772</span>
+<span id="773"> 773</span>
+<span id="774"> 774</span>
+<span id="775"> 775</span>
+<span id="776"> 776</span>
+<span id="777"> 777</span>
+<span id="778"> 778</span>
+<span id="779"> 779</span>
+<span id="780"> 780</span>
+<span id="781"> 781</span>
+<span id="782"> 782</span>
+<span id="783"> 783</span>
+<span id="784"> 784</span>
+<span id="785"> 785</span>
+<span id="786"> 786</span>
+<span id="787"> 787</span>
+<span id="788"> 788</span>
+<span id="789"> 789</span>
+<span id="790"> 790</span>
+<span id="791"> 791</span>
+<span id="792"> 792</span>
+<span id="793"> 793</span>
+<span id="794"> 794</span>
+<span id="795"> 795</span>
+<span id="796"> 796</span>
+<span id="797"> 797</span>
+<span id="798"> 798</span>
+<span id="799"> 799</span>
+<span id="800"> 800</span>
+<span id="801"> 801</span>
+<span id="802"> 802</span>
+<span id="803"> 803</span>
+<span id="804"> 804</span>
+<span id="805"> 805</span>
+<span id="806"> 806</span>
+<span id="807"> 807</span>
+<span id="808"> 808</span>
+<span id="809"> 809</span>
+<span id="810"> 810</span>
+<span id="811"> 811</span>
+<span id="812"> 812</span>
+<span id="813"> 813</span>
+<span id="814"> 814</span>
+<span id="815"> 815</span>
+<span id="816"> 816</span>
+<span id="817"> 817</span>
+<span id="818"> 818</span>
+<span id="819"> 819</span>
+<span id="820"> 820</span>
+<span id="821"> 821</span>
+<span id="822"> 822</span>
+<span id="823"> 823</span>
+<span id="824"> 824</span>
+<span id="825"> 825</span>
+<span id="826"> 826</span>
+<span id="827"> 827</span>
+<span id="828"> 828</span>
+<span id="829"> 829</span>
+<span id="830"> 830</span>
+<span id="831"> 831</span>
+<span id="832"> 832</span>
+<span id="833"> 833</span>
+<span id="834"> 834</span>
+<span id="835"> 835</span>
+<span id="836"> 836</span>
+<span id="837"> 837</span>
+<span id="838"> 838</span>
+<span id="839"> 839</span>
+<span id="840"> 840</span>
+<span id="841"> 841</span>
+<span id="842"> 842</span>
+<span id="843"> 843</span>
+<span id="844"> 844</span>
+<span id="845"> 845</span>
+<span id="846"> 846</span>
+<span id="847"> 847</span>
+<span id="848"> 848</span>
+<span id="849"> 849</span>
+<span id="850"> 850</span>
+<span id="851"> 851</span>
+<span id="852"> 852</span>
+<span id="853"> 853</span>
+<span id="854"> 854</span>
+<span id="855"> 855</span>
+<span id="856"> 856</span>
+<span id="857"> 857</span>
+<span id="858"> 858</span>
+<span id="859"> 859</span>
+<span id="860"> 860</span>
+<span id="861"> 861</span>
+<span id="862"> 862</span>
+<span id="863"> 863</span>
+<span id="864"> 864</span>
+<span id="865"> 865</span>
+<span id="866"> 866</span>
+<span id="867"> 867</span>
+<span id="868"> 868</span>
+<span id="869"> 869</span>
+<span id="870"> 870</span>
+<span id="871"> 871</span>
+<span id="872"> 872</span>
+<span id="873"> 873</span>
+<span id="874"> 874</span>
+<span id="875"> 875</span>
+<span id="876"> 876</span>
+<span id="877"> 877</span>
+<span id="878"> 878</span>
+<span id="879"> 879</span>
+<span id="880"> 880</span>
+<span id="881"> 881</span>
+<span id="882"> 882</span>
+<span id="883"> 883</span>
+<span id="884"> 884</span>
+<span id="885"> 885</span>
+<span id="886"> 886</span>
+<span id="887"> 887</span>
+<span id="888"> 888</span>
+<span id="889"> 889</span>
+<span id="890"> 890</span>
+<span id="891"> 891</span>
+<span id="892"> 892</span>
+<span id="893"> 893</span>
+<span id="894"> 894</span>
+<span id="895"> 895</span>
+<span id="896"> 896</span>
+<span id="897"> 897</span>
+<span id="898"> 898</span>
+<span id="899"> 899</span>
+<span id="900"> 900</span>
+<span id="901"> 901</span>
+<span id="902"> 902</span>
+<span id="903"> 903</span>
+<span id="904"> 904</span>
+<span id="905"> 905</span>
+<span id="906"> 906</span>
+<span id="907"> 907</span>
+<span id="908"> 908</span>
+<span id="909"> 909</span>
+<span id="910"> 910</span>
+<span id="911"> 911</span>
+<span id="912"> 912</span>
+<span id="913"> 913</span>
+<span id="914"> 914</span>
+<span id="915"> 915</span>
+<span id="916"> 916</span>
+<span id="917"> 917</span>
+<span id="918"> 918</span>
+<span id="919"> 919</span>
+<span id="920"> 920</span>
+<span id="921"> 921</span>
+<span id="922"> 922</span>
+<span id="923"> 923</span>
+<span id="924"> 924</span>
+<span id="925"> 925</span>
+<span id="926"> 926</span>
+<span id="927"> 927</span>
+<span id="928"> 928</span>
+<span id="929"> 929</span>
+<span id="930"> 930</span>
+<span id="931"> 931</span>
+<span id="932"> 932</span>
+<span id="933"> 933</span>
+<span id="934"> 934</span>
+<span id="935"> 935</span>
+<span id="936"> 936</span>
+<span id="937"> 937</span>
+<span id="938"> 938</span>
+<span id="939"> 939</span>
+<span id="940"> 940</span>
+<span id="941"> 941</span>
+<span id="942"> 942</span>
+<span id="943"> 943</span>
+<span id="944"> 944</span>
+<span id="945"> 945</span>
+<span id="946"> 946</span>
+<span id="947"> 947</span>
+<span id="948"> 948</span>
+<span id="949"> 949</span>
+<span id="950"> 950</span>
+<span id="951"> 951</span>
+<span id="952"> 952</span>
+<span id="953"> 953</span>
+<span id="954"> 954</span>
+<span id="955"> 955</span>
+<span id="956"> 956</span>
+<span id="957"> 957</span>
+<span id="958"> 958</span>
+<span id="959"> 959</span>
+<span id="960"> 960</span>
+<span id="961"> 961</span>
+<span id="962"> 962</span>
+<span id="963"> 963</span>
+<span id="964"> 964</span>
+<span id="965"> 965</span>
+<span id="966"> 966</span>
+<span id="967"> 967</span>
+<span id="968"> 968</span>
+<span id="969"> 969</span>
+<span id="970"> 970</span>
+<span id="971"> 971</span>
+<span id="972"> 972</span>
+<span id="973"> 973</span>
+<span id="974"> 974</span>
+<span id="975"> 975</span>
+<span id="976"> 976</span>
+<span id="977"> 977</span>
+<span id="978"> 978</span>
+<span id="979"> 979</span>
+<span id="980"> 980</span>
+<span id="981"> 981</span>
+<span id="982"> 982</span>
+<span id="983"> 983</span>
+<span id="984"> 984</span>
+<span id="985"> 985</span>
+<span id="986"> 986</span>
+<span id="987"> 987</span>
+<span id="988"> 988</span>
+<span id="989"> 989</span>
+<span id="990"> 990</span>
+<span id="991"> 991</span>
+<span id="992"> 992</span>
+<span id="993"> 993</span>
+<span id="994"> 994</span>
+<span id="995"> 995</span>
+<span id="996"> 996</span>
+<span id="997"> 997</span>
+<span id="998"> 998</span>
+<span id="999"> 999</span>
+<span id="1000">1000</span>
+<span id="1001">1001</span>
+<span id="1002">1002</span>
+<span id="1003">1003</span>
+<span id="1004">1004</span>
+<span id="1005">1005</span>
+<span id="1006">1006</span>
+<span id="1007">1007</span>
+<span id="1008">1008</span>
+<span id="1009">1009</span>
+<span id="1010">1010</span>
+<span id="1011">1011</span>
+<span id="1012">1012</span>
+<span id="1013">1013</span>
+<span id="1014">1014</span>
+<span id="1015">1015</span>
+<span id="1016">1016</span>
+<span id="1017">1017</span>
+<span id="1018">1018</span>
+<span id="1019">1019</span>
+<span id="1020">1020</span>
+<span id="1021">1021</span>
+<span id="1022">1022</span>
+<span id="1023">1023</span>
+<span id="1024">1024</span>
+<span id="1025">1025</span>
+<span id="1026">1026</span>
+<span id="1027">1027</span>
+<span id="1028">1028</span>
+<span id="1029">1029</span>
+<span id="1030">1030</span>
+<span id="1031">1031</span>
+<span id="1032">1032</span>
+<span id="1033">1033</span>
+<span id="1034">1034</span>
+<span id="1035">1035</span>
+<span id="1036">1036</span>
+<span id="1037">1037</span>
+<span id="1038">1038</span>
+</pre><pre class='rust '>
+<span class='doccomment'>//! *Note about these docs*</span>
+<span class='doccomment'>//!</span>
+<span class='doccomment'>//! These docs are mostly copied verbatim from the UDT documentation.  If you see references to the</span>
+<span class='doccomment'>//! C++ function names instead of the rust function names, that&#39;s why.</span>
+<span class='doccomment'>//!</span>
+<span class='doccomment'>//! # UDT</span>
+<span class='doccomment'>//! Bindings to the UDT4 high performance data data transfer library</span>
+<span class='doccomment'>//!</span>
+<span class='doccomment'>//! UDT follows closely the BSD socket API, but several of the functions have different semantics.</span>
+<span class='doccomment'>//!</span>
+<span class='doccomment'>//! UDT is a high performance data transfer protocol - UDP-based data transfer protocol. It was</span>
+<span class='doccomment'>//! designed for data intensive applications over high speed wide area networks, to overcome the</span>
+<span class='doccomment'>//! efficiency and fairness problems of TCP. As its name indicates, UDT is built on top of UDP and</span>
+<span class='doccomment'>//! it provides both reliable data streaming and messaging services.</span>
+<span class='doccomment'>//!</span>
+<span class='doccomment'>//! </span>
+<span class='doccomment'>//! # Examples</span>
+<span class='doccomment'>//!</span>
+<span class='doccomment'>//! To create a Datagram server, that can send and receive messages:</span>
+<span class='doccomment'>//!</span>
+<span class='doccomment'>//! ``` no_run</span>
+<span class='doccomment'>//!     use std::str::FromStr;</span>
+<span class='doccomment'>//!     use std::net::{SocketAddr, SocketAddrV4};</span>
+<span class='doccomment'>//!     use udt::*;</span>
+<span class='doccomment'>//!</span>
+<span class='doccomment'>//!     let localhost = std::net::Ipv4Addr::from_str(&quot;127.0.0.1&quot;).unwrap();</span>
+<span class='doccomment'>//!</span>
+<span class='doccomment'>//!     let sock = UdtSocket::new(SocketFamily::AFInet, SocketType::Stream).unwrap();</span>
+<span class='doccomment'>//!     sock.bind(SocketAddr::V4(SocketAddrV4::new(localhost, 0))).unwrap();</span>
+<span class='doccomment'>//!     let my_addr = sock.getsockname().unwrap();</span>
+<span class='doccomment'>//!     println!(&quot;Server bound to {:?}&quot;, my_addr);</span>
+<span class='doccomment'>//!     sock.listen(5).unwrap();</span>
+<span class='doccomment'>//!     let (mut new_socket, peer) = sock.accept().unwrap();</span>
+<span class='doccomment'>//!     println!(&quot;Received new connection from peer {:?}&quot;, peer);</span>
+<span class='doccomment'>//!</span>
+<span class='doccomment'>//!</span>
+<span class='doccomment'>//! ```</span>
+<span class='doccomment'>//!</span>
+<span class='doccomment'>//!</span>
+
+<span class='attribute'>#[<span class='ident'>macro_use</span>]</span>
+<span class='kw'>extern</span> <span class='kw'>crate</span> <span class='ident'>log</span>;
+<span class='attribute'>#[<span class='ident'>macro_use</span>]</span>
+<span class='kw'>extern</span> <span class='kw'>crate</span> <span class='ident'>bitflags</span>;
+<span class='kw'>extern</span> <span class='kw'>crate</span> <span class='ident'>libudt4_sys</span> <span class='kw'>as</span> <span class='ident'>raw</span>;
+
+<span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>sync</span>::{<span class='ident'>Once</span>, <span class='ident'>ONCE_INIT</span>};
+<span class='kw'>extern</span> <span class='kw'>crate</span> <span class='ident'>libc</span>;
+
+<span class='kw'>use</span> <span class='ident'>libc</span>::{<span class='ident'>AF_INET</span>, <span class='ident'>AF_INET6</span>};
+<span class='kw'>use</span> <span class='ident'>libc</span>::{<span class='ident'>SOCK_STREAM</span>, <span class='ident'>SOCK_DGRAM</span>};
+<span class='kw'>use</span> <span class='ident'>libc</span>::{<span class='ident'>c_int</span>};
+<span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>mem</span>::<span class='ident'>size_of</span>;
+<span class='kw'>use</span> <span class='ident'>libc</span>::{<span class='ident'>sockaddr</span>, <span class='ident'>sockaddr_in</span>, <span class='ident'>in_addr</span>};
+<span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>ffi</span>::{<span class='ident'>CStr</span>};
+<span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>net</span>::<span class='ident'>SocketAddr</span>;
+<span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>net</span>::<span class='ident'>SocketAddrV4</span>;
+
+<span class='kw'>pub</span> <span class='kw'>use</span> <span class='ident'>raw</span>::<span class='ident'>UdtStatus</span>;
+
+<span class='macro'>bitflags</span><span class='macro'>!</span> {
+<span class='doccomment'>/// This is a bitflag field that can be constructed with `UDT_EPOLL_IN`, `UDT_EPOLL_OUT`, or</span>
+<span class='doccomment'>/// `UDT_EPOLL_ERR`</span>
+<span class='doccomment'>///</span>
+<span class='doccomment'>/// Example:</span>
+<span class='doccomment'>///</span>
+<span class='doccomment'>/// ```</span>
+<span class='doccomment'>/// # use udt::*;</span>
+<span class='doccomment'>/// let mut events = EpollEvents::all();</span>
+<span class='doccomment'>/// events.remove(UDT_EPOLL_ERR);</span>
+<span class='doccomment'>/// assert!(events.contains(UDT_EPOLL_OUT));</span>
+<span class='doccomment'>/// assert!(! events.contains(UDT_EPOLL_ERR));</span>
+<span class='doccomment'>/// ```</span>
+    <span class='ident'>flags</span> <span class='ident'>EpollEvents</span>: <span class='ident'>c_int</span> {
+        <span class='doccomment'>/// An Epoll Event to watch for read events</span>
+        <span class='kw'>const</span> <span class='ident'>UDT_EPOLL_IN</span> <span class='op'>=</span> <span class='number'>0x1</span>,
+        <span class='doccomment'>/// An Epoll Event to watch for write events</span>
+        <span class='kw'>const</span> <span class='ident'>UDT_EPOLL_OUT</span> <span class='op'>=</span> <span class='number'>0x4</span>,
+        <span class='doccomment'>/// An Epoll Event to watch for exception events</span>
+        <span class='kw'>const</span> <span class='ident'>UDT_EPOLL_ERR</span> <span class='op'>=</span> <span class='number'>0x8</span>
+    }
+}
+
+<span class='comment'>// makes defining the UdtOpts mod a little less messy</span>
+<span class='macro'>macro_rules</span><span class='macro'>!</span> <span class='ident'>impl_udt_opt</span> {
+    ($(<span class='attribute'>#[<span class='macro-nonterminal'>$</span><span class='macro-nonterminal'>doc</span>:<span class='ident'>meta</span>]</span>)<span class='op'>*</span>
+     <span class='kw'>impl</span> <span class='macro-nonterminal'>$</span><span class='macro-nonterminal'>name</span>:<span class='ident'>ident</span>: <span class='macro-nonterminal'>$</span><span class='macro-nonterminal'>ty</span>:<span class='ident'>ty</span>) <span class='op'>=&gt;</span> {
+         $(<span class='attribute'>#[<span class='macro-nonterminal'>$</span><span class='macro-nonterminal'>doc</span>]</span>)<span class='op'>*</span>
+        <span class='kw'>pub</span> <span class='kw'>struct</span> <span class='macro-nonterminal'>$</span><span class='macro-nonterminal'>name</span>;
+        <span class='kw'>impl</span> ::<span class='ident'>UdtOption</span><span class='op'>&lt;</span><span class='macro-nonterminal'>$</span><span class='macro-nonterminal'>ty</span><span class='op'>&gt;</span> <span class='kw'>for</span> <span class='macro-nonterminal'>$</span><span class='macro-nonterminal'>name</span> {
+            <span class='kw'>fn</span> <span class='ident'>get_type</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> ::<span class='ident'>raw</span>::<span class='ident'>UDTOpt</span> { ::<span class='ident'>raw</span>::<span class='ident'>UDTOpt</span>::<span class='macro-nonterminal'>$</span><span class='macro-nonterminal'>name</span> }
+        }
+    };
+}
+
+<span class='doccomment'>/// Initialize the UDT library.  </span>
+<span class='doccomment'>///</span>
+<span class='doccomment'>/// In particular, starts the background garbage collection thread.  </span>
+<span class='doccomment'>/// </span>
+<span class='doccomment'>/// It is safe to call this function multiple times.  A corresponding cleanup function will</span>
+<span class='doccomment'>/// automatically be called when the program exists.</span>
+<span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>init</span>() {
+    <span class='kw'>static</span> <span class='ident'>INIT</span>: <span class='ident'>Once</span> <span class='op'>=</span> <span class='ident'>ONCE_INIT</span>;
+        <span class='ident'>INIT</span>.<span class='ident'>call_once</span>(<span class='op'>||</span> <span class='kw'>unsafe</span> {
+            <span class='macro'>trace</span><span class='macro'>!</span>(<span class='string'>&quot;did INIT&quot;</span>);
+            <span class='ident'>raw</span>::<span class='ident'>udt_startup</span>();
+            <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>libc</span>::<span class='ident'>atexit</span>(<span class='ident'>shutdown</span>), <span class='number'>0</span>);
+        });
+    <span class='kw'>extern</span> <span class='kw'>fn</span> <span class='ident'>shutdown</span>() {
+        <span class='kw'>unsafe</span> { <span class='ident'>raw</span>::<span class='ident'>udt_cleanup</span>(); } ;
+    }
+}
+
+<span class='doccomment'>/// A UDT Socket</span>
+<span class='doccomment'>///</span>
+<span class='doccomment'>/// Internally, a UDT socket is represented as a 32-bit int.  As such, a `UdtSocket` can be copied</span>
+<span class='doccomment'>/// and cloned</span>
+<span class='attribute'>#[<span class='ident'>derive</span>(<span class='ident'>Debug</span>, <span class='ident'>PartialEq</span>, <span class='ident'>Eq</span>, <span class='ident'>Copy</span>, <span class='ident'>Clone</span>, <span class='ident'>Hash</span>)]</span>
+<span class='kw'>pub</span> <span class='kw'>struct</span> <span class='ident'>UdtSocket</span> {
+    <span class='ident'>_sock</span>: <span class='ident'>raw</span>::<span class='ident'>UDTSOCKET</span>, 
+}
+
+<span class='doccomment'>/// A UDT Error</span>
+<span class='attribute'>#[<span class='ident'>derive</span>(<span class='ident'>Debug</span>)]</span>
+<span class='kw'>pub</span> <span class='kw'>struct</span> <span class='ident'>UdtError</span> {
+    <span class='doccomment'>/// The numeric error code may be one of the constants in the [`libudt4-sys`][1] crate</span>
+    <span class='doccomment'>///</span>
+    <span class='doccomment'>/// [1]: ../libudt4_sys/index.html</span>
+    <span class='kw'>pub</span> <span class='ident'>err_code</span>: <span class='ident'>i32</span>,
+    <span class='doccomment'>/// A textual description of the error</span>
+    <span class='kw'>pub</span> <span class='ident'>err_msg</span>: <span class='ident'>String</span>
+}
+
+<span class='kw'>pub</span> <span class='kw'>trait</span> <span class='ident'>UdtOption</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span> {
+    <span class='kw'>fn</span> <span class='ident'>get_type</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>raw</span>::<span class='ident'>UDTOpt</span>;
+}
+
+<span class='attribute'>#[<span class='ident'>repr</span>(<span class='ident'>C</span>)]</span>
+<span class='doccomment'>/// Linger option</span>
+<span class='kw'>pub</span> <span class='kw'>struct</span> <span class='ident'>Linger</span> {
+    <span class='doccomment'>/// Nonzero to linger on close</span>
+    <span class='kw'>pub</span> <span class='ident'>onoff</span>: <span class='ident'>i32</span>,
+    <span class='doccomment'>/// Time to longer</span>
+    <span class='kw'>pub</span> <span class='ident'>linger</span>: <span class='ident'>i32</span>
+}
+
+<span class='attribute'>#[<span class='ident'>allow</span>(<span class='ident'>non_camel_case_types</span>)]</span>
+<span class='attribute'>#[<span class='ident'>allow</span>(<span class='ident'>non_snake_case</span>)]</span>
+<span class='kw'>pub</span> <span class='kw'>mod</span> <span class='ident'>UdtOpts</span> {
+    <span class='doccomment'>//! Various options that can be passed to `getsockopt` or `setsockopt`</span>
+    <span class='doccomment'>//!</span>
+    <span class='doccomment'>//! These are typed in such a way so that when they are used with `getsockopt` or `setsockopt`,</span>
+    <span class='doccomment'>//! they will require the right data type.</span>
+    <span class='doccomment'>//!</span>
+    <span class='doccomment'>//! # Examples</span>
+    <span class='doccomment'>//!</span>
+    <span class='doccomment'>//! ``` </span>
+    <span class='doccomment'>//! use udt::*;</span>
+    <span class='doccomment'>//!</span>
+    <span class='doccomment'>//! let sock = UdtSocket::new(SocketFamily::AFInet, SocketType::Stream).unwrap();</span>
+    <span class='doccomment'>//! let recv_buf: i32 = sock.getsockopt(UdtOpts::UDT_RCVBUF).unwrap();</span>
+    <span class='doccomment'>//! let rendezvous: bool = sock.getsockopt(UdtOpts::UDT_RENDEZVOUS).unwrap();</span>
+    <span class='doccomment'>//!</span>
+    <span class='doccomment'>//! ```</span>
+    <span class='doccomment'>//!</span>
+
+    <span class='macro'>impl_udt_opt</span><span class='macro'>!</span>{
+        <span class='doccomment'>/// Maximum Packet size (bytes)</span>
+        <span class='doccomment'>///</span>
+        <span class='doccomment'>/// Including all UDT, UDP, and IP headers.  Default 1500 bytes</span>
+        <span class='kw'>impl</span> <span class='ident'>UDT_MSS</span>: <span class='ident'>i32</span>
+    }
+    
+    <span class='macro'>impl_udt_opt</span><span class='macro'>!</span>{
+        <span class='doccomment'>/// Synchronization mode of data sending</span>
+        <span class='doccomment'>///</span>
+        <span class='doccomment'>/// True for blocking sending; false for non-blocking sending.  Default true</span>
+        <span class='kw'>impl</span> <span class='ident'>UDT_SNDSYN</span>: <span class='ident'>bool</span>
+    }
+
+    <span class='macro'>impl_udt_opt</span><span class='macro'>!</span> {
+        <span class='doccomment'>/// Synchronization mode for receiving.</span>
+        <span class='doccomment'>/// </span>
+        <span class='doccomment'>/// true for blocking receiving; false for non-blocking</span>
+        <span class='doccomment'>/// receiving. Default true.</span>
+        <span class='kw'>impl</span> <span class='ident'>UDT_RCVSYN</span>: <span class='ident'>bool</span>
+    }
+
+
+    <span class='comment'>// MISSING: UDT_CC for custom congestion control</span>
+
+    <span class='macro'>impl_udt_opt</span><span class='macro'>!</span> {
+        <span class='doccomment'>///Maximum window size (packets)</span>
+        <span class='doccomment'>///</span>
+        <span class='doccomment'>///Default 25600. Do NOT change this unless you know what you are doing. Must change this</span>
+        <span class='doccomment'>///before modifying the buffer sizes.</span>
+        <span class='kw'>impl</span> <span class='ident'>UDT_FC</span>: <span class='ident'>i32</span>
+    }
+
+    <span class='macro'>impl_udt_opt</span><span class='macro'>!</span>(
+        <span class='doccomment'>/// UDT sender buffer size limit (bytes)</span>
+        <span class='doccomment'>///</span>
+        <span class='doccomment'>/// Default 10MB (10240000).</span>
+        <span class='kw'>impl</span> <span class='ident'>UDT_SNDBUF</span>: <span class='ident'>i32</span>);
+
+    <span class='macro'>impl_udt_opt</span><span class='macro'>!</span>(
+        <span class='doccomment'>/// UDT receiver buffer size limit (bytes)</span>
+        <span class='doccomment'>///</span>
+        <span class='doccomment'>/// Default 10MB (10240000).</span>
+        <span class='kw'>impl</span> <span class='ident'>UDT_RCVBUF</span>: <span class='ident'>i32</span>);
+
+    <span class='macro'>impl_udt_opt</span><span class='macro'>!</span>(<span class='doccomment'>///UDP socket sender buffer size (bytes)</span>
+        <span class='doccomment'>///</span>
+        <span class='doccomment'>/// Default 1MB (1024000).</span>
+        <span class='kw'>impl</span> <span class='ident'>UDP_SNDBUF</span>: <span class='ident'>i32</span>);
+    <span class='macro'>impl_udt_opt</span><span class='macro'>!</span>(<span class='doccomment'>/// UDP socket receiver buffer size (bytes)</span>
+        <span class='doccomment'>///</span>
+        <span class='doccomment'>/// Default 1MB (1024000).</span>
+        <span class='kw'>impl</span> <span class='ident'>UDP_RCVBUF</span>: <span class='ident'>i32</span>);
+    <span class='macro'>impl_udt_opt</span><span class='macro'>!</span>(<span class='doccomment'>/// Linger time on close().</span>
+        <span class='doccomment'>///</span>
+        <span class='doccomment'>/// Default 180 seconds.</span>
+        <span class='kw'>impl</span> <span class='ident'>UDT_LINGER</span>: ::<span class='ident'>Linger</span>);
+    <span class='macro'>impl_udt_opt</span><span class='macro'>!</span>(<span class='doccomment'>/// Rendezvous connection setup.</span>
+        <span class='doccomment'>///</span>
+        <span class='doccomment'>/// Default false (no rendezvous mode).</span>
+        <span class='kw'>impl</span> <span class='ident'>UDT_RENDEZVOUS</span>: <span class='ident'>bool</span>);
+    <span class='macro'>impl_udt_opt</span><span class='macro'>!</span>(<span class='doccomment'>/// Sending call timeout (milliseconds).</span>
+        <span class='doccomment'>///</span>
+        <span class='doccomment'>/// Default -1 (infinite).</span>
+        <span class='kw'>impl</span> <span class='ident'>UDT_SNDTIMEO</span>: <span class='ident'>i32</span>);
+    <span class='macro'>impl_udt_opt</span><span class='macro'>!</span>(<span class='doccomment'>/// Receiving call timeout (milliseconds).</span>
+        <span class='doccomment'>///</span>
+        <span class='doccomment'>/// Default -1 (infinite).</span>
+        <span class='kw'>impl</span> <span class='ident'>UDT_RCVTIMEO</span>: <span class='ident'>i32</span>);
+    <span class='macro'>impl_udt_opt</span><span class='macro'>!</span>(<span class='doccomment'>/// Reuse an existing address or create a new one.</span>
+        <span class='doccomment'>/// </span>
+        <span class='doccomment'>/// Default true (reuse).</span>
+        <span class='kw'>impl</span> <span class='ident'>UDT_REUSEADDR</span>: <span class='ident'>bool</span>);
+    <span class='macro'>impl_udt_opt</span><span class='macro'>!</span>(<span class='doccomment'>/// Maximum bandwidth that one single UDT connection can use (bytes per second).</span>
+        <span class='doccomment'>///</span>
+        <span class='doccomment'>/// Default -1 (no upper limit).</span>
+        <span class='kw'>impl</span> <span class='ident'>UDT_MAXBW</span>: <span class='ident'>i64</span>);
+    <span class='macro'>impl_udt_opt</span><span class='macro'>!</span>(<span class='doccomment'>/// Current status of the UDT socket. Read only.</span>
+        <span class='kw'>impl</span> <span class='ident'>UDT_STATE</span>: <span class='ident'>i32</span>);
+    <span class='macro'>impl_udt_opt</span><span class='macro'>!</span>(<span class='doccomment'>/// The EPOLL events available to this socket.    Read only.</span>
+        <span class='kw'>impl</span> <span class='ident'>UDT_EVENT</span>: <span class='ident'>i32</span>);
+    <span class='macro'>impl_udt_opt</span><span class='macro'>!</span>(<span class='doccomment'>/// Size of pending data in the sending buffer.   Read only.</span>
+        <span class='kw'>impl</span> <span class='ident'>UDT_SNDDATA</span>: <span class='ident'>i32</span>);
+    <span class='macro'>impl_udt_opt</span><span class='macro'>!</span>(<span class='doccomment'>/// Size of data available to read, in the receiving buffer.  Read only.</span>
+        <span class='kw'>impl</span> <span class='ident'>UDT_RCVDATA</span>: <span class='ident'>i32</span>);
+    
+
+}
+
+
+<span class='kw'>fn</span> <span class='ident'>get_last_err</span>() <span class='op'>-&gt;</span> <span class='ident'>UdtError</span> {
+    <span class='kw'>let</span> <span class='ident'>msg</span> <span class='op'>=</span> <span class='kw'>unsafe</span>{ <span class='ident'>CStr</span>::<span class='ident'>from_ptr</span>(<span class='ident'>raw</span>::<span class='ident'>udt_getlasterror_desc</span>()) };
+    <span class='ident'>UdtError</span>{<span class='ident'>err_code</span>: <span class='kw'>unsafe</span>{ <span class='ident'>raw</span>::<span class='ident'>udt_getlasterror_code</span>() <span class='kw'>as</span> <span class='ident'>i32</span>},
+    <span class='ident'>err_msg</span>: <span class='ident'>String</span>::<span class='ident'>from_utf8_lossy</span>(<span class='ident'>msg</span>.<span class='ident'>to_bytes</span>()).<span class='ident'>into_owned</span>()}
+}
+
+<span class='attribute'>#[<span class='ident'>repr</span>(<span class='ident'>C</span>)]</span>
+<span class='kw'>pub</span> <span class='kw'>enum</span> <span class='ident'>SocketFamily</span> {
+    <span class='doccomment'>/// IPv4</span>
+    <span class='ident'>AFInet</span>,
+    <span class='doccomment'>/// IPV6</span>
+    <span class='ident'>AFInet6</span>
+}
+
+<span class='kw'>impl</span> <span class='ident'>SocketFamily</span> {
+    <span class='kw'>fn</span> <span class='ident'>get_val</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>c_int</span> { <span class='kw'>match</span> <span class='op'>*</span><span class='self'>self</span> {
+        <span class='ident'>SocketFamily</span>::<span class='ident'>AFInet</span> <span class='op'>=&gt;</span> <span class='ident'>AF_INET</span>,
+        <span class='ident'>SocketFamily</span>::<span class='ident'>AFInet6</span> <span class='op'>=&gt;</span> <span class='ident'>AF_INET6</span>
+    }}
+}
+
+<span class='doccomment'>/// Socket type</span>
+<span class='doccomment'>///</span>
+<span class='doccomment'>/// When a UDT socket is created as a Datagram type, UDT will send and receive data as messages.</span>
+<span class='doccomment'>/// The boundary of the message is preserved and the message is delivered as a whole unit. Sending</span>
+<span class='doccomment'>/// or receving messages do not need a loop; a message will be either completely delivered or not</span>
+<span class='doccomment'>/// delivered at all. However, at the receiver side, if the user buffer is shorter than the message</span>
+<span class='doccomment'>/// length, only part of the message will be copied into the user buffer while the message will</span>
+<span class='doccomment'>/// still be discarded.</span>
+<span class='doccomment'>///</span>
+<span class='doccomment'>///</span>
+<span class='attribute'>#[<span class='ident'>repr</span>(<span class='ident'>C</span>)]</span>
+<span class='kw'>pub</span> <span class='kw'>enum</span> <span class='ident'>SocketType</span> {
+    <span class='doccomment'>/// A socket type that supports data streaming</span>
+    <span class='ident'>Stream</span> <span class='op'>=</span> <span class='ident'>SOCK_STREAM</span> <span class='kw'>as</span> <span class='ident'>isize</span>,
+    <span class='doccomment'>/// A socket type for messaging</span>
+    <span class='doccomment'>///</span>
+    <span class='doccomment'>/// Note that UDT Datagram sockets are also connection oriented.  A UDT connection can only be</span>
+    <span class='doccomment'>/// set up between the same socket types</span>
+    <span class='ident'>Datagram</span> <span class='op'>=</span> <span class='ident'>SOCK_DGRAM</span> <span class='kw'>as</span> <span class='ident'>isize</span>
+}
+
+<span class='kw'>impl</span> <span class='ident'>SocketType</span> {
+    <span class='kw'>fn</span> <span class='ident'>get_val</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>c_int</span> { <span class='kw'>match</span> <span class='op'>*</span><span class='self'>self</span> {
+        <span class='ident'>SocketType</span>::<span class='ident'>Stream</span> <span class='op'>=&gt;</span> <span class='ident'>SOCK_STREAM</span>,
+        <span class='ident'>SocketType</span>::<span class='ident'>Datagram</span> <span class='op'>=&gt;</span> <span class='ident'>SOCK_DGRAM</span>
+    }}
+}
+
+
+<span class='comment'>// SocketAddr to sockaddr_in</span>
+<span class='attribute'>#[<span class='ident'>cfg</span>(<span class='ident'>target_os</span><span class='op'>=</span><span class='string'>&quot;linux&quot;</span>)]</span>
+<span class='kw'>fn</span> <span class='ident'>get_sockaddr</span>(<span class='ident'>name</span>: <span class='ident'>SocketAddr</span>) <span class='op'>-&gt;</span> <span class='ident'>sockaddr_in</span> {
+    <span class='kw'>if</span> <span class='kw'>let</span> <span class='ident'>SocketAddr</span>::<span class='ident'>V4</span>(<span class='ident'>v4</span>) <span class='op'>=</span> <span class='ident'>name</span> {
+        <span class='macro'>trace</span><span class='macro'>!</span>(<span class='string'>&quot;binding to {:?}&quot;</span>, <span class='ident'>v4</span>);
+        <span class='kw'>let</span> <span class='ident'>addr_bytes</span> <span class='op'>=</span> <span class='ident'>v4</span>.<span class='ident'>ip</span>().<span class='ident'>octets</span>();
+        <span class='kw'>let</span> <span class='ident'>addr_b</span>: <span class='ident'>u32</span> <span class='op'>=</span> ((<span class='ident'>addr_bytes</span>[<span class='number'>3</span>] <span class='kw'>as</span> <span class='ident'>u32</span>) <span class='op'>&lt;&lt;</span> <span class='number'>24</span>)  <span class='op'>+</span> 
+            ((<span class='ident'>addr_bytes</span>[<span class='number'>2</span>] <span class='kw'>as</span> <span class='ident'>u32</span>) <span class='op'>&lt;&lt;</span> <span class='number'>16</span>)  <span class='op'>+</span> 
+            ((<span class='ident'>addr_bytes</span>[<span class='number'>1</span>] <span class='kw'>as</span> <span class='ident'>u32</span>) <span class='op'>&lt;&lt;</span> <span class='number'>8</span> )  <span class='op'>+</span> 
+            ( <span class='ident'>addr_bytes</span>[<span class='number'>0</span>] <span class='kw'>as</span> <span class='ident'>u32</span>);
+        <span class='comment'>// construct a sockaddr_in</span>
+         <span class='ident'>sockaddr_in</span> {
+            <span class='ident'>sin_family</span>: <span class='ident'>AF_INET</span> <span class='kw'>as</span> <span class='ident'>u16</span>,
+            <span class='ident'>sin_port</span>: <span class='ident'>v4</span>.<span class='ident'>port</span>().<span class='ident'>to_be</span>(),
+            <span class='ident'>sin_addr</span>: <span class='ident'>in_addr</span>{<span class='ident'>s_addr</span>: <span class='ident'>addr_b</span>},
+            <span class='ident'>sin_zero</span>: [<span class='number'>0</span>; <span class='number'>8</span>]
+      }
+    } <span class='kw'>else</span> {
+        <span class='macro'>panic</span><span class='macro'>!</span>(<span class='string'>&quot;ipv6 not implemented (yet) in this binding&quot;</span>);
+    }
+}
+
+<span class='attribute'>#[<span class='ident'>cfg</span>(<span class='ident'>target_os</span><span class='op'>=</span><span class='string'>&quot;macos&quot;</span>)]</span>
+<span class='kw'>fn</span> <span class='ident'>get_sockaddr</span>(<span class='ident'>name</span>: <span class='ident'>SocketAddr</span>) <span class='op'>-&gt;</span> <span class='ident'>sockaddr_in</span> {
+    <span class='kw'>if</span> <span class='kw'>let</span> <span class='ident'>SocketAddr</span>::<span class='ident'>V4</span>(<span class='ident'>v4</span>) <span class='op'>=</span> <span class='ident'>name</span> {
+        <span class='macro'>trace</span><span class='macro'>!</span>(<span class='string'>&quot;binding to {:?}&quot;</span>, <span class='ident'>v4</span>);
+        <span class='kw'>let</span> <span class='ident'>addr_bytes</span> <span class='op'>=</span> <span class='ident'>v4</span>.<span class='ident'>ip</span>().<span class='ident'>octets</span>();
+        <span class='kw'>let</span> <span class='ident'>addr_b</span>: <span class='ident'>u32</span> <span class='op'>=</span> ((<span class='ident'>addr_bytes</span>[<span class='number'>3</span>] <span class='kw'>as</span> <span class='ident'>u32</span>) <span class='op'>&lt;&lt;</span> <span class='number'>24</span>)  <span class='op'>+</span> 
+            ((<span class='ident'>addr_bytes</span>[<span class='number'>2</span>] <span class='kw'>as</span> <span class='ident'>u32</span>) <span class='op'>&lt;&lt;</span> <span class='number'>16</span>)  <span class='op'>+</span> 
+            ((<span class='ident'>addr_bytes</span>[<span class='number'>1</span>] <span class='kw'>as</span> <span class='ident'>u32</span>) <span class='op'>&lt;&lt;</span> <span class='number'>8</span> )  <span class='op'>+</span> 
+            ( <span class='ident'>addr_bytes</span>[<span class='number'>0</span>] <span class='kw'>as</span> <span class='ident'>u32</span>);
+        <span class='comment'>// construct a sockaddr_in</span>
+         <span class='ident'>sockaddr_in</span> {
+            <span class='ident'>sin_len</span>: <span class='ident'>std</span>::<span class='ident'>mem</span>::<span class='ident'>size_of</span>::<span class='op'>&lt;</span><span class='ident'>sockaddr_in</span><span class='op'>&gt;</span>() <span class='kw'>as</span> <span class='ident'>u8</span>,
+            <span class='ident'>sin_family</span>: <span class='ident'>AF_INET</span> <span class='kw'>as</span> <span class='ident'>u8</span>,
+            <span class='ident'>sin_port</span>: <span class='ident'>v4</span>.<span class='ident'>port</span>().<span class='ident'>to_be</span>(),
+            <span class='ident'>sin_addr</span>: <span class='ident'>in_addr</span>{<span class='ident'>s_addr</span>: <span class='ident'>addr_b</span>},
+            <span class='ident'>sin_zero</span>: [<span class='number'>0</span>; <span class='number'>8</span>]
+      }
+    } <span class='kw'>else</span> {
+        <span class='macro'>panic</span><span class='macro'>!</span>(<span class='string'>&quot;ipv6 not implemented (yet) in this binding&quot;</span>);
+    }
+}
+   
+<span class='comment'>// sockaddr_to_SocketAddr</span>
+<span class='kw'>fn</span> <span class='ident'>sockaddr_to_socketaddr</span>(<span class='ident'>s</span>: <span class='ident'>sockaddr</span>) <span class='op'>-&gt;</span> <span class='ident'>SocketAddr</span> {
+    <span class='kw'>let</span> <span class='ident'>fam</span>: <span class='ident'>i32</span> <span class='op'>=</span> <span class='ident'>s</span>.<span class='ident'>sa_family</span> <span class='kw'>as</span> <span class='ident'>i32</span>;
+
+    <span class='kw'>match</span> <span class='ident'>fam</span> {
+        <span class='ident'>AF_INET</span> <span class='op'>=&gt;</span> {
+            <span class='kw'>let</span> <span class='ident'>name1</span>: <span class='ident'>sockaddr_in</span> <span class='op'>=</span> <span class='kw'>unsafe</span>{ <span class='ident'>std</span>::<span class='ident'>mem</span>::<span class='ident'>transmute</span>(<span class='ident'>s</span>) };
+            <span class='kw'>let</span> <span class='ident'>ip</span>: <span class='ident'>u32</span> <span class='op'>=</span> <span class='ident'>name1</span>.<span class='ident'>sin_addr</span>.<span class='ident'>s_addr</span>;
+            <span class='kw'>let</span> <span class='ident'>d</span>: <span class='ident'>u8</span> <span class='op'>=</span> ((<span class='ident'>ip</span> <span class='kw-2'>&amp;</span> <span class='number'>0xff000000</span>) <span class='op'>&gt;&gt;</span> <span class='number'>24</span>) <span class='kw'>as</span> <span class='ident'>u8</span>;
+            <span class='kw'>let</span> <span class='ident'>c</span>: <span class='ident'>u8</span> <span class='op'>=</span> ((<span class='ident'>ip</span> <span class='kw-2'>&amp;</span> <span class='number'>0xff0000</span>) <span class='op'>&gt;&gt;</span> <span class='number'>16</span>) <span class='kw'>as</span> <span class='ident'>u8</span>;
+            <span class='kw'>let</span> <span class='ident'>b</span>: <span class='ident'>u8</span> <span class='op'>=</span> ((<span class='ident'>ip</span> <span class='kw-2'>&amp;</span> <span class='number'>0xff00</span>) <span class='op'>&gt;&gt;</span> <span class='number'>8</span>) <span class='kw'>as</span> <span class='ident'>u8</span>;
+            <span class='kw'>let</span> <span class='ident'>a</span>: <span class='ident'>u8</span> <span class='op'>=</span> ((<span class='ident'>ip</span> <span class='kw-2'>&amp;</span> <span class='number'>0xff</span>)) <span class='kw'>as</span> <span class='ident'>u8</span>;
+            <span class='ident'>SocketAddr</span>::<span class='ident'>V4</span>(<span class='ident'>SocketAddrV4</span>::<span class='ident'>new</span>(
+                        <span class='ident'>std</span>::<span class='ident'>net</span>::<span class='ident'>Ipv4Addr</span>::<span class='ident'>new</span>(<span class='ident'>a</span>, <span class='ident'>b</span>, <span class='ident'>c</span>, <span class='ident'>d</span>),
+                        <span class='ident'>u16</span>::<span class='ident'>from_be</span>(<span class='ident'>name1</span>.<span class='ident'>sin_port</span>)
+                        ))
+        },
+        <span class='ident'>AF_INET6</span> <span class='op'>=&gt;</span> {
+            <span class='macro'>panic</span><span class='macro'>!</span>(<span class='string'>&quot;ipv6 not yet implemented&quot;</span>)
+        },
+        _ <span class='op'>=&gt;</span> <span class='macro'>panic</span><span class='macro'>!</span>(<span class='string'>&quot;unknown family type&quot;</span>)
+    }
+}
+
+
+
+<span class='kw'>impl</span> <span class='ident'>UdtSocket</span> {
+    <span class='kw'>fn</span> <span class='ident'>wrap_raw</span>(<span class='ident'>u</span>: <span class='ident'>raw</span>::<span class='ident'>UDTSOCKET</span>) <span class='op'>-&gt;</span> <span class='ident'>UdtSocket</span> {
+        <span class='ident'>UdtSocket</span>{<span class='ident'>_sock</span>: <span class='ident'>u</span>}
+    }
+    
+    <span class='doccomment'>/// Creates a new UDT Socket.</span>
+    <span class='doccomment'>///</span>
+    <span class='doccomment'>/// Creates a new socket.  There is no limits for the number of UDT sockets in one system, as</span>
+    <span class='doccomment'>/// long as there is enough system resources.  UDT supports both IPv4 and IPv6, which can be</span>
+    <span class='doccomment'>/// selected by the `address_family` parameter. </span>
+    <span class='doccomment'>///</span>
+    <span class='doccomment'>/// Two socket types are supported in UDT:  Stream for data streaming and Datagram for</span>
+    <span class='doccomment'>/// messaging.  Note that UDT sockets are connection oriented in all cases.</span>
+    <span class='doccomment'>///</span>
+    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>new</span>(<span class='ident'>address_family</span>: <span class='ident'>SocketFamily</span>, <span class='ident'>ty</span>: <span class='ident'>SocketType</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span><span class='ident'>UdtSocket</span>, <span class='ident'>UdtError</span><span class='op'>&gt;</span> {
+
+        <span class='kw'>let</span> <span class='ident'>fd</span> <span class='op'>=</span> <span class='kw'>unsafe</span> {
+            <span class='ident'>raw</span>::<span class='ident'>udt_socket</span>(<span class='ident'>address_family</span>.<span class='ident'>get_val</span>(),
+                       <span class='ident'>ty</span>.<span class='ident'>get_val</span>(),
+                       <span class='number'>0</span>)
+        };
+        <span class='kw'>if</span> <span class='ident'>fd</span> <span class='op'>==</span> <span class='ident'>raw</span>::<span class='ident'>INVALID_SOCK</span> {
+            <span class='prelude-val'>Err</span>(<span class='ident'>get_last_err</span>())
+        } <span class='kw'>else</span> {
+            <span class='prelude-val'>Ok</span>(<span class='ident'>UdtSocket</span>{<span class='ident'>_sock</span>: <span class='ident'>fd</span>})
+        }
+    }
+
+    <span class='doccomment'>/// Binds a UDT socket to a known or an available local address.</span>
+    <span class='doccomment'>///</span>
+    <span class='doccomment'>/// The bind method is usually to assign a UDT socket a local address, including IP address and</span>
+    <span class='doccomment'>/// port number. If INADDR_ANY is used, a proper IP address will be used once the UDT</span>
+    <span class='doccomment'>/// connection is set up. If 0 is used for the port, a randomly available port number will be</span>
+    <span class='doccomment'>/// used. The method getsockname can be used to retrieve this port number.</span>
+    <span class='doccomment'>///</span>
+    <span class='doccomment'>/// The bind call is necessary in all cases except for a socket to listen. If bind is not</span>
+    <span class='doccomment'>/// called, UDT will automatically bind a socket to a randomly available address when a</span>
+    <span class='doccomment'>/// connection is set up.</span>
+    <span class='doccomment'>///</span>
+    <span class='doccomment'>/// By default, UDT allows to reuse existing UDP port for new UDT sockets, unless UDT_REUSEADDR</span>
+    <span class='doccomment'>/// is set to false. When UDT_REUSEADDR is false, UDT will create an exclusive UDP port for</span>
+    <span class='doccomment'>/// this UDT socket. UDT_REUSEADDR must be called before bind. To reuse an existing UDT/UDP</span>
+    <span class='doccomment'>/// port, the new UDT socket must explicitly bind to the port. If the port is already used by a</span>
+    <span class='doccomment'>/// UDT socket with UDT_REUSEADDR as false, the new bind will return error. If 0 is passed as</span>
+    <span class='doccomment'>/// the port number, bind always creates a new port, no matter what value the UDT_REUSEADDR</span>
+    <span class='doccomment'>/// sets.</span>
+    <span class='doccomment'>///</span>
+    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>bind</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='ident'>name</span>: <span class='ident'>std</span>::<span class='ident'>net</span>::<span class='ident'>SocketAddr</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span>(), <span class='ident'>UdtError</span><span class='op'>&gt;</span> {
+
+        <span class='kw'>let</span> <span class='ident'>addr</span>: <span class='ident'>sockaddr_in</span> <span class='op'>=</span> <span class='ident'>get_sockaddr</span>(<span class='ident'>name</span>); 
+        <span class='kw'>let</span> <span class='ident'>ret</span> <span class='op'>=</span> <span class='kw'>unsafe</span> {
+            <span class='ident'>raw</span>::<span class='ident'>udt_bind</span>(<span class='self'>self</span>.<span class='ident'>_sock</span>, 
+                          <span class='kw-2'>&amp;</span><span class='ident'>addr</span> <span class='kw'>as</span> <span class='op'>*</span><span class='kw'>const</span> <span class='ident'>libc</span>::<span class='ident'>sockaddr_in</span> <span class='kw'>as</span> <span class='op'>*</span><span class='kw'>const</span> <span class='ident'>libc</span>::<span class='ident'>sockaddr</span>,
+                          <span class='ident'>size_of</span>::<span class='op'>&lt;</span><span class='ident'>sockaddr_in</span><span class='op'>&gt;</span>() <span class='kw'>as</span> <span class='ident'>i32</span>
+                         )
+        };
+        <span class='kw'>if</span> <span class='ident'>ret</span> <span class='op'>==</span> <span class='ident'>raw</span>::<span class='ident'>SUCCESS</span> {
+            <span class='prelude-val'>Ok</span>(())
+        } <span class='kw'>else</span> {
+            <span class='prelude-val'>Err</span>(<span class='ident'>get_last_err</span>())
+        }
+    }
+
+    <span class='doccomment'>/// Binds a UDT socket to an existing UDP socket.</span>
+    <span class='doccomment'>///</span>
+    <span class='doccomment'>/// This second form of bind allows UDT to bind directly on an existing UDP socket. This is</span>
+    <span class='doccomment'>/// usefule for firewall traversing in certain situations: 1) a UDP socket is created and its</span>
+    <span class='doccomment'>/// address is learned from a name server, there is no need to close the UDP socket and open a</span>
+    <span class='doccomment'>/// UDT socket on the same address again; 2) for certain firewall, especially some on local</span>
+    <span class='doccomment'>/// system, the port mapping maybe changed or the &quot;hole&quot; may be closed when a UDP socket is</span>
+    <span class='doccomment'>/// closed and reopened, thus it is necessary to use the UDP socket directly in UDT.</span>
+    <span class='doccomment'>///</span>
+    <span class='doccomment'>/// Use the second form of bind with caution, as it violates certain programming rules</span>
+    <span class='doccomment'>/// regarding code robustness. Once the UDP socket descriptor is passed to UDT, it MUST NOT be</span>
+    <span class='doccomment'>/// touched again. DO NOT use this unless you clearly understand how the related systems work.</span>
+    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>bind_from</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='ident'>other</span>: <span class='ident'>std</span>::<span class='ident'>net</span>::<span class='ident'>UdpSocket</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span>(), <span class='ident'>UdtError</span><span class='op'>&gt;</span> {
+        <span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>os</span>::<span class='ident'>unix</span>::<span class='ident'>io</span>::<span class='ident'>AsRawFd</span>;
+        <span class='kw'>let</span> <span class='ident'>ret</span> <span class='op'>=</span> <span class='kw'>unsafe</span> {
+            <span class='ident'>raw</span>::<span class='ident'>udt_bind2</span>(<span class='self'>self</span>.<span class='ident'>_sock</span>,
+                          <span class='ident'>other</span>.<span class='ident'>as_raw_fd</span>())
+        };
+        <span class='kw'>if</span> <span class='ident'>ret</span> <span class='op'>==</span> <span class='ident'>raw</span>::<span class='ident'>SUCCESS</span> {
+            <span class='prelude-val'>Ok</span>(())
+        } <span class='kw'>else</span> {
+            <span class='prelude-val'>Err</span>(<span class='ident'>get_last_err</span>())
+        }
+    }
+
+    <span class='doccomment'>/// Connects to a server socket (in regular mode) or a peer socket (in rendezvous mode) to set</span>
+    <span class='doccomment'>/// up a UDT connection</span>
+    <span class='doccomment'>///</span>
+    <span class='doccomment'>/// UDT is connection oriented, for both of its `Stream` and `Datagram` mode. `connect` must</span>
+    <span class='doccomment'>/// be called in order to set up a UDT connection. The name parameter is the address of the</span>
+    <span class='doccomment'>/// server or the peer side. In regular (default) client/server mode, the server side must has</span>
+    <span class='doccomment'>/// called bind and listen. In rendezvous mode, both sides must call bind and connect to each</span>
+    <span class='doccomment'>/// other at (approximately) the same time. Rendezvous connect may not be used for more than</span>
+    <span class='doccomment'>/// one connections on the same UDP port pair, in which case UDT_REUSEADDR may be set to false.</span>
+    <span class='doccomment'>///</span>
+    <span class='doccomment'>/// UDT connect takes at least one round trip to finish. This may become a bottleneck if</span>
+    <span class='doccomment'>/// applications frequently connect and disconnect to the same address.</span>
+    <span class='doccomment'>///</span>
+    <span class='doccomment'>/// When UDT_RCVSYN is set to false, the connect call will return immediately and perform the</span>
+    <span class='doccomment'>/// actual connection setup at background. Applications may use epoll to wait for the connect</span>
+    <span class='doccomment'>/// to complete.</span>
+    <span class='doccomment'>///</span>
+    <span class='doccomment'>/// When connect fails, the UDT socket can still be used to connect again. However, if the</span>
+    <span class='doccomment'>/// socket was not bound before, it may be bound implicitly, as mentioned above, even if the</span>
+    <span class='doccomment'>/// connect fails. In addition, in the situation when the connect call fails, the UDT socket</span>
+    <span class='doccomment'>/// will not be automatically released, it is the applications&#39; responsibility to close the</span>
+    <span class='doccomment'>/// socket, if the socket is not needed anymore (e.g., to re-connect).</span>
+    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>connect</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='ident'>name</span>: <span class='ident'>std</span>::<span class='ident'>net</span>::<span class='ident'>SocketAddr</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span>(), <span class='ident'>UdtError</span><span class='op'>&gt;</span> {
+        <span class='kw'>let</span> <span class='ident'>addr</span> <span class='op'>=</span> <span class='ident'>get_sockaddr</span>(<span class='ident'>name</span>);
+        <span class='kw'>let</span> <span class='ident'>ret</span> <span class='op'>=</span> <span class='kw'>unsafe</span> {
+            <span class='ident'>raw</span>::<span class='ident'>udt_connect</span>(<span class='self'>self</span>.<span class='ident'>_sock</span>, <span class='kw-2'>&amp;</span><span class='ident'>addr</span> <span class='kw'>as</span> <span class='op'>*</span><span class='kw'>const</span> <span class='ident'>libc</span>::<span class='ident'>sockaddr_in</span> <span class='kw'>as</span> <span class='op'>*</span><span class='kw'>const</span> <span class='ident'>libc</span>::<span class='ident'>sockaddr</span>,
+                             <span class='ident'>size_of</span>::<span class='op'>&lt;</span><span class='ident'>sockaddr_in</span><span class='op'>&gt;</span>() <span class='kw'>as</span> <span class='ident'>i32</span>)
+        };
+        <span class='macro'>trace</span><span class='macro'>!</span>(<span class='string'>&quot;connect returned  {:?}&quot;</span>, <span class='ident'>ret</span>);
+        <span class='kw'>if</span> <span class='ident'>ret</span> <span class='op'>==</span> <span class='ident'>raw</span>::<span class='ident'>SUCCESS</span> {
+            <span class='prelude-val'>Ok</span>(())
+        } <span class='kw'>else</span> {
+            <span class='prelude-val'>Err</span>(<span class='ident'>get_last_err</span>())
+        }
+
+    }
+
+    <span class='doccomment'>/// Enables a user UDT entity to wait for clients to connect.</span>
+    <span class='doccomment'>///</span>
+    <span class='doccomment'>/// The listen method lets a UDT socket enter a listening state.  The sock must call `bind`</span>
+    <span class='doccomment'>/// before a `listen` call.  In addition, if the socket is enabled for rendezvous mode, neither</span>
+    <span class='doccomment'>/// listen nor accept can be used on the socket.  A UDT socket can call `listen` more than</span>
+    <span class='doccomment'>/// once, in which case only the first call is effective, while all subsequent calls will be</span>
+    <span class='doccomment'>/// ignored if the socket is already in the listening state.</span>
+    <span class='doccomment'>///</span>
+    <span class='doccomment'>/// `backlog` specifies the maximum number of pending connections.</span>
+    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>listen</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='ident'>backlog</span>: <span class='ident'>i32</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span>(), <span class='ident'>UdtError</span><span class='op'>&gt;</span> {
+        <span class='kw'>let</span> <span class='ident'>ret</span> <span class='op'>=</span> <span class='kw'>unsafe</span> { <span class='ident'>raw</span>::<span class='ident'>udt_listen</span>(<span class='self'>self</span>.<span class='ident'>_sock</span>, <span class='ident'>backlog</span>) };
+
+        <span class='kw'>if</span> <span class='ident'>ret</span> <span class='op'>==</span> <span class='ident'>raw</span>::<span class='ident'>SUCCESS</span> {
+            <span class='prelude-val'>Ok</span>(())
+        } <span class='kw'>else</span> {
+            <span class='prelude-val'>Err</span>(<span class='ident'>get_last_err</span>())
+        }
+    }
+
+    <span class='doccomment'>/// Retrieves an incoming connection.</span>
+    <span class='doccomment'>///</span>
+    <span class='doccomment'>/// Once a UDT socket is in listening state, it accepts new connections and maintains the</span>
+    <span class='doccomment'>/// pending connections in a queue. An accept call retrieves the first connection in the queue,</span>
+    <span class='doccomment'>/// removes it from the queue, and returns the associate socket descriptor.</span>
+    <span class='doccomment'>///</span>
+    <span class='doccomment'>/// If there is no connections in the queue when accept is called, a blocking socket will wait</span>
+    <span class='doccomment'>/// until a new connection is set up, whereas a non-blocking socket will return immediately</span>
+    <span class='doccomment'>/// with an error.</span>
+    <span class='doccomment'>///</span>
+    <span class='doccomment'>/// The accepted sockets will inherit all proper attributes from the listening socket.</span>
+    <span class='doccomment'>///</span>
+    <span class='doccomment'>/// # Returns</span>
+    <span class='doccomment'>///</span>
+    <span class='doccomment'>/// Returns a tuple containing the new UdtSocket and a `SockAddr` structure containing the</span>
+    <span class='doccomment'>/// address of the new peer</span>
+    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>accept</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span>(<span class='ident'>UdtSocket</span>, <span class='ident'>SocketAddr</span>), <span class='ident'>UdtError</span><span class='op'>&gt;</span> {
+        <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>peer</span> <span class='op'>=</span> <span class='kw'>unsafe</span> { <span class='ident'>std</span>::<span class='ident'>mem</span>::<span class='ident'>zeroed</span>() };
+        <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>size</span>: <span class='ident'>i32</span> <span class='op'>=</span> <span class='ident'>size_of</span>::<span class='op'>&lt;</span><span class='ident'>sockaddr</span><span class='op'>&gt;</span>() <span class='kw'>as</span> <span class='ident'>i32</span>;
+        <span class='kw'>let</span> <span class='ident'>ret</span> <span class='op'>=</span> <span class='kw'>unsafe</span> { <span class='ident'>raw</span>::<span class='ident'>udt_accept</span>(<span class='self'>self</span>.<span class='ident'>_sock</span>, <span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='ident'>peer</span>, <span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='ident'>size</span>) };
+        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>size</span>, <span class='ident'>size_of</span>::<span class='op'>&lt;</span><span class='ident'>sockaddr</span><span class='op'>&gt;</span>() <span class='kw'>as</span> <span class='ident'>i32</span>);
+        <span class='kw'>if</span> <span class='ident'>ret</span> <span class='op'>==</span> <span class='ident'>raw</span>::<span class='ident'>INVALID_SOCK</span> {
+            <span class='prelude-val'>Err</span>(<span class='ident'>get_last_err</span>())
+        } <span class='kw'>else</span> {
+            <span class='kw'>let</span> <span class='ident'>new_sock</span> <span class='op'>=</span> <span class='ident'>UdtSocket</span>::<span class='ident'>wrap_raw</span>(<span class='ident'>ret</span>);
+            <span class='kw'>let</span> <span class='ident'>addr</span> <span class='op'>=</span> <span class='ident'>sockaddr_to_socketaddr</span>(<span class='ident'>peer</span>);
+            <span class='prelude-val'>Ok</span>((<span class='ident'>new_sock</span>, <span class='ident'>addr</span>))
+        }
+    }
+
+
+    <span class='doccomment'>/// Close a UDT connection</span>
+    <span class='doccomment'>///</span>
+    <span class='doccomment'>/// The close method gracefully shutdowns the UDT connection and releases all related data</span>
+    <span class='doccomment'>/// structures associated with the UDT socket. If there is no connection associated with the</span>
+    <span class='doccomment'>/// socket, close simply release the socket resources.</span>
+    <span class='doccomment'>///</span>
+    <span class='doccomment'>/// On a blocking socket, if UDT_LINGER is non-zero, the close call will wait until all data in</span>
+    <span class='doccomment'>/// the sending buffer are sent out or the waiting time has exceeded the expiration time set by</span>
+    <span class='doccomment'>/// UDT_LINGER. However, if UDT_SYNSND is set to false (i.e., non-blocking sending), close will</span>
+    <span class='doccomment'>/// return immediately and any linger data will be sent at background until the linger timer</span>
+    <span class='doccomment'>/// expires.</span>
+    <span class='doccomment'>///</span>
+    <span class='doccomment'>/// The closing UDT socket will send a shutdown message to the peer side so that the peer</span>
+    <span class='doccomment'>/// socket will also be closed. This is a best-effort message. If the message is not</span>
+    <span class='doccomment'>/// successfully delivered, the peer side will also be closed after a time-out. In UDT,</span>
+    <span class='doccomment'>/// shutdown is not supported.</span>
+    <span class='doccomment'>///</span>
+    <span class='doccomment'>/// All sockets should be closed if they are not used any more.</span>
+    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>close</span>(<span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span>(), <span class='ident'>UdtError</span><span class='op'>&gt;</span> {
+        <span class='kw'>let</span> <span class='ident'>ret</span> <span class='op'>=</span> <span class='kw'>unsafe</span> { <span class='ident'>raw</span>::<span class='ident'>udt_close</span>(<span class='self'>self</span>.<span class='ident'>_sock</span>) };
+        <span class='kw'>if</span> <span class='ident'>ret</span> <span class='op'>==</span> <span class='ident'>raw</span>::<span class='ident'>SUCCESS</span> {
+            <span class='prelude-val'>Ok</span>(())
+        } <span class='kw'>else</span> {
+            <span class='prelude-val'>Err</span>(<span class='ident'>get_last_err</span>())
+        }
+    }
+
+
+    <span class='doccomment'>/// Retrieves the address information of the peer side of a connected UDT socket</span>
+    <span class='doccomment'>///</span>
+    <span class='doccomment'>/// The getpeername retrieves the address of the peer side associated to the connection. The</span>
+    <span class='doccomment'>/// UDT socket must be connected at the time when this method is called.</span>
+    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>getpeername</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span><span class='ident'>std</span>::<span class='ident'>net</span>::<span class='ident'>SocketAddr</span>, <span class='ident'>UdtError</span><span class='op'>&gt;</span> {
+        <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>name</span> <span class='op'>=</span> <span class='kw'>unsafe</span> { <span class='ident'>std</span>::<span class='ident'>mem</span>::<span class='ident'>zeroed</span>() };
+        <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>size</span>: <span class='ident'>i32</span> <span class='op'>=</span> <span class='ident'>size_of</span>::<span class='op'>&lt;</span><span class='ident'>sockaddr</span><span class='op'>&gt;</span>() <span class='kw'>as</span> <span class='ident'>i32</span>;
+        <span class='kw'>let</span> <span class='ident'>ret</span> <span class='op'>=</span> <span class='kw'>unsafe</span> { <span class='ident'>raw</span>::<span class='ident'>udt_getpeername</span>(<span class='self'>self</span>.<span class='ident'>_sock</span>,<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='ident'>name</span>, <span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='ident'>size</span>) };
+        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>size</span> <span class='kw'>as</span> <span class='ident'>usize</span>, <span class='ident'>size_of</span>::<span class='op'>&lt;</span><span class='ident'>sockaddr</span><span class='op'>&gt;</span>());
+        <span class='kw'>if</span> <span class='ident'>ret</span> <span class='op'>!=</span> <span class='ident'>raw</span>::<span class='ident'>SUCCESS</span> {
+            <span class='prelude-val'>Err</span>(<span class='ident'>get_last_err</span>())
+        } <span class='kw'>else</span> {
+            <span class='prelude-val'>Ok</span>(<span class='ident'>sockaddr_to_socketaddr</span>(<span class='ident'>name</span>))
+        }
+    }
+   
+    <span class='doccomment'>/// Retrieves the local address associated with a UDT socket.</span>
+    <span class='doccomment'>///</span>
+    <span class='doccomment'>/// The getsockname retrieves the local address associated with the socket. The UDT socket must</span>
+    <span class='doccomment'>/// be bound explicitly (via bind) or implicitly (via connect), otherwise this method will fail</span>
+    <span class='doccomment'>/// because there is no meaningful address bound to the socket.</span>
+    <span class='doccomment'>///</span>
+    <span class='doccomment'>/// If getsockname is called after an explicit bind, but before connect, the IP address</span>
+    <span class='doccomment'>/// returned will be exactly the IP address that is used for bind and it may be 0.0.0.0 if</span>
+    <span class='doccomment'>/// ADDR_ANY is used. If getsockname is called after connect, the IP address returned will be</span>
+    <span class='doccomment'>/// the address that the peer socket sees. In the case when there is a proxy (e.g., NAT), the</span>
+    <span class='doccomment'>/// IP address returned will be the translated address by the proxy, but not a local address.</span>
+    <span class='doccomment'>/// If there is no proxy, the IP address returned will be a local address. In either case, the</span>
+    <span class='doccomment'>/// port number is local (i.e, not the translated proxy port).</span>
+    <span class='doccomment'>///</span>
+    <span class='doccomment'>/// Because UDP is connection-less, using getsockname on a UDP port will almost always return</span>
+    <span class='doccomment'>/// 0.0.0.0 as IP address (unless it is bound to an explicit IP) . As a connection oriented</span>
+    <span class='doccomment'>/// protocol, UDT will return a meaningful IP address by getsockname if there is no proxy</span>
+    <span class='doccomment'>/// translation exist.</span>
+    <span class='doccomment'>///</span>
+    <span class='doccomment'>/// UDT has no multihoming support yet. When there are multiple local addresses and more than</span>
+    <span class='doccomment'>/// one of them can be routed to the destination address, UDT may not behave properly due to</span>
+    <span class='doccomment'>/// the multi-path effect. In this case, the UDT socket must be explicitly bound to one of</span>
+    <span class='doccomment'>/// the local addresses.</span>
+    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>getsockname</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span><span class='ident'>std</span>::<span class='ident'>net</span>::<span class='ident'>SocketAddr</span>, <span class='ident'>UdtError</span><span class='op'>&gt;</span> {
+        <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>name</span> <span class='op'>=</span> <span class='kw'>unsafe</span> { <span class='ident'>std</span>::<span class='ident'>mem</span>::<span class='ident'>zeroed</span>() };
+        <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>size</span>: <span class='ident'>i32</span> <span class='op'>=</span> <span class='ident'>size_of</span>::<span class='op'>&lt;</span><span class='ident'>sockaddr</span><span class='op'>&gt;</span>() <span class='kw'>as</span> <span class='ident'>i32</span>;
+        <span class='kw'>let</span> <span class='ident'>ret</span> <span class='op'>=</span> <span class='kw'>unsafe</span> { <span class='ident'>raw</span>::<span class='ident'>udt_getsockname</span>(<span class='self'>self</span>.<span class='ident'>_sock</span>,<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='ident'>name</span>, <span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='ident'>size</span>) };
+
+        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>size</span> <span class='kw'>as</span> <span class='ident'>usize</span>, <span class='ident'>size_of</span>::<span class='op'>&lt;</span><span class='ident'>sockaddr</span><span class='op'>&gt;</span>());
+        <span class='kw'>if</span> <span class='ident'>ret</span> <span class='op'>!=</span> <span class='ident'>raw</span>::<span class='ident'>SUCCESS</span> {
+            <span class='prelude-val'>Err</span>(<span class='ident'>get_last_err</span>())
+        } <span class='kw'>else</span> {
+            <span class='prelude-val'>Ok</span>(<span class='ident'>sockaddr_to_socketaddr</span>(<span class='ident'>name</span>))
+        }
+
+    }
+
+    <span class='doccomment'>/// Sends a message to the peer side.</span>
+    <span class='doccomment'>///</span>
+    <span class='doccomment'>/// The sendmsg method sends a message to the peer side. The UDT socket must be in SOCK_DGRAM</span>
+    <span class='doccomment'>/// mode in order to send or receive messages. Message is the minimum data unit in this</span>
+    <span class='doccomment'>/// situation. In particular, sendmsg always tries to send the message out as a whole, that is,</span>
+    <span class='doccomment'>/// the message will either to completely sent or it is not sent at all.</span>
+    <span class='doccomment'>///</span>
+    <span class='doccomment'>/// In blocking mode (default), sendmsg waits until there is enough space to hold the whole</span>
+    <span class='doccomment'>/// message. In non-blocking mode, sendmsg returns immediately and returns error if no buffer</span>
+    <span class='doccomment'>/// space available.</span>
+    <span class='doccomment'>///</span>
+    <span class='doccomment'>/// If UDT_SNDTIMEO is set and the socket is in blocking mode, sendmsg only waits a limited</span>
+    <span class='doccomment'>/// time specified by UDT_SNDTIMEO option. If there is still no buffer space available when the</span>
+    <span class='doccomment'>/// timer expires, error will be returned. UDT_SNDTIMEO has no effect for non-blocking socket.</span>
+    <span class='doccomment'>///</span>
+    <span class='doccomment'>/// The ttl parameter gives the message a limited life time, which starts counting once the</span>
+    <span class='doccomment'>/// first packet of the message is sent out. If the message has not been delivered to the</span>
+    <span class='doccomment'>/// receiver after the TTL timer expires and each packet in the message has been sent out at</span>
+    <span class='doccomment'>/// least once, the message will be discarded. Lost packets in the message will be</span>
+    <span class='doccomment'>/// retransmitted before TTL expires.</span>
+    <span class='doccomment'>///</span>
+    <span class='doccomment'>/// On the other hand, the inorder option decides if this message should be delivered in order.</span>
+    <span class='doccomment'>/// That is, the message should not be delivered to the receiver side application unless all</span>
+    <span class='doccomment'>/// messages prior to it are either delivered or discarded.</span>
+    <span class='doccomment'>///</span>
+    <span class='doccomment'>/// Finally, if the message size is greater than the size of the receiver buffer, the message</span>
+    <span class='doccomment'>/// will never be received in whole by the receiver side. Only the beginning part that can be</span>
+    <span class='doccomment'>/// hold in the receiver buffer may be read and the rest will be discarded.</span>
+    <span class='doccomment'>///</span>
+    <span class='doccomment'>/// # Returns</span>
+    <span class='doccomment'>///</span>
+    <span class='doccomment'>/// On success, sendmsg returns the actual size of message that has just been sent. The size</span>
+    <span class='doccomment'>/// should be equal to len. Otherwise UDT::ERROR is returned and specific error information can</span>
+    <span class='doccomment'>/// be retrieved by getlasterror. If UDT_SNDTIMEO is set to a positive value, zero will be</span>
+    <span class='doccomment'>/// returned if the message cannot be sent before the timer expires.</span>
+    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>sendmsg</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='ident'>buf</span>: <span class='kw-2'>&amp;</span>[<span class='ident'>u8</span>]) <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span><span class='ident'>i32</span>, <span class='ident'>UdtError</span><span class='op'>&gt;</span> {
+
+        <span class='kw'>let</span> <span class='ident'>ret</span> <span class='op'>=</span> <span class='kw'>unsafe</span> {
+            <span class='ident'>raw</span>::<span class='ident'>udt_sendmsg</span>(<span class='self'>self</span>.<span class='ident'>_sock</span>, 
+                             <span class='ident'>buf</span>.<span class='ident'>as_ptr</span>(),
+                             <span class='ident'>buf</span>.<span class='ident'>len</span>() <span class='kw'>as</span> <span class='ident'>i32</span>,
+                             <span class='op'>-</span><span class='number'>1</span> <span class='kw'>as</span> <span class='ident'>i32</span>,
+                             <span class='number'>1</span> <span class='kw'>as</span> <span class='ident'>i32</span>)
+        };
+        <span class='kw'>if</span> <span class='ident'>ret</span> <span class='op'>==</span> <span class='ident'>raw</span>::<span class='ident'>UDT_ERROR</span> {
+            <span class='prelude-val'>Err</span>(<span class='ident'>get_last_err</span>())
+        } <span class='kw'>else</span> {
+            <span class='prelude-val'>Ok</span>(<span class='ident'>ret</span>)
+        }
+    }
+
+
+    <span class='doccomment'>/// Sends out a certain amount of data from an application buffer.</span>
+    <span class='doccomment'>///</span>
+    <span class='doccomment'>/// The send method sends certain amount of data from the application buffer. If the the size</span>
+    <span class='doccomment'>/// limit of sending buffer queue is reached, send only sends a portion of the application</span>
+    <span class='doccomment'>/// buffer and returns the actual size of data that has been sent.</span>
+    <span class='doccomment'>///</span>
+    <span class='doccomment'>/// In blocking mode (default), send waits until there is some sending buffer space available.</span>
+    <span class='doccomment'>/// In non-blocking mode, send returns immediately and returns error if the sending queue limit</span>
+    <span class='doccomment'>/// is already limited.</span>
+    <span class='doccomment'>///</span>
+    <span class='doccomment'>/// If UDT_SNDTIMEO is set and the socket is in blocking mode, send only waits a limited time</span>
+    <span class='doccomment'>/// specified by UDT_SNDTIMEO option. If there is still no buffer space available when the</span>
+    <span class='doccomment'>/// timer expires, error will be returned. UDT_SNDTIMEO has no effect for non-blocking socket.</span>
+    <span class='doccomment'>///</span>
+    <span class='doccomment'>/// # Returns</span>
+    <span class='doccomment'>///</span>
+    <span class='doccomment'>/// On success, returns the actual size of the data that as been sent.  Otherwise, a UdtError</span>
+    <span class='doccomment'>/// is returned with specific error information.</span>
+    <span class='doccomment'>///</span>
+    <span class='doccomment'>/// If UDT_SNDTIMEO is set to a positive value, zero will be returned if no data is sent before</span>
+    <span class='doccomment'>/// the time expires.</span>
+    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>send</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='ident'>buf</span>: <span class='kw-2'>&amp;</span>[<span class='ident'>u8</span>]) <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span><span class='ident'>i32</span>, <span class='ident'>UdtError</span><span class='op'>&gt;</span> {
+
+        <span class='kw'>let</span> <span class='ident'>ret</span> <span class='op'>=</span> <span class='kw'>unsafe</span> { <span class='ident'>raw</span>::<span class='ident'>udt_send</span>(<span class='self'>self</span>.<span class='ident'>_sock</span>, <span class='ident'>buf</span>.<span class='ident'>as_ptr</span>(), <span class='ident'>buf</span>.<span class='ident'>len</span>() <span class='kw'>as</span> <span class='ident'>i32</span>, <span class='number'>0</span>) };
+        <span class='kw'>if</span> <span class='ident'>ret</span> <span class='op'>==</span> <span class='ident'>raw</span>::<span class='ident'>UDT_ERROR</span> {
+            <span class='prelude-val'>Err</span>(<span class='ident'>get_last_err</span>())
+        } <span class='kw'>else</span> {
+            <span class='prelude-val'>Ok</span>(<span class='ident'>ret</span>)
+        }
+
+
+    }
+
+    <span class='doccomment'>/// The recvmsg method receives a valid message.</span>
+    <span class='doccomment'>///</span>
+    <span class='doccomment'>/// The recvmsg method reads a message from the protocol buffer. The UDT socket must be in</span>
+    <span class='doccomment'>/// SOCK_DGRAM mode in order to send or receive messages. Message is the minimum data unit in</span>
+    <span class='doccomment'>/// this situation. Each recvmsg will read no more than one message, even if the message is</span>
+    <span class='doccomment'>/// smaller than the size of buf and there are more messages available. On the other hand, if</span>
+    <span class='doccomment'>/// the buf is not enough to hold the first message, only part of the message will be copied</span>
+    <span class='doccomment'>/// into the buffer, but the message will still be discarded after this recvmsg call.</span>
+    <span class='doccomment'>///</span>
+    <span class='doccomment'>/// In blocking mode (default), recvmsg waits until there is a valid message received into the</span>
+    <span class='doccomment'>/// receiver buffer. In non-blocking mode, recvmsg returns immediately and returns error if no</span>
+    <span class='doccomment'>/// message available.</span>
+    <span class='doccomment'>///</span>
+    <span class='doccomment'>/// If UDT_RCVTIMEO is set and the socket is in blocking mode, recvmsg only waits a limited</span>
+    <span class='doccomment'>/// time specified by UDT_RCVTIMEO option. If there is still no message available when the</span>
+    <span class='doccomment'>/// timer expires, error will be returned. UDT_RCVTIMEO has no effect for non-blocking socket.</span>
+    <span class='doccomment'>///</span>
+    <span class='doccomment'>/// # Returns</span>
+    <span class='doccomment'>///</span>
+    <span class='doccomment'>/// On success, recvmsg returns the actual size of received message. Otherwise UDT::ERROR is</span>
+    <span class='doccomment'>/// returned and specific error information can be retrieved by getlasterror. If UDT_RCVTIMEO</span>
+    <span class='doccomment'>/// is set to a positive value, zero will be returned if no message is received before the</span>
+    <span class='doccomment'>/// timer expires.</span>
+    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>recvmsg</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='ident'>len</span>: <span class='ident'>usize</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span><span class='ident'>Vec</span><span class='op'>&lt;</span><span class='ident'>u8</span><span class='op'>&gt;</span>, <span class='ident'>UdtError</span><span class='op'>&gt;</span> {
+        <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>v</span>: <span class='ident'>Vec</span><span class='op'>&lt;</span><span class='ident'>u8</span><span class='op'>&gt;</span> <span class='op'>=</span> <span class='ident'>Vec</span>::<span class='ident'>with_capacity</span>(<span class='ident'>len</span>);
+        <span class='ident'>v</span>.<span class='ident'>extend</span>(<span class='ident'>std</span>::<span class='ident'>iter</span>::<span class='ident'>repeat</span>(<span class='number'>0</span> <span class='kw'>as</span> <span class='ident'>u8</span>).<span class='ident'>take</span>(<span class='ident'>len</span>).<span class='ident'>collect</span>::<span class='op'>&lt;</span><span class='ident'>Vec</span><span class='op'>&lt;</span><span class='ident'>u8</span><span class='op'>&gt;&gt;</span>());
+        <span class='kw'>let</span> <span class='ident'>ret</span> <span class='op'>=</span> <span class='kw'>unsafe</span> {
+            <span class='ident'>raw</span>::<span class='ident'>udt_recvmsg</span>(<span class='self'>self</span>.<span class='ident'>_sock</span>, 
+                             <span class='ident'>v</span>.<span class='ident'>as_mut_ptr</span>(),
+                             <span class='ident'>len</span> <span class='kw'>as</span> <span class='ident'>i32</span>)
+        };
+        <span class='kw'>if</span> <span class='ident'>ret</span> <span class='op'>&gt;</span> <span class='number'>0</span> {
+            <span class='ident'>v</span>.<span class='ident'>truncate</span>(<span class='ident'>ret</span> <span class='kw'>as</span> <span class='ident'>usize</span>);
+            <span class='prelude-val'>Ok</span>(<span class='ident'>v</span>)
+        } <span class='kw'>else</span> {
+            <span class='prelude-val'>Err</span>(<span class='ident'>get_last_err</span>())
+        }
+    }
+
+    <span class='doccomment'>/// Reads a certain amount of data into a local memory buffer.</span>
+    <span class='doccomment'>///</span>
+    <span class='doccomment'>/// The recv method reads certain amount of data from the protocol buffer. If there is not</span>
+    <span class='doccomment'>/// enough data in the buffer, recv only reads the available data in the protocol buffer and</span>
+    <span class='doccomment'>/// returns the actual size of data received. However, recv will never read more data than the</span>
+    <span class='doccomment'>/// buffer size indicates by len.</span>
+    <span class='doccomment'>///</span>
+    <span class='doccomment'>/// In blocking mode (default), recv waits until there is some data received into the receiver</span>
+    <span class='doccomment'>/// buffer. In non-blocking mode, recv returns immediately and returns error if no data</span>
+    <span class='doccomment'>/// available.</span>
+    <span class='doccomment'>///</span>
+    <span class='doccomment'>/// If UDT_RCVTIMEO is set and the socket is in blocking mode, recv only waits a limited time</span>
+    <span class='doccomment'>/// specified by UDT_RCVTIMEO option. If there is still no data available when the timer</span>
+    <span class='doccomment'>/// expires, error will be returned. UDT_RCVTIMEO has no effect for non-blocking socket.</span>
+    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>recv</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='ident'>buf</span>: <span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> [<span class='ident'>u8</span>], <span class='ident'>len</span>: <span class='ident'>usize</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span><span class='ident'>i32</span>, <span class='ident'>UdtError</span><span class='op'>&gt;</span> {
+        <span class='kw'>let</span> <span class='ident'>ret</span> <span class='op'>=</span> <span class='kw'>unsafe</span> {
+            <span class='ident'>raw</span>::<span class='ident'>udt_recv</span>(<span class='self'>self</span>.<span class='ident'>_sock</span>, <span class='ident'>buf</span>.<span class='ident'>as_mut_ptr</span>(), <span class='ident'>len</span> <span class='kw'>as</span> <span class='ident'>i32</span>, <span class='number'>0</span>)
+        };
+
+        <span class='kw'>if</span> <span class='ident'>ret</span> <span class='op'>==</span> <span class='ident'>raw</span>::<span class='ident'>UDT_ERROR</span> {
+            <span class='prelude-val'>Err</span>(<span class='ident'>get_last_err</span>())
+        } <span class='kw'>else</span> {
+            <span class='prelude-val'>Ok</span>(<span class='ident'>ret</span>)
+        }
+
+    }
+
+    <span class='doccomment'>/// Gets UDT options</span>
+    <span class='doccomment'>///</span>
+    <span class='doccomment'>/// See the [`UdtOpts`][1] module for all the supported option types.  </span>
+    <span class='doccomment'>///</span>
+    <span class='doccomment'>/// [1]: UdtOpts/index.html</span>
+    <span class='doccomment'>///</span>
+    <span class='doccomment'>/// # Example</span>
+    <span class='doccomment'>///</span>
+    <span class='doccomment'>/// ```</span>
+    <span class='doccomment'>/// use udt::*;</span>
+    <span class='doccomment'>///</span>
+    <span class='doccomment'>/// let sock = UdtSocket::new(SocketFamily::AFInet, SocketType::Stream).unwrap();</span>
+    <span class='doccomment'>/// let recv_buf: i32 = sock.getsockopt(UdtOpts::UDP_RCVBUF).unwrap();</span>
+    <span class='doccomment'>/// ```</span>
+    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>getsockopt</span><span class='op'>&lt;</span><span class='ident'>B</span>: <span class='ident'>Default</span>, <span class='ident'>T</span>: <span class='ident'>UdtOption</span><span class='op'>&lt;</span><span class='ident'>B</span><span class='op'>&gt;&gt;</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='ident'>opt</span>: <span class='ident'>T</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span><span class='ident'>B</span>, <span class='ident'>UdtError</span><span class='op'>&gt;</span> {
+        <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>val</span>: <span class='ident'>B</span> <span class='op'>=</span> <span class='kw'>unsafe</span>{ <span class='ident'>std</span>::<span class='ident'>mem</span>::<span class='ident'>zeroed</span>() };
+        <span class='kw'>let</span> <span class='ident'>val_p</span>: <span class='op'>*</span><span class='kw-2'>mut</span> <span class='ident'>B</span> <span class='op'>=</span> <span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='ident'>val</span>;
+        <span class='kw'>let</span> <span class='ident'>ty</span>: <span class='ident'>raw</span>::<span class='ident'>UDTOpt</span> <span class='op'>=</span> <span class='ident'>opt</span>.<span class='ident'>get_type</span>();
+        <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>size</span>: <span class='ident'>c_int</span> <span class='op'>=</span> <span class='ident'>size_of</span>::<span class='op'>&lt;</span><span class='ident'>B</span><span class='op'>&gt;</span>() <span class='kw'>as</span> <span class='ident'>i32</span>;
+        <span class='kw'>let</span> <span class='ident'>ret</span> <span class='op'>=</span> <span class='kw'>unsafe</span> { <span class='ident'>raw</span>::<span class='ident'>udt_getsockopt</span>(<span class='self'>self</span>.<span class='ident'>_sock</span>, <span class='number'>0</span>, <span class='ident'>ty</span>, <span class='ident'>val_p</span> <span class='kw'>as</span> <span class='op'>*</span><span class='kw-2'>mut</span> <span class='ident'>libc</span>::<span class='ident'>c_void</span>, <span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='ident'>size</span>) };
+        
+        <span class='kw'>if</span> <span class='ident'>ret</span> <span class='op'>==</span> <span class='ident'>raw</span>::<span class='ident'>SUCCESS</span> {
+            <span class='prelude-val'>Ok</span>(<span class='ident'>val</span>)
+        } <span class='kw'>else</span> {
+            <span class='prelude-val'>Err</span>(<span class='ident'>get_last_err</span>())
+        }
+
+    }
+
+    <span class='doccomment'>/// Sets UDT options</span>
+    <span class='doccomment'>///</span>
+    <span class='doccomment'>/// See the [`UdtOpts`][1] module for all the supported option types.  </span>
+    
+    <span class='doccomment'>/// [1]: UdtOpts/index.html</span>
+    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>setsockopt</span><span class='op'>&lt;</span><span class='ident'>B</span>, <span class='ident'>T</span>: <span class='ident'>UdtOption</span><span class='op'>&lt;</span><span class='ident'>B</span><span class='op'>&gt;&gt;</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='ident'>opt</span>: <span class='ident'>T</span>, <span class='ident'>value</span>: <span class='ident'>B</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span>(), <span class='ident'>UdtError</span><span class='op'>&gt;</span> {
+        <span class='kw'>let</span> <span class='ident'>ty</span>: <span class='ident'>raw</span>::<span class='ident'>UDTOpt</span> <span class='op'>=</span> <span class='ident'>opt</span>.<span class='ident'>get_type</span>();
+        <span class='kw'>let</span> <span class='ident'>val_p</span>: <span class='op'>*</span><span class='kw'>const</span> <span class='ident'>B</span> <span class='op'>=</span> <span class='kw-2'>&amp;</span><span class='ident'>value</span>;
+        <span class='kw'>let</span> <span class='ident'>size</span>: <span class='ident'>c_int</span> <span class='op'>=</span> <span class='ident'>size_of</span>::<span class='op'>&lt;</span><span class='ident'>B</span><span class='op'>&gt;</span>() <span class='kw'>as</span> <span class='ident'>i32</span>;
+
+        <span class='kw'>let</span> <span class='ident'>ret</span> <span class='op'>=</span> <span class='kw'>unsafe</span> {
+            <span class='ident'>raw</span>::<span class='ident'>udt_setsockopt</span>(<span class='self'>self</span>.<span class='ident'>_sock</span>, <span class='number'>0</span>, <span class='ident'>ty</span>, <span class='ident'>val_p</span> <span class='kw'>as</span> <span class='op'>*</span><span class='kw'>const</span> <span class='ident'>libc</span>::<span class='ident'>c_void</span>, <span class='ident'>size</span>)
+        };
+        
+        <span class='kw'>if</span> <span class='ident'>ret</span> <span class='op'>==</span> <span class='ident'>raw</span>::<span class='ident'>SUCCESS</span> {
+            <span class='prelude-val'>Ok</span>(())
+        } <span class='kw'>else</span> {
+            <span class='prelude-val'>Err</span>(<span class='ident'>get_last_err</span>())
+        }
+    }
+
+    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>getstate</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>UdtStatus</span> {
+        <span class='kw'>unsafe</span> { <span class='ident'>raw</span>::<span class='ident'>udt_getsockstate</span>(<span class='self'>self</span>.<span class='ident'>_sock</span>) }
+    }
+}
+
+<span class='doccomment'>/// Used with the `epoll*` methods of a UDTSocket</span>
+<span class='doccomment'>///</span>
+<span class='doccomment'>/// The epoll functions provides a highly scalable and efficient way to wait for UDT sockets IO</span>
+<span class='doccomment'>/// events. It should be used instead of select and selectEx when the application needs to wait for</span>
+<span class='doccomment'>/// a very large number of sockets. In addition, epoll also offers to wait on system sockets at the</span>
+<span class='doccomment'>/// same time, which can be convenient when an application uses both UDT and TCP/UDP.</span>
+<span class='doccomment'>///</span>
+<span class='doccomment'>/// Applications should use [`Epoll::create`][1] to create an epoll ID and use [`add_usock`][2]/ssock and</span>
+<span class='doccomment'>/// [`remove_usock`][3]/ssock to add/remove sockets. If a socket is already in the epoll set, it</span>
+<span class='doccomment'>/// will be ignored if being added again. Adding invalid or closed sockets will cause error.</span>
+<span class='doccomment'>/// However, they will simply be ignored without any error returned when being removed.</span>
+<span class='doccomment'>///</span>
+<span class='doccomment'>/// Multiple epoll entities can be created and there is no upper limits as long as system resource</span>
+<span class='doccomment'>/// allows. There is also no hard limit on the number of UDT sockets. The number system descriptors</span>
+<span class='doccomment'>/// supported by UDT::epoll are platform dependent.</span>
+<span class='doccomment'>///</span>
+<span class='doccomment'>/// For system sockets on Linux, developers may choose to watch individual events from EPOLLIN</span>
+<span class='doccomment'>/// (read), EPOLLOUT (write), and EPOLLERR (exceptions). When using epoll_remove_ssock, if the</span>
+<span class='doccomment'>/// socket is waiting on multiple events, only those specified in events are removed. The events</span>
+<span class='doccomment'>/// can be a combination (with &quot;|&quot; operation) of any of the following values.</span>
+<span class='doccomment'>///</span>
+<span class='doccomment'>/// [1]: #method.create</span>
+<span class='doccomment'>/// [2]: #method.add_usock</span>
+<span class='doccomment'>/// [3]: #method.remove_usock</span>
+<span class='doccomment'>///</span>
+<span class='attribute'>#[<span class='ident'>derive</span>(<span class='ident'>Debug</span>)]</span>
+<span class='kw'>pub</span> <span class='kw'>struct</span> <span class='ident'>Epoll</span> {
+    <span class='ident'>eid</span>: <span class='ident'>c_int</span>,
+
+    <span class='comment'>// poll requires us to pass in an array to receive a list of sockets.</span>
+    <span class='comment'>// instead of allocating one every time we call into poll, we create</span>
+    <span class='comment'>// two vecs and re-use them.  this means that while the UDT api is</span>
+    <span class='comment'>// thread safe, this impl of epoll is not</span>
+    <span class='ident'>rd_vec</span>: <span class='ident'>Vec</span><span class='op'>&lt;</span><span class='ident'>c_int</span><span class='op'>&gt;</span>,
+    <span class='ident'>wr_vec</span>: <span class='ident'>Vec</span><span class='op'>&lt;</span><span class='ident'>c_int</span><span class='op'>&gt;</span>
+
+}
+
+<span class='kw'>impl</span> <span class='ident'>Epoll</span> {
+    <span class='doccomment'>/// Creates a new Epoll object</span>
+    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>create</span>() <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span><span class='ident'>Epoll</span>, <span class='ident'>UdtError</span><span class='op'>&gt;</span> {
+       <span class='kw'>let</span> <span class='ident'>ret</span> <span class='op'>=</span> <span class='kw'>unsafe</span> { <span class='ident'>raw</span>::<span class='ident'>udt_epoll_create</span>() }; 
+       <span class='kw'>if</span> <span class='ident'>ret</span> <span class='op'>&lt;</span> <span class='number'>0</span> {
+           <span class='prelude-val'>Err</span>(<span class='ident'>get_last_err</span>())
+       } <span class='kw'>else</span> {
+            <span class='prelude-val'>Ok</span>(<span class='ident'>Epoll</span>{<span class='ident'>eid</span>: <span class='ident'>ret</span>, <span class='ident'>rd_vec</span>: <span class='ident'>Vec</span>::<span class='ident'>new</span>(), <span class='ident'>wr_vec</span>: <span class='ident'>Vec</span>::<span class='ident'>new</span>()})
+       }
+
+    }
+
+    <span class='doccomment'>/// Adds a UdtSocket to an epoll</span>
+    <span class='doccomment'>///</span>
+    <span class='doccomment'>/// `events` can be any combination of `UDT_EPOLL_IN`, `UDT_EPOLL_OUT`, and `UDT_EPOLL_ERR`</span>
+    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>add_usock</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>socket</span>: <span class='kw-2'>&amp;</span><span class='ident'>UdtSocket</span>, <span class='ident'>events</span>: <span class='prelude-ty'>Option</span><span class='op'>&lt;</span><span class='ident'>EpollEvents</span><span class='op'>&gt;</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span>(), <span class='ident'>UdtError</span><span class='op'>&gt;</span> {
+        <span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>ptr</span>::<span class='ident'>null</span>;
+
+        <span class='kw'>let</span> <span class='ident'>ret</span> <span class='op'>=</span> <span class='kw'>match</span> <span class='ident'>events</span> {
+            <span class='prelude-val'>None</span> <span class='op'>=&gt;</span> <span class='kw'>unsafe</span> { <span class='ident'>raw</span>::<span class='ident'>udt_epoll_add_usock</span>(<span class='self'>self</span>.<span class='ident'>eid</span>, <span class='ident'>socket</span>.<span class='ident'>_sock</span>, <span class='ident'>null</span>()) },
+            <span class='prelude-val'>Some</span>(<span class='ident'>val</span>) <span class='op'>=&gt;</span>  {
+                <span class='kw'>let</span> <span class='ident'>b</span>: <span class='ident'>c_int</span> <span class='op'>=</span> <span class='ident'>val</span>.<span class='ident'>bits</span>();
+                <span class='kw'>unsafe</span> { <span class='ident'>raw</span>::<span class='ident'>udt_epoll_add_usock</span>(<span class='self'>self</span>.<span class='ident'>eid</span>, <span class='ident'>socket</span>.<span class='ident'>_sock</span>, <span class='kw-2'>&amp;</span><span class='ident'>b</span>) }
+            }
+        };
+        <span class='kw'>if</span> <span class='ident'>ret</span> <span class='op'>==</span> <span class='number'>0</span> {
+            <span class='macro'>trace</span><span class='macro'>!</span>(<span class='string'>&quot;Added UdpSocket={} to epoll&quot;</span>, <span class='ident'>socket</span>.<span class='ident'>_sock</span>);
+            <span class='self'>self</span>.<span class='ident'>wr_vec</span>.<span class='ident'>push</span>(<span class='op'>-</span><span class='number'>1</span>);
+            <span class='self'>self</span>.<span class='ident'>rd_vec</span>.<span class='ident'>push</span>(<span class='op'>-</span><span class='number'>1</span>);
+            <span class='prelude-val'>Ok</span>(())
+        } <span class='kw'>else</span> {
+            <span class='prelude-val'>Err</span>(<span class='ident'>get_last_err</span>())
+        }
+    }
+
+    <span class='doccomment'>/// Removes a UdtSocket from an epoll</span>
+    <span class='doccomment'>///</span>
+    <span class='doccomment'>/// If the socket isn&#39;t part of the epoll, there is no error</span>
+    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>remove_usock</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='ident'>socket</span>: <span class='kw-2'>&amp;</span><span class='ident'>UdtSocket</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span>(), <span class='ident'>UdtError</span><span class='op'>&gt;</span> {
+        <span class='kw'>let</span> <span class='ident'>ret</span> <span class='op'>=</span> <span class='kw'>unsafe</span> { <span class='ident'>raw</span>::<span class='ident'>udt_epoll_remove_usock</span>(<span class='self'>self</span>.<span class='ident'>eid</span>, <span class='ident'>socket</span>.<span class='ident'>_sock</span>) };
+        <span class='kw'>if</span> <span class='ident'>ret</span> <span class='op'>==</span> <span class='number'>0</span> {
+            <span class='prelude-val'>Ok</span>(())
+        } <span class='kw'>else</span> {
+            <span class='prelude-val'>Err</span>(<span class='ident'>get_last_err</span>())
+        }
+    }
+
+    <span class='doccomment'>/// Wait for events</span>
+    <span class='doccomment'>///</span>
+    <span class='doccomment'>/// Timeout is in milliseconds.  If negative, wait forever.  If zero, return immediately.</span>
+    <span class='doccomment'>///</span>
+    <span class='doccomment'>/// If `write` is false, the list of sockets for writing will always be null. </span>
+    <span class='doccomment'>///</span>
+    <span class='doccomment'>/// # Returns</span>
+    <span class='doccomment'>///</span>
+    <span class='doccomment'>/// A tuple of sockets to be read and sockets to be written (or have exceptions)</span>
+    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>wait</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>timeout</span>: <span class='ident'>i64</span>, <span class='ident'>write</span>: <span class='ident'>bool</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span>(<span class='ident'>Vec</span><span class='op'>&lt;</span><span class='ident'>UdtSocket</span><span class='op'>&gt;</span>, <span class='ident'>Vec</span><span class='op'>&lt;</span><span class='ident'>UdtSocket</span><span class='op'>&gt;</span>), <span class='ident'>UdtError</span><span class='op'>&gt;</span> {
+        <span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>ptr</span>::<span class='ident'>null_mut</span>;
+        <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>rnum</span> : <span class='ident'>c_int</span> <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>rd_vec</span>.<span class='ident'>len</span>() <span class='kw'>as</span> <span class='ident'>c_int</span>;
+        <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>wnum</span> : <span class='ident'>c_int</span><span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>wr_vec</span>.<span class='ident'>len</span>() <span class='kw'>as</span> <span class='ident'>c_int</span>;
+        
+        <span class='kw'>let</span> <span class='ident'>wr_vec_ptr</span> <span class='op'>=</span> <span class='kw'>if</span> <span class='op'>!</span><span class='ident'>write</span> {
+            <span class='ident'>wnum</span> <span class='op'>=</span> <span class='number'>0</span>;
+            <span class='ident'>std</span>::<span class='ident'>ptr</span>::<span class='ident'>null_mut</span>()
+        } <span class='kw'>else</span> {
+            <span class='self'>self</span>.<span class='ident'>wr_vec</span>.<span class='ident'>as_mut_ptr</span>()
+        };
+
+
+        <span class='kw'>let</span> <span class='ident'>ret</span> <span class='op'>=</span> <span class='kw'>unsafe</span> {
+            <span class='ident'>raw</span>::<span class='ident'>udt_epoll_wait2</span>(<span class='self'>self</span>.<span class='ident'>eid</span>,
+                                 <span class='self'>self</span>.<span class='ident'>rd_vec</span>.<span class='ident'>as_mut_ptr</span>(), <span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='ident'>rnum</span>,
+                                 <span class='ident'>wr_vec_ptr</span>, <span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='ident'>wnum</span>,
+                                 <span class='ident'>timeout</span>,
+                                 <span class='ident'>null_mut</span>(), <span class='ident'>null_mut</span>(), <span class='ident'>null_mut</span>(), <span class='ident'>null_mut</span>() <span class='comment'>// no support for polling sys sockets right now</span>
+                                 )
+        };
+        <span class='macro'>trace</span><span class='macro'>!</span>(<span class='string'>&quot;epoll returned {:?}&quot;</span>, <span class='ident'>ret</span>);
+        <span class='macro'>trace</span><span class='macro'>!</span>(<span class='string'>&quot;rnum={}, wnum={}&quot;</span>, <span class='ident'>rnum</span>, <span class='ident'>wnum</span>);
+        <span class='kw'>if</span> <span class='ident'>ret</span> <span class='op'>&lt;</span> <span class='number'>0</span> {
+            <span class='kw'>let</span> <span class='ident'>e</span> <span class='op'>=</span> <span class='ident'>get_last_err</span>();
+            <span class='kw'>if</span> <span class='ident'>e</span>.<span class='ident'>err_code</span> <span class='op'>!=</span> <span class='number'>6003</span> {
+                <span class='kw'>return</span> <span class='prelude-val'>Err</span>(<span class='ident'>get_last_err</span>());
+            } <span class='kw'>else</span> {
+                <span class='ident'>rnum</span> <span class='op'>=</span> <span class='number'>0</span>;
+                <span class='ident'>wnum</span> <span class='op'>=</span> <span class='number'>0</span>;
+            }
+        }
+        <span class='kw'>for</span> <span class='ident'>v</span> <span class='kw'>in</span> <span class='number'>0</span>..<span class='ident'>rnum</span> {
+            <span class='macro'>trace</span><span class='macro'>!</span>(<span class='string'>&quot;rnum[{}] = {}&quot;</span>, <span class='ident'>v</span>, <span class='self'>self</span>.<span class='ident'>rd_vec</span>[<span class='ident'>v</span> <span class='kw'>as</span> <span class='ident'>usize</span>]);
+        }
+        <span class='kw'>for</span> <span class='ident'>v</span> <span class='kw'>in</span> <span class='number'>0</span>..<span class='ident'>wnum</span> {
+            <span class='macro'>trace</span><span class='macro'>!</span>(<span class='string'>&quot;wnum[{}] = {}&quot;</span>, <span class='ident'>v</span>, <span class='self'>self</span>.<span class='ident'>wr_vec</span>[<span class='ident'>v</span> <span class='kw'>as</span> <span class='ident'>usize</span>]);
+        }
+
+        <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>rds</span> <span class='op'>=</span> <span class='ident'>Vec</span>::<span class='ident'>with_capacity</span>(<span class='ident'>rnum</span> <span class='kw'>as</span> <span class='ident'>usize</span>);
+        <span class='ident'>rds</span>.<span class='ident'>extend</span>(<span class='self'>self</span>.<span class='ident'>rd_vec</span>.<span class='ident'>iter</span>().<span class='ident'>take</span>(<span class='ident'>rnum</span> <span class='kw'>as</span> <span class='ident'>usize</span>).<span class='ident'>map</span>(<span class='op'>|</span><span class='kw-2'>&amp;</span><span class='ident'>x</span><span class='op'>|</span> <span class='ident'>UdtSocket</span>::<span class='ident'>wrap_raw</span>(<span class='ident'>x</span>)));
+
+        <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>wrs</span> <span class='op'>=</span> <span class='ident'>Vec</span>::<span class='ident'>with_capacity</span>(<span class='ident'>wnum</span> <span class='kw'>as</span> <span class='ident'>usize</span>);
+        <span class='ident'>wrs</span>.<span class='ident'>extend</span>(<span class='self'>self</span>.<span class='ident'>wr_vec</span>.<span class='ident'>iter</span>().<span class='ident'>take</span>(<span class='ident'>wnum</span> <span class='kw'>as</span> <span class='ident'>usize</span>).<span class='ident'>map</span>(<span class='op'>|</span><span class='kw-2'>&amp;</span><span class='ident'>x</span><span class='op'>|</span> <span class='ident'>UdtSocket</span>::<span class='ident'>wrap_raw</span>(<span class='ident'>x</span>)));
+        <span class='prelude-val'>Ok</span>( (<span class='ident'>rds</span>, <span class='ident'>wrs</span>) )
+
+
+
+    }
+
+}
+
+
+<span class='attribute'>#[<span class='ident'>test</span>]</span>
+<span class='kw'>fn</span> <span class='ident'>test_udt_socket</span>() {
+    <span class='ident'>init</span>();
+    <span class='kw'>let</span> _ <span class='op'>=</span> <span class='ident'>UdtSocket</span>::<span class='ident'>new</span>(<span class='ident'>SocketFamily</span>::<span class='ident'>AFInet</span>, <span class='ident'>SocketType</span>::<span class='ident'>Stream</span>).<span class='ident'>unwrap</span>();
+}
+
+<span class='attribute'>#[<span class='ident'>test</span>]</span>
+<span class='kw'>fn</span> <span class='ident'>test_udt_bind</span>() {
+    <span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>net</span>::<span class='ident'>Ipv4Addr</span>;
+    <span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>str</span>::<span class='ident'>FromStr</span>;
+
+    <span class='ident'>init</span>();
+    <span class='kw'>let</span> <span class='ident'>sock</span> <span class='op'>=</span> <span class='ident'>UdtSocket</span>::<span class='ident'>new</span>(<span class='ident'>SocketFamily</span>::<span class='ident'>AFInet</span>, <span class='ident'>SocketType</span>::<span class='ident'>Stream</span>).<span class='ident'>unwrap</span>();
+    <span class='kw'>let</span> <span class='ident'>localhost</span> <span class='op'>=</span> <span class='ident'>Ipv4Addr</span>::<span class='ident'>from_str</span>(<span class='string'>&quot;127.0.0.1&quot;</span>).<span class='ident'>unwrap</span>();
+    <span class='kw'>if</span> <span class='macro'>cfg</span><span class='macro'>!</span>(<span class='ident'>target_os</span><span class='op'>=</span><span class='string'>&quot;macos&quot;</span>) {
+        <span class='macro'>trace</span><span class='macro'>!</span>(<span class='string'>&quot;Lowering buffer sizes on OSX&quot;</span>);
+        <span class='ident'>sock</span>.<span class='ident'>setsockopt</span>(<span class='ident'>UdtOpts</span>::<span class='ident'>UDP_RCVBUF</span>, <span class='number'>8192</span>).<span class='ident'>unwrap</span>();
+        <span class='ident'>sock</span>.<span class='ident'>setsockopt</span>(<span class='ident'>UdtOpts</span>::<span class='ident'>UDP_SNDBUF</span>, <span class='number'>8192</span>).<span class='ident'>unwrap</span>();
+    }
+    <span class='ident'>sock</span>.<span class='ident'>bind</span>(<span class='ident'>SocketAddr</span>::<span class='ident'>V4</span>(<span class='ident'>SocketAddrV4</span>::<span class='ident'>new</span>(<span class='ident'>localhost</span>, <span class='number'>0</span>))).<span class='ident'>or_else</span>(<span class='op'>|</span><span class='ident'>e</span><span class='op'>|</span> <span class='prelude-val'>Err</span>(<span class='macro'>panic</span><span class='macro'>!</span>(<span class='string'>&quot;Failed to bind to {:?} --&gt; {:?}&quot;</span>, <span class='ident'>localhost</span>, <span class='ident'>e</span>)));
+}
+
+<span class='attribute'>#[<span class='ident'>test</span>]</span>
+<span class='kw'>fn</span> <span class='ident'>test_udt_socket_state</span>() {
+    <span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>net</span>::<span class='ident'>Ipv4Addr</span>;
+    <span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>str</span>::<span class='ident'>FromStr</span>;
+    <span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>thread</span>::<span class='ident'>sleep</span>;
+    <span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>time</span>::<span class='ident'>Duration</span>;
+
+    <span class='ident'>init</span>();
+    <span class='kw'>let</span> <span class='ident'>sock</span> <span class='op'>=</span> <span class='ident'>UdtSocket</span>::<span class='ident'>new</span>(<span class='ident'>SocketFamily</span>::<span class='ident'>AFInet</span>, <span class='ident'>SocketType</span>::<span class='ident'>Stream</span>).<span class='ident'>unwrap</span>();
+    <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>sock</span>.<span class='ident'>getstate</span>(), <span class='ident'>UdtStatus</span>::<span class='ident'>INIT</span>);
+    <span class='kw'>if</span> <span class='macro'>cfg</span><span class='macro'>!</span>(<span class='ident'>target_os</span><span class='op'>=</span><span class='string'>&quot;macos&quot;</span>) {
+        <span class='macro'>trace</span><span class='macro'>!</span>(<span class='string'>&quot;Lowering buffer sizes on OSX&quot;</span>);
+        <span class='ident'>sock</span>.<span class='ident'>setsockopt</span>(<span class='ident'>UdtOpts</span>::<span class='ident'>UDP_RCVBUF</span>, <span class='number'>8192</span>).<span class='ident'>unwrap</span>();
+        <span class='ident'>sock</span>.<span class='ident'>setsockopt</span>(<span class='ident'>UdtOpts</span>::<span class='ident'>UDP_SNDBUF</span>, <span class='number'>8192</span>).<span class='ident'>unwrap</span>();
+    }
+    
+    <span class='kw'>let</span> <span class='ident'>localhost</span> <span class='op'>=</span> <span class='ident'>Ipv4Addr</span>::<span class='ident'>from_str</span>(<span class='string'>&quot;127.0.0.1&quot;</span>).<span class='ident'>unwrap</span>();
+    
+    <span class='ident'>sock</span>.<span class='ident'>bind</span>(<span class='ident'>SocketAddr</span>::<span class='ident'>V4</span>(<span class='ident'>SocketAddrV4</span>::<span class='ident'>new</span>(<span class='ident'>localhost</span>, <span class='number'>0</span>))).<span class='ident'>or_else</span>(<span class='op'>|</span><span class='ident'>e</span><span class='op'>|</span> <span class='prelude-val'>Err</span>(<span class='macro'>panic</span><span class='macro'>!</span>(<span class='string'>&quot;Failed to bind to {:?} --&gt; {:?}&quot;</span>, <span class='ident'>localhost</span>, <span class='ident'>e</span>)));
+    <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>sock</span>.<span class='ident'>getstate</span>(), <span class='ident'>UdtStatus</span>::<span class='ident'>OPENED</span>);
+    <span class='ident'>sock</span>.<span class='ident'>listen</span>(<span class='number'>5</span>).<span class='ident'>unwrap</span>();
+    <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>sock</span>.<span class='ident'>getstate</span>(), <span class='ident'>UdtStatus</span>::<span class='ident'>LISTENING</span>);
+    <span class='ident'>sock</span>.<span class='ident'>close</span>().<span class='ident'>unwrap</span>();
+    <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>sock</span>.<span class='ident'>getstate</span>(), <span class='ident'>UdtStatus</span>::<span class='ident'>BROKEN</span>);
+    <span class='ident'>sleep</span>(<span class='ident'>Duration</span>::<span class='ident'>from_millis</span>(<span class='number'>4500</span>));
+    <span class='comment'>// after some time, the sock transitions to CLOSED and then NONEXIST</span>
+    <span class='comment'>// THe LISTENING -&gt; CLOSED transition is made after a 3 second timeout</span>
+    <span class='macro'>assert</span><span class='macro'>!</span>(<span class='ident'>sock</span>.<span class='ident'>getstate</span>() <span class='op'>==</span> <span class='ident'>UdtStatus</span>::<span class='ident'>NONEXIST</span> <span class='op'>||</span> <span class='ident'>sock</span>.<span class='ident'>getstate</span>() <span class='op'>==</span> <span class='ident'>UdtStatus</span>::<span class='ident'>CLOSED</span>);
+
+
+}
+</pre>
+</section>
+    <section id='search' class="content hidden"></section>
+
+    <section class="footer"></section>
+
+    <aside id="help" class="hidden">
+        <div>
+            <h1 class="hidden">Help</h1>
+
+            <div class="shortcuts">
+                <h2>Keyboard Shortcuts</h2>
+
+                <dl>
+                    <dt>?</dt>
+                    <dd>Show this help dialog</dd>
+                    <dt>S</dt>
+                    <dd>Focus the search field</dd>
+                    <dt>&larrb;</dt>
+                    <dd>Move up in search results</dd>
+                    <dt>&rarrb;</dt>
+                    <dd>Move down in search results</dd>
+                    <dt>&#9166;</dt>
+                    <dd>Go to active search result</dd>
+                    <dt>+</dt>
+                    <dd>Collapse/expand all sections</dd>
+                </dl>
+            </div>
+
+            <div class="infos">
+                <h2>Search Tricks</h2>
+
+                <p>
+                    Prefix searches with a type followed by a colon (e.g.
+                    <code>fn:</code>) to restrict the search to a given type.
+                </p>
+
+                <p>
+                    Accepted types are: <code>fn</code>, <code>mod</code>,
+                    <code>struct</code>, <code>enum</code>,
+                    <code>trait</code>, <code>type</code>, <code>macro</code>,
+                    and <code>const</code>.
+                </p>
+
+                <p>
+                    Search functions by type signature (e.g.
+                    <code>vec -> usize</code> or <code>* -> vec</code>)
+                </p>
+            </div>
+        </div>
+    </aside>
+
+    
+
+    <script>
+        window.rootPath = "../../../";
+        window.currentCrate = "udt";
+        window.playgroundUrl = "";
+    </script>
+    <script src="../../../jquery.js"></script>
+    <script src="../../../main.js"></script>
+    
+    <script defer src="../../../search-index.js"></script>
+</body>
+</html>

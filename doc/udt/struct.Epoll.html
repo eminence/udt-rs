@@ -9,7 +9,9 @@
 
     <title>udt::Epoll - Rust</title>
 
+    <link rel="stylesheet" type="text/css" href="../rustdoc.css">
     <link rel="stylesheet" type="text/css" href="../main.css">
+    
 
     
     
@@ -24,10 +26,10 @@
 
     
 
-    <section class="sidebar">
+    <nav class="sidebar">
         
         <p class='location'><a href='index.html'>udt</a></p><script>window.sidebarCurrent = {name: 'Epoll', ty: 'struct', relpath: ''};</script><script defer src="sidebar-items.js"></script>
-    </section>
+    </nav>
 
     <nav class="sub">
         <form class="search-form js-only">
@@ -42,43 +44,66 @@
 
     <section id='main' class="content struct">
 <h1 class='fqn'><span class='in-band'>Struct <a href='index.html'>udt</a>::<wbr><a class='struct' href=''>Epoll</a></span><span class='out-of-band'><span id='render-detail'>
-            <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
-                [<span class='inner'>&#x2212;</span>]
-            </a>
-        </span><a id='src-3300' class='srclink' href='../src/udt/lib.rs.html#808-818' title='goto source code'>[src]</a></span></h1>
+                   <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
+                       [<span class='inner'>&#x2212;</span>]
+                   </a>
+               </span><a id='src-483' class='srclink' href='../src/udt/src/lib.rs.html#865-875' title='goto source code'>[src]</a></span></h1>
 <pre class='rust struct'>pub struct Epoll {
     // some fields omitted
 }</pre><div class='docblock'><p>Used with the <code>epoll*</code> methods of a UDTSocket</p>
-</div><h2 id='methods'>Methods</h2><h3 class='impl'><code>impl <a class='struct' href='../udt/struct.Epoll.html' title='udt::Epoll'>Epoll</a></code></h3><div class='impl-items'><h4 id='method.create' class='method'><code>fn <a href='#method.create' class='fnname'>create</a>() -&gt; <a class='enum' href='https://doc.rust-lang.org/nightly/core/result/enum.Result.html' title='core::result::Result'>Result</a>&lt;<a class='struct' href='../udt/struct.Epoll.html' title='udt::Epoll'>Epoll</a>, <a class='struct' href='../udt/struct.UdtError.html' title='udt::UdtError'>UdtError</a>&gt;</code></h4>
+
+<p>The epoll functions provides a highly scalable and efficient way to wait for UDT sockets IO
+events. It should be used instead of select and selectEx when the application needs to wait for
+a very large number of sockets. In addition, epoll also offers to wait on system sockets at the
+same time, which can be convenient when an application uses both UDT and TCP/UDP.</p>
+
+<p>Applications should use <a href="#method.create"><code>Epoll::create</code></a> to create an epoll ID and use <a href="#method.add_usock"><code>add_usock</code></a>/ssock and
+<a href="#method.remove_usock"><code>remove_usock</code></a>/ssock to add/remove sockets. If a socket is already in the epoll set, it
+will be ignored if being added again. Adding invalid or closed sockets will cause error.
+However, they will simply be ignored without any error returned when being removed.</p>
+
+<p>Multiple epoll entities can be created and there is no upper limits as long as system resource
+allows. There is also no hard limit on the number of UDT sockets. The number system descriptors
+supported by UDT::epoll are platform dependent.</p>
+
+<p>For system sockets on Linux, developers may choose to watch individual events from EPOLLIN
+(read), EPOLLOUT (write), and EPOLLERR (exceptions). When using epoll_remove_ssock, if the
+socket is waiting on multiple events, only those specified in events are removed. The events
+can be a combination (with &quot;|&quot; operation) of any of the following values.</p>
+</div><h2 id='methods'>Methods</h2><h3 class='impl'><span class='in-band'><code>impl <a class='struct' href='../udt/struct.Epoll.html' title='udt::Epoll'>Epoll</a></code></span><span class='out-of-band'><div class='ghost'></div><a id='src-487' class='srclink' href='../src/udt/src/lib.rs.html#877-983' title='goto source code'>[src]</a></span></h3>
+<div class='impl-items'><h4 id='method.create' class='method'><code>fn <a href='#method.create' class='fnname'>create</a>() -&gt; <a class='enum' href='https://doc.rust-lang.org/nightly/core/result/enum.Result.html' title='core::result::Result'>Result</a>&lt;<a class='struct' href='../udt/struct.Epoll.html' title='udt::Epoll'>Epoll</a>,&nbsp;<a class='struct' href='../udt/struct.UdtError.html' title='udt::UdtError'>UdtError</a>&gt;</code></h4>
 <div class='docblock'><p>Creates a new Epoll object</p>
-</div><h4 id='method.add_usock' class='method'><code>fn <a href='#method.add_usock' class='fnname'>add_usock</a>(&amp;mut self, socket: &amp;<a class='struct' href='../udt/struct.UdtSocket.html' title='udt::UdtSocket'>UdtSocket</a>, events: <a class='enum' href='https://doc.rust-lang.org/nightly/core/option/enum.Option.html' title='core::option::Option'>Option</a>&lt;<a class='struct' href='../udt/struct.EpollEvents.html' title='udt::EpollEvents'>EpollEvents</a>&gt;) -&gt; <a class='enum' href='https://doc.rust-lang.org/nightly/core/result/enum.Result.html' title='core::result::Result'>Result</a>&lt;<a href='https://doc.rust-lang.org/nightly/std/primitive.tuple.html'>()</a>, <a class='struct' href='../udt/struct.UdtError.html' title='udt::UdtError'>UdtError</a>&gt;</code></h4>
+</div><h4 id='method.add_usock' class='method'><code>fn <a href='#method.add_usock' class='fnname'>add_usock</a>(&amp;mut self, socket: &amp;<a class='struct' href='../udt/struct.UdtSocket.html' title='udt::UdtSocket'>UdtSocket</a>, events: <a class='enum' href='https://doc.rust-lang.org/nightly/core/option/enum.Option.html' title='core::option::Option'>Option</a>&lt;<a class='struct' href='../udt/struct.EpollEvents.html' title='udt::EpollEvents'>EpollEvents</a>&gt;) -&gt; <a class='enum' href='https://doc.rust-lang.org/nightly/core/result/enum.Result.html' title='core::result::Result'>Result</a>&lt;<a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.tuple.html'>()</a>,&nbsp;<a class='struct' href='../udt/struct.UdtError.html' title='udt::UdtError'>UdtError</a>&gt;</code></h4>
 <div class='docblock'><p>Adds a UdtSocket to an epoll</p>
 
 <p><code>events</code> can be any combination of <code>UDT_EPOLL_IN</code>, <code>UDT_EPOLL_OUT</code>, and <code>UDT_EPOLL_ERR</code></p>
-</div><h4 id='method.remove_usock' class='method'><code>fn <a href='#method.remove_usock' class='fnname'>remove_usock</a>(&amp;self, socket: &amp;<a class='struct' href='../udt/struct.UdtSocket.html' title='udt::UdtSocket'>UdtSocket</a>) -&gt; <a class='enum' href='https://doc.rust-lang.org/nightly/core/result/enum.Result.html' title='core::result::Result'>Result</a>&lt;<a href='https://doc.rust-lang.org/nightly/std/primitive.tuple.html'>()</a>, <a class='struct' href='../udt/struct.UdtError.html' title='udt::UdtError'>UdtError</a>&gt;</code></h4>
+</div><h4 id='method.remove_usock' class='method'><code>fn <a href='#method.remove_usock' class='fnname'>remove_usock</a>(&amp;self, socket: &amp;<a class='struct' href='../udt/struct.UdtSocket.html' title='udt::UdtSocket'>UdtSocket</a>) -&gt; <a class='enum' href='https://doc.rust-lang.org/nightly/core/result/enum.Result.html' title='core::result::Result'>Result</a>&lt;<a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.tuple.html'>()</a>,&nbsp;<a class='struct' href='../udt/struct.UdtError.html' title='udt::UdtError'>UdtError</a>&gt;</code></h4>
 <div class='docblock'><p>Removes a UdtSocket from an epoll</p>
 
 <p>If the socket isn&#39;t part of the epoll, there is no error</p>
-</div><h4 id='method.wait' class='method'><code>fn <a href='#method.wait' class='fnname'>wait</a>(&amp;mut self, timeout: <a href='https://doc.rust-lang.org/nightly/std/primitive.i64.html'>i64</a>, write: <a href='https://doc.rust-lang.org/nightly/std/primitive.bool.html'>bool</a>) -&gt; <a class='enum' href='https://doc.rust-lang.org/nightly/core/result/enum.Result.html' title='core::result::Result'>Result</a>&lt;<a href='https://doc.rust-lang.org/nightly/std/primitive.tuple.html'>(<a class='struct' href='https://doc.rust-lang.org/nightly/collections/vec/struct.Vec.html' title='collections::vec::Vec'>Vec</a>&lt;<a class='struct' href='../udt/struct.UdtSocket.html' title='udt::UdtSocket'>UdtSocket</a>&gt;, <a class='struct' href='https://doc.rust-lang.org/nightly/collections/vec/struct.Vec.html' title='collections::vec::Vec'>Vec</a>&lt;<a class='struct' href='../udt/struct.UdtSocket.html' title='udt::UdtSocket'>UdtSocket</a>&gt;)</a>, <a class='struct' href='../udt/struct.UdtError.html' title='udt::UdtError'>UdtError</a>&gt;</code></h4>
+</div><h4 id='method.wait' class='method'><code>fn <a href='#method.wait' class='fnname'>wait</a>(&amp;mut self, timeout: <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.i64.html'>i64</a>, write: <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.bool.html'>bool</a>) -&gt; <a class='enum' href='https://doc.rust-lang.org/nightly/core/result/enum.Result.html' title='core::result::Result'>Result</a>&lt;<a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.tuple.html'>(</a><a class='struct' href='https://doc.rust-lang.org/nightly/collections/vec/struct.Vec.html' title='collections::vec::Vec'>Vec</a>&lt;<a class='struct' href='../udt/struct.UdtSocket.html' title='udt::UdtSocket'>UdtSocket</a>&gt;, <a class='struct' href='https://doc.rust-lang.org/nightly/collections/vec/struct.Vec.html' title='collections::vec::Vec'>Vec</a>&lt;<a class='struct' href='../udt/struct.UdtSocket.html' title='udt::UdtSocket'>UdtSocket</a>&gt;<a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.tuple.html'>)</a>,&nbsp;<a class='struct' href='../udt/struct.UdtError.html' title='udt::UdtError'>UdtError</a>&gt;</code></h4>
 <div class='docblock'><p>Wait for events</p>
 
 <p>Timeout is in milliseconds.  If negative, wait forever.  If zero, return immediately.</p>
 
 <p>If <code>write</code> is false, the list of sockets for writing will always be null. </p>
 
-<h1 id="returns" class='section-header'><a
-                           href="#returns">Returns</a></h1>
+<h1 id='returns' class='section-header'><a href='#returns'>Returns</a></h1>
 <p>A tuple of sockets to be read and sockets to be written (or have exceptions)</p>
-</div></div><h2 id='implementations'>Trait Implementations</h2><h3 id='derived_implementations'>Derived Implementations </h3><h3 class='impl'><code>impl <a class='trait' href='https://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html' title='core::fmt::Debug'>Debug</a> for <a class='struct' href='../udt/struct.Epoll.html' title='udt::Epoll'>Epoll</a></code></h3><div class='impl-items'><h4 id='method.fmt' class='method'><code>fn <a href='https://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html#method.fmt' class='fnname'>fmt</a>(&amp;self, __arg_0: &amp;mut <a class='struct' href='https://doc.rust-lang.org/nightly/core/fmt/struct.Formatter.html' title='core::fmt::Formatter'>Formatter</a>) -&gt; <a class='type' href='https://doc.rust-lang.org/nightly/core/fmt/type.Result.html' title='core::fmt::Result'>Result</a></code></h4>
-</div></section>
+</div></div><h2 id='implementations'>Trait Implementations</h2><h3 class='impl'><span class='in-band'><code>impl <a class='trait' href='https://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html' title='core::fmt::Debug'>Debug</a> for <a class='struct' href='../udt/struct.Epoll.html' title='udt::Epoll'>Epoll</a></code></span><span class='out-of-band'><div class='ghost'></div><a id='src-475' class='srclink' href='../src/udt/src/lib.rs.html#864' title='goto source code'>[src]</a></span></h3>
+<div class='impl-items'><h4 id='method.fmt' class='method'><code>fn <a href='https://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html#tymethod.fmt' class='fnname'>fmt</a>(&amp;self, __arg_0: &amp;mut <a class='struct' href='https://doc.rust-lang.org/nightly/core/fmt/struct.Formatter.html' title='core::fmt::Formatter'>Formatter</a>) -&gt; <a class='type' href='https://doc.rust-lang.org/nightly/core/fmt/type.Result.html' title='core::fmt::Result'>Result</a></code></h4>
+<div class='docblock'><p>Formats the value using the given formatter.</p>
+</div></div></section>
     <section id='search' class="content hidden"></section>
 
     <section class="footer"></section>
 
-    <div id="help" class="hidden">
+    <aside id="help" class="hidden">
         <div>
+            <h1 class="hidden">Help</h1>
+
             <div class="shortcuts">
-                <h1>Keyboard Shortcuts</h1>
+                <h2>Keyboard Shortcuts</h2>
 
                 <dl>
                     <dt>?</dt>
@@ -91,11 +116,13 @@
                     <dd>Move down in search results</dd>
                     <dt>&#9166;</dt>
                     <dd>Go to active search result</dd>
+                    <dt>+</dt>
+                    <dd>Collapse/expand all sections</dd>
                 </dl>
             </div>
 
             <div class="infos">
-                <h1>Search Tricks</h1>
+                <h2>Search Tricks</h2>
 
                 <p>
                     Prefix searches with a type followed by a colon (e.g.
@@ -111,11 +138,11 @@
 
                 <p>
                     Search functions by type signature (e.g.
-                    <code>vec -> usize</code>)
+                    <code>vec -> usize</code> or <code>* -> vec</code>)
                 </p>
             </div>
         </div>
-    </div>
+    </aside>
 
     
 
@@ -127,6 +154,6 @@
     <script src="../jquery.js"></script>
     <script src="../main.js"></script>
     
-    <script async src="../search-index.js"></script>
+    <script defer src="../search-index.js"></script>
 </body>
 </html>

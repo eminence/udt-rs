@@ -9,7 +9,9 @@
 
     <title>libudt4_sys - Rust</title>
 
+    <link rel="stylesheet" type="text/css" href="../rustdoc.css">
     <link rel="stylesheet" type="text/css" href="../main.css">
+    
 
     
     
@@ -24,10 +26,10 @@
 
     
 
-    <section class="sidebar">
+    <nav class="sidebar">
         
         <p class='location'></p><script>window.sidebarCurrent = {name: 'libudt4_sys', ty: 'mod', relpath: '../'};</script>
-    </section>
+    </nav>
 
     <nav class="sub">
         <form class="search-form js-only">
@@ -42,583 +44,515 @@
 
     <section id='main' class="content mod">
 <h1 class='fqn'><span class='in-band'>Crate <a class='mod' href=''>libudt4_sys</a></span><span class='out-of-band'><span id='render-detail'>
-            <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
-                [<span class='inner'>&#x2212;</span>]
-            </a>
-        </span><a id='src-0' class='srclink' href='../src/libudt4_sys/lib.rs.html#1-149' title='goto source code'>[src]</a></span></h1>
+                   <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
+                       [<span class='inner'>&#x2212;</span>]
+                   </a>
+               </span><a id='src-0' class='srclink' href='../src/libudt4_sys/libudt4-sys/lib.rs.html#1-183' title='goto source code'>[src]</a></span></h1>
 <h2 id='enums' class='section-header'><a href="#enums">Enums</a></h2>
 <table>
-                    <tr class=' module-item'>
-                        <td><a class='enum' href='enum.EPOLLOpt.html'
-                               title='libudt4_sys::EPOLLOpt'>EPOLLOpt</a></td>
-                        <td class='docblock short'>
-                             
-                        </td>
-                    </tr>
-                
-                    <tr class=' module-item'>
-                        <td><a class='enum' href='enum.UDTOpt.html'
-                               title='libudt4_sys::UDTOpt'>UDTOpt</a></td>
-                        <td class='docblock short'>
-                             
-                        </td>
-                    </tr>
-                
-                    <tr class=' module-item'>
-                        <td><a class='enum' href='enum.UdtStatus.html'
-                               title='libudt4_sys::UdtStatus'>UdtStatus</a></td>
-                        <td class='docblock short'>
-                             
-                        </td>
-                    </tr>
-                </table><h2 id='constants' class='section-header'><a href="#constants">Constants</a></h2>
+                       <tr class=' module-item'>
+                           <td><a class='enum' href='enum.EPOLLOpt.html'
+                                  title='libudt4_sys::EPOLLOpt'>EPOLLOpt</a></td>
+                           <td class='docblock short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='enum' href='enum.UDTOpt.html'
+                                  title='libudt4_sys::UDTOpt'>UDTOpt</a></td>
+                           <td class='docblock short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='enum' href='enum.UdtStatus.html'
+                                  title='libudt4_sys::UdtStatus'>UdtStatus</a></td>
+                           <td class='docblock short'>
+                                
+                           </td>
+                       </tr></table><h2 id='constants' class='section-header'><a href="#constants">Constants</a></h2>
 <table>
-                    <tr class=' module-item'>
-                        <td><a class='constant' href='constant.EASYNCFAIL.html'
-                               title='libudt4_sys::EASYNCFAIL'>EASYNCFAIL</a></td>
-                        <td class='docblock short'>
-                             
-                        </td>
-                    </tr>
-                
-                    <tr class=' module-item'>
-                        <td><a class='constant' href='constant.EASYNCRCV.html'
-                               title='libudt4_sys::EASYNCRCV'>EASYNCRCV</a></td>
-                        <td class='docblock short'>
-                             
-                        </td>
-                    </tr>
-                
-                    <tr class=' module-item'>
-                        <td><a class='constant' href='constant.EASYNCSND.html'
-                               title='libudt4_sys::EASYNCSND'>EASYNCSND</a></td>
-                        <td class='docblock short'>
-                             
-                        </td>
-                    </tr>
-                
-                    <tr class=' module-item'>
-                        <td><a class='constant' href='constant.EBOUNDSOCK.html'
-                               title='libudt4_sys::EBOUNDSOCK'>EBOUNDSOCK</a></td>
-                        <td class='docblock short'>
-                             
-                        </td>
-                    </tr>
-                
-                    <tr class=' module-item'>
-                        <td><a class='constant' href='constant.ECONNFAIL.html'
-                               title='libudt4_sys::ECONNFAIL'>ECONNFAIL</a></td>
-                        <td class='docblock short'>
-                             
-                        </td>
-                    </tr>
-                
-                    <tr class=' module-item'>
-                        <td><a class='constant' href='constant.ECONNLOST.html'
-                               title='libudt4_sys::ECONNLOST'>ECONNLOST</a></td>
-                        <td class='docblock short'>
-                             
-                        </td>
-                    </tr>
-                
-                    <tr class=' module-item'>
-                        <td><a class='constant' href='constant.ECONNREJ.html'
-                               title='libudt4_sys::ECONNREJ'>ECONNREJ</a></td>
-                        <td class='docblock short'>
-                             
-                        </td>
-                    </tr>
-                
-                    <tr class=' module-item'>
-                        <td><a class='constant' href='constant.ECONNSETUP.html'
-                               title='libudt4_sys::ECONNSETUP'>ECONNSETUP</a></td>
-                        <td class='docblock short'>
-                             
-                        </td>
-                    </tr>
-                
-                    <tr class=' module-item'>
-                        <td><a class='constant' href='constant.ECONNSOCK.html'
-                               title='libudt4_sys::ECONNSOCK'>ECONNSOCK</a></td>
-                        <td class='docblock short'>
-                             
-                        </td>
-                    </tr>
-                
-                    <tr class=' module-item'>
-                        <td><a class='constant' href='constant.EDGRAMILL.html'
-                               title='libudt4_sys::EDGRAMILL'>EDGRAMILL</a></td>
-                        <td class='docblock short'>
-                             
-                        </td>
-                    </tr>
-                
-                    <tr class=' module-item'>
-                        <td><a class='constant' href='constant.EDUPLISTEN.html'
-                               title='libudt4_sys::EDUPLISTEN'>EDUPLISTEN</a></td>
-                        <td class='docblock short'>
-                             
-                        </td>
-                    </tr>
-                
-                    <tr class=' module-item'>
-                        <td><a class='constant' href='constant.EFILE.html'
-                               title='libudt4_sys::EFILE'>EFILE</a></td>
-                        <td class='docblock short'>
-                             
-                        </td>
-                    </tr>
-                
-                    <tr class=' module-item'>
-                        <td><a class='constant' href='constant.EINVOP.html'
-                               title='libudt4_sys::EINVOP'>EINVOP</a></td>
-                        <td class='docblock short'>
-                             
-                        </td>
-                    </tr>
-                
-                    <tr class=' module-item'>
-                        <td><a class='constant' href='constant.EINVPARAM.html'
-                               title='libudt4_sys::EINVPARAM'>EINVPARAM</a></td>
-                        <td class='docblock short'>
-                             
-                        </td>
-                    </tr>
-                
-                    <tr class=' module-item'>
-                        <td><a class='constant' href='constant.EINVRDOFF.html'
-                               title='libudt4_sys::EINVRDOFF'>EINVRDOFF</a></td>
-                        <td class='docblock short'>
-                             
-                        </td>
-                    </tr>
-                
-                    <tr class=' module-item'>
-                        <td><a class='constant' href='constant.EINVSOCK.html'
-                               title='libudt4_sys::EINVSOCK'>EINVSOCK</a></td>
-                        <td class='docblock short'>
-                             
-                        </td>
-                    </tr>
-                
-                    <tr class=' module-item'>
-                        <td><a class='constant' href='constant.EINVWROFF.html'
-                               title='libudt4_sys::EINVWROFF'>EINVWROFF</a></td>
-                        <td class='docblock short'>
-                             
-                        </td>
-                    </tr>
-                
-                    <tr class=' module-item'>
-                        <td><a class='constant' href='constant.ELARGEMSG.html'
-                               title='libudt4_sys::ELARGEMSG'>ELARGEMSG</a></td>
-                        <td class='docblock short'>
-                             
-                        </td>
-                    </tr>
-                
-                    <tr class=' module-item'>
-                        <td><a class='constant' href='constant.ENOBUF.html'
-                               title='libudt4_sys::ENOBUF'>ENOBUF</a></td>
-                        <td class='docblock short'>
-                             
-                        </td>
-                    </tr>
-                
-                    <tr class=' module-item'>
-                        <td><a class='constant' href='constant.ENOCONN.html'
-                               title='libudt4_sys::ENOCONN'>ENOCONN</a></td>
-                        <td class='docblock short'>
-                             
-                        </td>
-                    </tr>
-                
-                    <tr class=' module-item'>
-                        <td><a class='constant' href='constant.ENOLISTEN.html'
-                               title='libudt4_sys::ENOLISTEN'>ENOLISTEN</a></td>
-                        <td class='docblock short'>
-                             
-                        </td>
-                    </tr>
-                
-                    <tr class=' module-item'>
-                        <td><a class='constant' href='constant.ENOSERVER.html'
-                               title='libudt4_sys::ENOSERVER'>ENOSERVER</a></td>
-                        <td class='docblock short'>
-                             
-                        </td>
-                    </tr>
-                
-                    <tr class=' module-item'>
-                        <td><a class='constant' href='constant.EPEERERR.html'
-                               title='libudt4_sys::EPEERERR'>EPEERERR</a></td>
-                        <td class='docblock short'>
-                             
-                        </td>
-                    </tr>
-                
-                    <tr class=' module-item'>
-                        <td><a class='constant' href='constant.ERDPERM.html'
-                               title='libudt4_sys::ERDPERM'>ERDPERM</a></td>
-                        <td class='docblock short'>
-                             
-                        </td>
-                    </tr>
-                
-                    <tr class=' module-item'>
-                        <td><a class='constant' href='constant.ERDVNOSERV.html'
-                               title='libudt4_sys::ERDVNOSERV'>ERDVNOSERV</a></td>
-                        <td class='docblock short'>
-                             
-                        </td>
-                    </tr>
-                
-                    <tr class=' module-item'>
-                        <td><a class='constant' href='constant.ERDVUNBOUND.html'
-                               title='libudt4_sys::ERDVUNBOUND'>ERDVUNBOUND</a></td>
-                        <td class='docblock short'>
-                             
-                        </td>
-                    </tr>
-                
-                    <tr class=' module-item'>
-                        <td><a class='constant' href='constant.ERESOURCE.html'
-                               title='libudt4_sys::ERESOURCE'>ERESOURCE</a></td>
-                        <td class='docblock short'>
-                             
-                        </td>
-                    </tr>
-                
-                    <tr class=' module-item'>
-                        <td><a class='constant' href='constant.ESECFAIL.html'
-                               title='libudt4_sys::ESECFAIL'>ESECFAIL</a></td>
-                        <td class='docblock short'>
-                             
-                        </td>
-                    </tr>
-                
-                    <tr class=' module-item'>
-                        <td><a class='constant' href='constant.ESOCKFAIL.html'
-                               title='libudt4_sys::ESOCKFAIL'>ESOCKFAIL</a></td>
-                        <td class='docblock short'>
-                             
-                        </td>
-                    </tr>
-                
-                    <tr class=' module-item'>
-                        <td><a class='constant' href='constant.ESTREAMILL.html'
-                               title='libudt4_sys::ESTREAMILL'>ESTREAMILL</a></td>
-                        <td class='docblock short'>
-                             
-                        </td>
-                    </tr>
-                
-                    <tr class=' module-item'>
-                        <td><a class='constant' href='constant.ETHREAD.html'
-                               title='libudt4_sys::ETHREAD'>ETHREAD</a></td>
-                        <td class='docblock short'>
-                             
-                        </td>
-                    </tr>
-                
-                    <tr class=' module-item'>
-                        <td><a class='constant' href='constant.ETIMEOUT.html'
-                               title='libudt4_sys::ETIMEOUT'>ETIMEOUT</a></td>
-                        <td class='docblock short'>
-                             
-                        </td>
-                    </tr>
-                
-                    <tr class=' module-item'>
-                        <td><a class='constant' href='constant.EUNBOUNDSOCK.html'
-                               title='libudt4_sys::EUNBOUNDSOCK'>EUNBOUNDSOCK</a></td>
-                        <td class='docblock short'>
-                             
-                        </td>
-                    </tr>
-                
-                    <tr class=' module-item'>
-                        <td><a class='constant' href='constant.EWRPERM.html'
-                               title='libudt4_sys::EWRPERM'>EWRPERM</a></td>
-                        <td class='docblock short'>
-                             
-                        </td>
-                    </tr>
-                
-                    <tr class=' module-item'>
-                        <td><a class='constant' href='constant.INVALID_SOCK.html'
-                               title='libudt4_sys::INVALID_SOCK'>INVALID_SOCK</a></td>
-                        <td class='docblock short'>
-                             
-                        </td>
-                    </tr>
-                
-                    <tr class=' module-item'>
-                        <td><a class='constant' href='constant.SUCCESS.html'
-                               title='libudt4_sys::SUCCESS'>SUCCESS</a></td>
-                        <td class='docblock short'>
-                             
-                        </td>
-                    </tr>
-                
-                    <tr class=' module-item'>
-                        <td><a class='constant' href='constant.UDT_ERROR.html'
-                               title='libudt4_sys::UDT_ERROR'>UDT_ERROR</a></td>
-                        <td class='docblock short'>
-                             
-                        </td>
-                    </tr>
-                </table><h2 id='functions' class='section-header'><a href="#functions">Functions</a></h2>
+                       <tr class=' module-item'>
+                           <td><a class='constant' href='constant.EASYNCFAIL.html'
+                                  title='libudt4_sys::EASYNCFAIL'>EASYNCFAIL</a></td>
+                           <td class='docblock short'>
+                                <p>non-blocking call failure.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='constant' href='constant.EASYNCRCV.html'
+                                  title='libudt4_sys::EASYNCRCV'>EASYNCRCV</a></td>
+                           <td class='docblock short'>
+                                <p>no data available for read.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='constant' href='constant.EASYNCSND.html'
+                                  title='libudt4_sys::EASYNCSND'>EASYNCSND</a></td>
+                           <td class='docblock short'>
+                                <p>no buffer available for sending.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='constant' href='constant.EBOUNDSOCK.html'
+                                  title='libudt4_sys::EBOUNDSOCK'>EBOUNDSOCK</a></td>
+                           <td class='docblock short'>
+                                <p>cannot execute the operation on a bound socket.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='constant' href='constant.ECONNFAIL.html'
+                                  title='libudt4_sys::ECONNFAIL'>ECONNFAIL</a></td>
+                           <td class='docblock short'>
+                                <p>connection failure.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='constant' href='constant.ECONNLOST.html'
+                                  title='libudt4_sys::ECONNLOST'>ECONNLOST</a></td>
+                           <td class='docblock short'>
+                                <p>connection was broken.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='constant' href='constant.ECONNREJ.html'
+                                  title='libudt4_sys::ECONNREJ'>ECONNREJ</a></td>
+                           <td class='docblock short'>
+                                <p>connection request was rejected by server.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='constant' href='constant.ECONNSETUP.html'
+                                  title='libudt4_sys::ECONNSETUP'>ECONNSETUP</a></td>
+                           <td class='docblock short'>
+                                <p>connection setup failure.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='constant' href='constant.ECONNSOCK.html'
+                                  title='libudt4_sys::ECONNSOCK'>ECONNSOCK</a></td>
+                           <td class='docblock short'>
+                                <p>cannot execute the operation on a connected socket.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='constant' href='constant.EDGRAMILL.html'
+                                  title='libudt4_sys::EDGRAMILL'>EDGRAMILL</a></td>
+                           <td class='docblock short'>
+                                <p>operation not supported in SOCK_DGRAM mode.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='constant' href='constant.EDUPLISTEN.html'
+                                  title='libudt4_sys::EDUPLISTEN'>EDUPLISTEN</a></td>
+                           <td class='docblock short'>
+                                <p>another socket is already listening on the same UDP port.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='constant' href='constant.EFILE.html'
+                                  title='libudt4_sys::EFILE'>EFILE</a></td>
+                           <td class='docblock short'>
+                                <p>file access error.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='constant' href='constant.EINVOP.html'
+                                  title='libudt4_sys::EINVOP'>EINVOP</a></td>
+                           <td class='docblock short'>
+                                <p>operation not supported.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='constant' href='constant.EINVPARAM.html'
+                                  title='libudt4_sys::EINVPARAM'>EINVPARAM</a></td>
+                           <td class='docblock short'>
+                                <p>bad parameters.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='constant' href='constant.EINVRDOFF.html'
+                                  title='libudt4_sys::EINVRDOFF'>EINVRDOFF</a></td>
+                           <td class='docblock short'>
+                                <p>invalid read offset.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='constant' href='constant.EINVSOCK.html'
+                                  title='libudt4_sys::EINVSOCK'>EINVSOCK</a></td>
+                           <td class='docblock short'>
+                                <p>invalid UDT socket.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='constant' href='constant.EINVWROFF.html'
+                                  title='libudt4_sys::EINVWROFF'>EINVWROFF</a></td>
+                           <td class='docblock short'>
+                                <p>invalid write offset.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='constant' href='constant.ELARGEMSG.html'
+                                  title='libudt4_sys::ELARGEMSG'>ELARGEMSG</a></td>
+                           <td class='docblock short'>
+                                <p>message is too large to be hold in the sending buffer.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='constant' href='constant.ENOBUF.html'
+                                  title='libudt4_sys::ENOBUF'>ENOBUF</a></td>
+                           <td class='docblock short'>
+                                <p>no memory space.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='constant' href='constant.ENOCONN.html'
+                                  title='libudt4_sys::ENOCONN'>ENOCONN</a></td>
+                           <td class='docblock short'>
+                                <p>connection does not exist.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='constant' href='constant.ENOLISTEN.html'
+                                  title='libudt4_sys::ENOLISTEN'>ENOLISTEN</a></td>
+                           <td class='docblock short'>
+                                <p>(accept) socket is not in listening state.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='constant' href='constant.ENOSERVER.html'
+                                  title='libudt4_sys::ENOSERVER'>ENOSERVER</a></td>
+                           <td class='docblock short'>
+                                <p>server does not exist.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='constant' href='constant.EPEERERR.html'
+                                  title='libudt4_sys::EPEERERR'>EPEERERR</a></td>
+                           <td class='docblock short'>
+                                <p>Error has happened at the peer side.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='constant' href='constant.ERDPERM.html'
+                                  title='libudt4_sys::ERDPERM'>ERDPERM</a></td>
+                           <td class='docblock short'>
+                                <p>no read permission.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='constant' href='constant.ERDVNOSERV.html'
+                                  title='libudt4_sys::ERDVNOSERV'>ERDVNOSERV</a></td>
+                           <td class='docblock short'>
+                                <p>rendezvous connection process does not allow listen and accept call.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='constant' href='constant.ERDVUNBOUND.html'
+                                  title='libudt4_sys::ERDVUNBOUND'>ERDVUNBOUND</a></td>
+                           <td class='docblock short'>
+                                <p>rendezvous connection setup is enabled but bind has not been called before connect.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='constant' href='constant.ERESOURCE.html'
+                                  title='libudt4_sys::ERESOURCE'>ERESOURCE</a></td>
+                           <td class='docblock short'>
+                                <p>system resource failure.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='constant' href='constant.ESECFAIL.html'
+                                  title='libudt4_sys::ESECFAIL'>ESECFAIL</a></td>
+                           <td class='docblock short'>
+                                <p>connection request was aborted due to security reasons.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='constant' href='constant.ESOCKFAIL.html'
+                                  title='libudt4_sys::ESOCKFAIL'>ESOCKFAIL</a></td>
+                           <td class='docblock short'>
+                                <p>could not create/configure UDP socket.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='constant' href='constant.ESTREAMILL.html'
+                                  title='libudt4_sys::ESTREAMILL'>ESTREAMILL</a></td>
+                           <td class='docblock short'>
+                                <p>operation not supported in SOCK_STREAM mode.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='constant' href='constant.ETHREAD.html'
+                                  title='libudt4_sys::ETHREAD'>ETHREAD</a></td>
+                           <td class='docblock short'>
+                                <p>could not create new thread.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='constant' href='constant.ETIMEOUT.html'
+                                  title='libudt4_sys::ETIMEOUT'>ETIMEOUT</a></td>
+                           <td class='docblock short'>
+                                <p>timeout before operation completes.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='constant' href='constant.EUNBOUNDSOCK.html'
+                                  title='libudt4_sys::EUNBOUNDSOCK'>EUNBOUNDSOCK</a></td>
+                           <td class='docblock short'>
+                                <p>cannot listen on unbound socket.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='constant' href='constant.EWRPERM.html'
+                                  title='libudt4_sys::EWRPERM'>EWRPERM</a></td>
+                           <td class='docblock short'>
+                                <p>no write permission.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='constant' href='constant.INVALID_SOCK.html'
+                                  title='libudt4_sys::INVALID_SOCK'>INVALID_SOCK</a></td>
+                           <td class='docblock short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='constant' href='constant.SUCCESS.html'
+                                  title='libudt4_sys::SUCCESS'>SUCCESS</a></td>
+                           <td class='docblock short'>
+                                <p>success operation.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='constant' href='constant.UDT_ERROR.html'
+                                  title='libudt4_sys::UDT_ERROR'>UDT_ERROR</a></td>
+                           <td class='docblock short'>
+                                
+                           </td>
+                       </tr></table><h2 id='functions' class='section-header'><a href="#functions">Functions</a></h2>
 <table>
-                    <tr class=' module-item'>
-                        <td><a class='fn' href='fn.udt_accept.html'
-                               title='libudt4_sys::udt_accept'>udt_accept</a></td>
-                        <td class='docblock short'>
-                             
-                        </td>
-                    </tr>
-                
-                    <tr class=' module-item'>
-                        <td><a class='fn' href='fn.udt_bind.html'
-                               title='libudt4_sys::udt_bind'>udt_bind</a></td>
-                        <td class='docblock short'>
-                             
-                        </td>
-                    </tr>
-                
-                    <tr class=' module-item'>
-                        <td><a class='fn' href='fn.udt_bind2.html'
-                               title='libudt4_sys::udt_bind2'>udt_bind2</a></td>
-                        <td class='docblock short'>
-                             
-                        </td>
-                    </tr>
-                
-                    <tr class=' module-item'>
-                        <td><a class='fn' href='fn.udt_cleanup.html'
-                               title='libudt4_sys::udt_cleanup'>udt_cleanup</a></td>
-                        <td class='docblock short'>
-                             
-                        </td>
-                    </tr>
-                
-                    <tr class=' module-item'>
-                        <td><a class='fn' href='fn.udt_close.html'
-                               title='libudt4_sys::udt_close'>udt_close</a></td>
-                        <td class='docblock short'>
-                             
-                        </td>
-                    </tr>
-                
-                    <tr class=' module-item'>
-                        <td><a class='fn' href='fn.udt_connect.html'
-                               title='libudt4_sys::udt_connect'>udt_connect</a></td>
-                        <td class='docblock short'>
-                             
-                        </td>
-                    </tr>
-                
-                    <tr class=' module-item'>
-                        <td><a class='fn' href='fn.udt_epoll_add_ssock.html'
-                               title='libudt4_sys::udt_epoll_add_ssock'>udt_epoll_add_ssock</a></td>
-                        <td class='docblock short'>
-                             
-                        </td>
-                    </tr>
-                
-                    <tr class=' module-item'>
-                        <td><a class='fn' href='fn.udt_epoll_add_usock.html'
-                               title='libudt4_sys::udt_epoll_add_usock'>udt_epoll_add_usock</a></td>
-                        <td class='docblock short'>
-                             
-                        </td>
-                    </tr>
-                
-                    <tr class=' module-item'>
-                        <td><a class='fn' href='fn.udt_epoll_create.html'
-                               title='libudt4_sys::udt_epoll_create'>udt_epoll_create</a></td>
-                        <td class='docblock short'>
-                             
-                        </td>
-                    </tr>
-                
-                    <tr class=' module-item'>
-                        <td><a class='fn' href='fn.udt_epoll_release.html'
-                               title='libudt4_sys::udt_epoll_release'>udt_epoll_release</a></td>
-                        <td class='docblock short'>
-                             
-                        </td>
-                    </tr>
-                
-                    <tr class=' module-item'>
-                        <td><a class='fn' href='fn.udt_epoll_remove_ssock.html'
-                               title='libudt4_sys::udt_epoll_remove_ssock'>udt_epoll_remove_ssock</a></td>
-                        <td class='docblock short'>
-                             
-                        </td>
-                    </tr>
-                
-                    <tr class=' module-item'>
-                        <td><a class='fn' href='fn.udt_epoll_remove_usock.html'
-                               title='libudt4_sys::udt_epoll_remove_usock'>udt_epoll_remove_usock</a></td>
-                        <td class='docblock short'>
-                             
-                        </td>
-                    </tr>
-                
-                    <tr class=' module-item'>
-                        <td><a class='fn' href='fn.udt_epoll_wait2.html'
-                               title='libudt4_sys::udt_epoll_wait2'>udt_epoll_wait2</a></td>
-                        <td class='docblock short'>
-                             
-                        </td>
-                    </tr>
-                
-                    <tr class=' module-item'>
-                        <td><a class='fn' href='fn.udt_getlasterror_code.html'
-                               title='libudt4_sys::udt_getlasterror_code'>udt_getlasterror_code</a></td>
-                        <td class='docblock short'>
-                             
-                        </td>
-                    </tr>
-                
-                    <tr class=' module-item'>
-                        <td><a class='fn' href='fn.udt_getlasterror_desc.html'
-                               title='libudt4_sys::udt_getlasterror_desc'>udt_getlasterror_desc</a></td>
-                        <td class='docblock short'>
-                             
-                        </td>
-                    </tr>
-                
-                    <tr class=' module-item'>
-                        <td><a class='fn' href='fn.udt_getpeername.html'
-                               title='libudt4_sys::udt_getpeername'>udt_getpeername</a></td>
-                        <td class='docblock short'>
-                             
-                        </td>
-                    </tr>
-                
-                    <tr class=' module-item'>
-                        <td><a class='fn' href='fn.udt_getsockname.html'
-                               title='libudt4_sys::udt_getsockname'>udt_getsockname</a></td>
-                        <td class='docblock short'>
-                             
-                        </td>
-                    </tr>
-                
-                    <tr class=' module-item'>
-                        <td><a class='fn' href='fn.udt_getsockopt.html'
-                               title='libudt4_sys::udt_getsockopt'>udt_getsockopt</a></td>
-                        <td class='docblock short'>
-                             
-                        </td>
-                    </tr>
-                
-                    <tr class=' module-item'>
-                        <td><a class='fn' href='fn.udt_getsockstate.html'
-                               title='libudt4_sys::udt_getsockstate'>udt_getsockstate</a></td>
-                        <td class='docblock short'>
-                             
-                        </td>
-                    </tr>
-                
-                    <tr class=' module-item'>
-                        <td><a class='fn' href='fn.udt_listen.html'
-                               title='libudt4_sys::udt_listen'>udt_listen</a></td>
-                        <td class='docblock short'>
-                             
-                        </td>
-                    </tr>
-                
-                    <tr class=' module-item'>
-                        <td><a class='fn' href='fn.udt_recv.html'
-                               title='libudt4_sys::udt_recv'>udt_recv</a></td>
-                        <td class='docblock short'>
-                             
-                        </td>
-                    </tr>
-                
-                    <tr class=' module-item'>
-                        <td><a class='fn' href='fn.udt_recvmsg.html'
-                               title='libudt4_sys::udt_recvmsg'>udt_recvmsg</a></td>
-                        <td class='docblock short'>
-                             
-                        </td>
-                    </tr>
-                
-                    <tr class=' module-item'>
-                        <td><a class='fn' href='fn.udt_send.html'
-                               title='libudt4_sys::udt_send'>udt_send</a></td>
-                        <td class='docblock short'>
-                             
-                        </td>
-                    </tr>
-                
-                    <tr class=' module-item'>
-                        <td><a class='fn' href='fn.udt_sendmsg.html'
-                               title='libudt4_sys::udt_sendmsg'>udt_sendmsg</a></td>
-                        <td class='docblock short'>
-                             
-                        </td>
-                    </tr>
-                
-                    <tr class=' module-item'>
-                        <td><a class='fn' href='fn.udt_setsockopt.html'
-                               title='libudt4_sys::udt_setsockopt'>udt_setsockopt</a></td>
-                        <td class='docblock short'>
-                             
-                        </td>
-                    </tr>
-                
-                    <tr class=' module-item'>
-                        <td><a class='fn' href='fn.udt_socket.html'
-                               title='libudt4_sys::udt_socket'>udt_socket</a></td>
-                        <td class='docblock short'>
-                             
-                        </td>
-                    </tr>
-                
-                    <tr class=' module-item'>
-                        <td><a class='fn' href='fn.udt_startup.html'
-                               title='libudt4_sys::udt_startup'>udt_startup</a></td>
-                        <td class='docblock short'>
-                             
-                        </td>
-                    </tr>
-                </table><h2 id='types' class='section-header'><a href="#types">Type Definitions</a></h2>
+                       <tr class=' module-item'>
+                           <td><a class='fn' href='fn.udt_accept.html'
+                                  title='libudt4_sys::udt_accept'>udt_accept</a></td>
+                           <td class='docblock short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='fn' href='fn.udt_bind.html'
+                                  title='libudt4_sys::udt_bind'>udt_bind</a></td>
+                           <td class='docblock short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='fn' href='fn.udt_bind2.html'
+                                  title='libudt4_sys::udt_bind2'>udt_bind2</a></td>
+                           <td class='docblock short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='fn' href='fn.udt_cleanup.html'
+                                  title='libudt4_sys::udt_cleanup'>udt_cleanup</a></td>
+                           <td class='docblock short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='fn' href='fn.udt_close.html'
+                                  title='libudt4_sys::udt_close'>udt_close</a></td>
+                           <td class='docblock short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='fn' href='fn.udt_connect.html'
+                                  title='libudt4_sys::udt_connect'>udt_connect</a></td>
+                           <td class='docblock short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='fn' href='fn.udt_epoll_add_ssock.html'
+                                  title='libudt4_sys::udt_epoll_add_ssock'>udt_epoll_add_ssock</a></td>
+                           <td class='docblock short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='fn' href='fn.udt_epoll_add_usock.html'
+                                  title='libudt4_sys::udt_epoll_add_usock'>udt_epoll_add_usock</a></td>
+                           <td class='docblock short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='fn' href='fn.udt_epoll_create.html'
+                                  title='libudt4_sys::udt_epoll_create'>udt_epoll_create</a></td>
+                           <td class='docblock short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='fn' href='fn.udt_epoll_release.html'
+                                  title='libudt4_sys::udt_epoll_release'>udt_epoll_release</a></td>
+                           <td class='docblock short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='fn' href='fn.udt_epoll_remove_ssock.html'
+                                  title='libudt4_sys::udt_epoll_remove_ssock'>udt_epoll_remove_ssock</a></td>
+                           <td class='docblock short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='fn' href='fn.udt_epoll_remove_usock.html'
+                                  title='libudt4_sys::udt_epoll_remove_usock'>udt_epoll_remove_usock</a></td>
+                           <td class='docblock short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='fn' href='fn.udt_epoll_wait2.html'
+                                  title='libudt4_sys::udt_epoll_wait2'>udt_epoll_wait2</a></td>
+                           <td class='docblock short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='fn' href='fn.udt_getlasterror_code.html'
+                                  title='libudt4_sys::udt_getlasterror_code'>udt_getlasterror_code</a></td>
+                           <td class='docblock short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='fn' href='fn.udt_getlasterror_desc.html'
+                                  title='libudt4_sys::udt_getlasterror_desc'>udt_getlasterror_desc</a></td>
+                           <td class='docblock short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='fn' href='fn.udt_getpeername.html'
+                                  title='libudt4_sys::udt_getpeername'>udt_getpeername</a></td>
+                           <td class='docblock short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='fn' href='fn.udt_getsockname.html'
+                                  title='libudt4_sys::udt_getsockname'>udt_getsockname</a></td>
+                           <td class='docblock short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='fn' href='fn.udt_getsockopt.html'
+                                  title='libudt4_sys::udt_getsockopt'>udt_getsockopt</a></td>
+                           <td class='docblock short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='fn' href='fn.udt_getsockstate.html'
+                                  title='libudt4_sys::udt_getsockstate'>udt_getsockstate</a></td>
+                           <td class='docblock short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='fn' href='fn.udt_listen.html'
+                                  title='libudt4_sys::udt_listen'>udt_listen</a></td>
+                           <td class='docblock short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='fn' href='fn.udt_recv.html'
+                                  title='libudt4_sys::udt_recv'>udt_recv</a></td>
+                           <td class='docblock short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='fn' href='fn.udt_recvmsg.html'
+                                  title='libudt4_sys::udt_recvmsg'>udt_recvmsg</a></td>
+                           <td class='docblock short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='fn' href='fn.udt_send.html'
+                                  title='libudt4_sys::udt_send'>udt_send</a></td>
+                           <td class='docblock short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='fn' href='fn.udt_sendmsg.html'
+                                  title='libudt4_sys::udt_sendmsg'>udt_sendmsg</a></td>
+                           <td class='docblock short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='fn' href='fn.udt_setsockopt.html'
+                                  title='libudt4_sys::udt_setsockopt'>udt_setsockopt</a></td>
+                           <td class='docblock short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='fn' href='fn.udt_socket.html'
+                                  title='libudt4_sys::udt_socket'>udt_socket</a></td>
+                           <td class='docblock short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='fn' href='fn.udt_startup.html'
+                                  title='libudt4_sys::udt_startup'>udt_startup</a></td>
+                           <td class='docblock short'>
+                                
+                           </td>
+                       </tr></table><h2 id='types' class='section-header'><a href="#types">Type Definitions</a></h2>
 <table>
-                    <tr class=' module-item'>
-                        <td><a class='type' href='type.SOCKOPT.html'
-                               title='libudt4_sys::SOCKOPT'>SOCKOPT</a></td>
-                        <td class='docblock short'>
-                             
-                        </td>
-                    </tr>
-                
-                    <tr class=' module-item'>
-                        <td><a class='type' href='type.SYSSOCKET.html'
-                               title='libudt4_sys::SYSSOCKET'>SYSSOCKET</a></td>
-                        <td class='docblock short'>
-                             
-                        </td>
-                    </tr>
-                
-                    <tr class=' module-item'>
-                        <td><a class='type' href='type.UDTSOCKET.html'
-                               title='libudt4_sys::UDTSOCKET'>UDTSOCKET</a></td>
-                        <td class='docblock short'>
-                             
-                        </td>
-                    </tr>
-                </table></section>
+                       <tr class=' module-item'>
+                           <td><a class='type' href='type.SOCKOPT.html'
+                                  title='libudt4_sys::SOCKOPT'>SOCKOPT</a></td>
+                           <td class='docblock short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='type' href='type.SYSSOCKET.html'
+                                  title='libudt4_sys::SYSSOCKET'>SYSSOCKET</a></td>
+                           <td class='docblock short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='type' href='type.UDTSOCKET.html'
+                                  title='libudt4_sys::UDTSOCKET'>UDTSOCKET</a></td>
+                           <td class='docblock short'>
+                                
+                           </td>
+                       </tr></table></section>
     <section id='search' class="content hidden"></section>
 
     <section class="footer"></section>
 
-    <div id="help" class="hidden">
+    <aside id="help" class="hidden">
         <div>
+            <h1 class="hidden">Help</h1>
+
             <div class="shortcuts">
-                <h1>Keyboard Shortcuts</h1>
+                <h2>Keyboard Shortcuts</h2>
 
                 <dl>
                     <dt>?</dt>
@@ -631,11 +565,13 @@
                     <dd>Move down in search results</dd>
                     <dt>&#9166;</dt>
                     <dd>Go to active search result</dd>
+                    <dt>+</dt>
+                    <dd>Collapse/expand all sections</dd>
                 </dl>
             </div>
 
             <div class="infos">
-                <h1>Search Tricks</h1>
+                <h2>Search Tricks</h2>
 
                 <p>
                     Prefix searches with a type followed by a colon (e.g.
@@ -651,11 +587,11 @@
 
                 <p>
                     Search functions by type signature (e.g.
-                    <code>vec -> usize</code>)
+                    <code>vec -> usize</code> or <code>* -> vec</code>)
                 </p>
             </div>
         </div>
-    </div>
+    </aside>
 
     
 
@@ -667,6 +603,6 @@
     <script src="../jquery.js"></script>
     <script src="../main.js"></script>
     
-    <script async src="../search-index.js"></script>
+    <script defer src="../search-index.js"></script>
 </body>
 </html>

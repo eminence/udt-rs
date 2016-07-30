@@ -9,7 +9,9 @@
 
     <title>udt::SocketType - Rust</title>
 
+    <link rel="stylesheet" type="text/css" href="../rustdoc.css">
     <link rel="stylesheet" type="text/css" href="../main.css">
+    
 
     
     
@@ -24,10 +26,10 @@
 
     
 
-    <section class="sidebar">
+    <nav class="sidebar">
         
         <p class='location'><a href='index.html'>udt</a></p><script>window.sidebarCurrent = {name: 'SocketType', ty: 'enum', relpath: ''};</script><script defer src="sidebar-items.js"></script>
-    </section>
+    </nav>
 
     <nav class="sub">
         <form class="search-form js-only">
@@ -42,10 +44,10 @@
 
     <section id='main' class="content enum">
 <h1 class='fqn'><span class='in-band'>Enum <a href='index.html'>udt</a>::<wbr><a class='enum' href=''>SocketType</a></span><span class='out-of-band'><span id='render-detail'>
-            <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
-                [<span class='inner'>&#x2212;</span>]
-            </a>
-        </span><a id='src-1798' class='srclink' href='../src/udt/lib.rs.html#257-265' title='goto source code'>[src]</a></span></h1>
+                   <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
+                       [<span class='inner'>&#x2212;</span>]
+                   </a>
+               </span><a id='src-335' class='srclink' href='../src/udt/src/lib.rs.html#289-297' title='goto source code'>[src]</a></span></h1>
 <pre class='rust enum'>pub enum SocketType {
     Stream,
     Datagram,
@@ -58,20 +60,22 @@ delivered at all. However, at the receiver side, if the user buffer is shorter t
 length, only part of the message will be copied into the user buffer while the message will
 still be discarded.</p>
 </div><h2 class='variants'>Variants</h2>
-<table><tr><td id='variant.Stream'><code>Stream</code></td><td><div class='docblock'><p>A socket type that supports data streaming</p>
-</div></td></tr><tr><td id='variant.Datagram'><code>Datagram</code></td><td><div class='docblock'><p>A socket type for messaging</p>
+<span id='variant.Stream' class='variant'><code>Stream</code></span><div class='docblock'><p>A socket type that supports data streaming</p>
+</div><span id='variant.Datagram' class='variant'><code>Datagram</code></span><div class='docblock'><p>A socket type for messaging</p>
 
 <p>Note that UDT Datagram sockets are also connection oriented.  A UDT connection can only be
 set up between the same socket types</p>
-</div></td></tr></table></section>
+</div></section>
     <section id='search' class="content hidden"></section>
 
     <section class="footer"></section>
 
-    <div id="help" class="hidden">
+    <aside id="help" class="hidden">
         <div>
+            <h1 class="hidden">Help</h1>
+
             <div class="shortcuts">
-                <h1>Keyboard Shortcuts</h1>
+                <h2>Keyboard Shortcuts</h2>
 
                 <dl>
                     <dt>?</dt>
@@ -84,11 +88,13 @@ set up between the same socket types</p>
                     <dd>Move down in search results</dd>
                     <dt>&#9166;</dt>
                     <dd>Go to active search result</dd>
+                    <dt>+</dt>
+                    <dd>Collapse/expand all sections</dd>
                 </dl>
             </div>
 
             <div class="infos">
-                <h1>Search Tricks</h1>
+                <h2>Search Tricks</h2>
 
                 <p>
                     Prefix searches with a type followed by a colon (e.g.
@@ -104,11 +110,11 @@ set up between the same socket types</p>
 
                 <p>
                     Search functions by type signature (e.g.
-                    <code>vec -> usize</code>)
+                    <code>vec -> usize</code> or <code>* -> vec</code>)
                 </p>
             </div>
         </div>
-    </div>
+    </aside>
 
     
 
@@ -120,6 +126,6 @@ set up between the same socket types</p>
     <script src="../jquery.js"></script>
     <script src="../main.js"></script>
     
-    <script async src="../search-index.js"></script>
+    <script defer src="../search-index.js"></script>
 </body>
 </html>

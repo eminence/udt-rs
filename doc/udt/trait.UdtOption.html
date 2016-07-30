@@ -9,7 +9,9 @@
 
     <title>udt::UdtOption - Rust</title>
 
+    <link rel="stylesheet" type="text/css" href="../rustdoc.css">
     <link rel="stylesheet" type="text/css" href="../main.css">
+    
 
     
     
@@ -24,10 +26,10 @@
 
     
 
-    <section class="sidebar">
+    <nav class="sidebar">
         
         <p class='location'><a href='index.html'>udt</a></p><script>window.sidebarCurrent = {name: 'UdtOption', ty: 'trait', relpath: ''};</script><script defer src="sidebar-items.js"></script>
-    </section>
+    </nav>
 
     <nav class="sub">
         <form class="search-form js-only">
@@ -42,47 +44,49 @@
 
     <section id='main' class="content trait">
 <h1 class='fqn'><span class='in-band'>Trait <a href='index.html'>udt</a>::<wbr><a class='trait' href=''>UdtOption</a></span><span class='out-of-band'><span id='render-detail'>
-            <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
-                [<span class='inner'>&#x2212;</span>]
-            </a>
-        </span><a id='src-1447' class='srclink' href='../src/udt/lib.rs.html#102-104' title='goto source code'>[src]</a></span></h1>
+                   <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
+                       [<span class='inner'>&#x2212;</span>]
+                   </a>
+               </span><a id='src-229' class='srclink' href='../src/udt/src/lib.rs.html#134-136' title='goto source code'>[src]</a></span></h1>
 <pre class='rust trait'>pub trait UdtOption&lt;T&gt; {
-    fn <a href='#tymethod.get_type' class='fnname'>get_type</a>(&amp;self) -&gt; <a class='enum' href='../raw/enum.UDTOpt.html' title='raw::UDTOpt'>UDTOpt</a>;
+    fn <a href='#tymethod.get_type' class='fnname'>get_type</a>(&amp;self) -&gt; <a class='enum' href='../libudt4_sys/enum.UDTOpt.html' title='libudt4_sys::UDTOpt'>UDTOpt</a>;
 }</pre>
             <h2 id='required-methods'>Required Methods</h2>
             <div class='methods'>
-        <h3 id='tymethod.get_type' class='method stab '><code>fn <a href='#tymethod.get_type' class='fnname'>get_type</a>(&amp;self) -&gt; <a class='enum' href='../raw/enum.UDTOpt.html' title='raw::UDTOpt'>UDTOpt</a></code></h3></div>
+        <h3 id='tymethod.get_type' class='method stab '><code>fn <a href='#tymethod.get_type' class='fnname'>get_type</a>(&amp;self) -&gt; <a class='enum' href='../libudt4_sys/enum.UDTOpt.html' title='libudt4_sys::UDTOpt'>UDTOpt</a></code></h3></div>
         <h2 id='implementors'>Implementors</h2>
         <ul class='item-list' id='implementors-list'>
-    <li><code>impl <a class='trait' href='../udt/trait.UdtOption.html' title='udt::UdtOption'>UdtOption</a>&lt;<a href='https://doc.rust-lang.org/nightly/std/primitive.i32.html'>i32</a>&gt; for <a class='struct' href='../udt/UdtOpts/struct.UDT_MSS.html' title='udt::UdtOpts::UDT_MSS'>UDT_MSS</a></code></li>
-<li><code>impl <a class='trait' href='../udt/trait.UdtOption.html' title='udt::UdtOption'>UdtOption</a>&lt;<a href='https://doc.rust-lang.org/nightly/std/primitive.bool.html'>bool</a>&gt; for <a class='struct' href='../udt/UdtOpts/struct.UDT_SNDSYN.html' title='udt::UdtOpts::UDT_SNDSYN'>UDT_SNDSYN</a></code></li>
-<li><code>impl <a class='trait' href='../udt/trait.UdtOption.html' title='udt::UdtOption'>UdtOption</a>&lt;<a href='https://doc.rust-lang.org/nightly/std/primitive.bool.html'>bool</a>&gt; for <a class='struct' href='../udt/UdtOpts/struct.UDT_RCVSYN.html' title='udt::UdtOpts::UDT_RCVSYN'>UDT_RCVSYN</a></code></li>
-<li><code>impl <a class='trait' href='../udt/trait.UdtOption.html' title='udt::UdtOption'>UdtOption</a>&lt;<a href='https://doc.rust-lang.org/nightly/std/primitive.i32.html'>i32</a>&gt; for <a class='struct' href='../udt/UdtOpts/struct.UDT_FC.html' title='udt::UdtOpts::UDT_FC'>UDT_FC</a></code></li>
-<li><code>impl <a class='trait' href='../udt/trait.UdtOption.html' title='udt::UdtOption'>UdtOption</a>&lt;<a href='https://doc.rust-lang.org/nightly/std/primitive.i32.html'>i32</a>&gt; for <a class='struct' href='../udt/UdtOpts/struct.UDT_SNDBUF.html' title='udt::UdtOpts::UDT_SNDBUF'>UDT_SNDBUF</a></code></li>
-<li><code>impl <a class='trait' href='../udt/trait.UdtOption.html' title='udt::UdtOption'>UdtOption</a>&lt;<a href='https://doc.rust-lang.org/nightly/std/primitive.i32.html'>i32</a>&gt; for <a class='struct' href='../udt/UdtOpts/struct.UDT_RCVBUF.html' title='udt::UdtOpts::UDT_RCVBUF'>UDT_RCVBUF</a></code></li>
-<li><code>impl <a class='trait' href='../udt/trait.UdtOption.html' title='udt::UdtOption'>UdtOption</a>&lt;<a href='https://doc.rust-lang.org/nightly/std/primitive.i32.html'>i32</a>&gt; for <a class='struct' href='../udt/UdtOpts/struct.UDP_SNDBUF.html' title='udt::UdtOpts::UDP_SNDBUF'>UDP_SNDBUF</a></code></li>
-<li><code>impl <a class='trait' href='../udt/trait.UdtOption.html' title='udt::UdtOption'>UdtOption</a>&lt;<a href='https://doc.rust-lang.org/nightly/std/primitive.i32.html'>i32</a>&gt; for <a class='struct' href='../udt/UdtOpts/struct.UDP_RCVBUF.html' title='udt::UdtOpts::UDP_RCVBUF'>UDP_RCVBUF</a></code></li>
-<li><code>impl <a class='trait' href='../udt/trait.UdtOption.html' title='udt::UdtOption'>UdtOption</a>&lt;<a class='struct' href='../udt/struct.Linger.html' title='udt::Linger'>Linger</a>&gt; for <a class='struct' href='../udt/UdtOpts/struct.UDT_LINGER.html' title='udt::UdtOpts::UDT_LINGER'>UDT_LINGER</a></code></li>
-<li><code>impl <a class='trait' href='../udt/trait.UdtOption.html' title='udt::UdtOption'>UdtOption</a>&lt;<a href='https://doc.rust-lang.org/nightly/std/primitive.bool.html'>bool</a>&gt; for <a class='struct' href='../udt/UdtOpts/struct.UDT_RENDEZVOUS.html' title='udt::UdtOpts::UDT_RENDEZVOUS'>UDT_RENDEZVOUS</a></code></li>
-<li><code>impl <a class='trait' href='../udt/trait.UdtOption.html' title='udt::UdtOption'>UdtOption</a>&lt;<a href='https://doc.rust-lang.org/nightly/std/primitive.i32.html'>i32</a>&gt; for <a class='struct' href='../udt/UdtOpts/struct.UDT_SNDTIMEO.html' title='udt::UdtOpts::UDT_SNDTIMEO'>UDT_SNDTIMEO</a></code></li>
-<li><code>impl <a class='trait' href='../udt/trait.UdtOption.html' title='udt::UdtOption'>UdtOption</a>&lt;<a href='https://doc.rust-lang.org/nightly/std/primitive.i32.html'>i32</a>&gt; for <a class='struct' href='../udt/UdtOpts/struct.UDT_RCVTIMEO.html' title='udt::UdtOpts::UDT_RCVTIMEO'>UDT_RCVTIMEO</a></code></li>
-<li><code>impl <a class='trait' href='../udt/trait.UdtOption.html' title='udt::UdtOption'>UdtOption</a>&lt;<a href='https://doc.rust-lang.org/nightly/std/primitive.bool.html'>bool</a>&gt; for <a class='struct' href='../udt/UdtOpts/struct.UDT_REUSEADDR.html' title='udt::UdtOpts::UDT_REUSEADDR'>UDT_REUSEADDR</a></code></li>
-<li><code>impl <a class='trait' href='../udt/trait.UdtOption.html' title='udt::UdtOption'>UdtOption</a>&lt;<a href='https://doc.rust-lang.org/nightly/std/primitive.i64.html'>i64</a>&gt; for <a class='struct' href='../udt/UdtOpts/struct.UDT_MAXBW.html' title='udt::UdtOpts::UDT_MAXBW'>UDT_MAXBW</a></code></li>
-<li><code>impl <a class='trait' href='../udt/trait.UdtOption.html' title='udt::UdtOption'>UdtOption</a>&lt;<a href='https://doc.rust-lang.org/nightly/std/primitive.i32.html'>i32</a>&gt; for <a class='struct' href='../udt/UdtOpts/struct.UDT_STATE.html' title='udt::UdtOpts::UDT_STATE'>UDT_STATE</a></code></li>
-<li><code>impl <a class='trait' href='../udt/trait.UdtOption.html' title='udt::UdtOption'>UdtOption</a>&lt;<a href='https://doc.rust-lang.org/nightly/std/primitive.i32.html'>i32</a>&gt; for <a class='struct' href='../udt/UdtOpts/struct.UDT_EVENT.html' title='udt::UdtOpts::UDT_EVENT'>UDT_EVENT</a></code></li>
-<li><code>impl <a class='trait' href='../udt/trait.UdtOption.html' title='udt::UdtOption'>UdtOption</a>&lt;<a href='https://doc.rust-lang.org/nightly/std/primitive.i32.html'>i32</a>&gt; for <a class='struct' href='../udt/UdtOpts/struct.UDT_SNDDATA.html' title='udt::UdtOpts::UDT_SNDDATA'>UDT_SNDDATA</a></code></li>
-<li><code>impl <a class='trait' href='../udt/trait.UdtOption.html' title='udt::UdtOption'>UdtOption</a>&lt;<a href='https://doc.rust-lang.org/nightly/std/primitive.i32.html'>i32</a>&gt; for <a class='struct' href='../udt/UdtOpts/struct.UDT_RCVDATA.html' title='udt::UdtOpts::UDT_RCVDATA'>UDT_RCVDATA</a></code></li>
+    <li><code>impl UdtOption&lt;<a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.i32.html'>i32</a>&gt; for <a class='struct' href='../udt/UdtOpts/struct.UDT_MSS.html' title='udt::UdtOpts::UDT_MSS'>UDT_MSS</a></code></li>
+<li><code>impl UdtOption&lt;<a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.bool.html'>bool</a>&gt; for <a class='struct' href='../udt/UdtOpts/struct.UDT_SNDSYN.html' title='udt::UdtOpts::UDT_SNDSYN'>UDT_SNDSYN</a></code></li>
+<li><code>impl UdtOption&lt;<a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.bool.html'>bool</a>&gt; for <a class='struct' href='../udt/UdtOpts/struct.UDT_RCVSYN.html' title='udt::UdtOpts::UDT_RCVSYN'>UDT_RCVSYN</a></code></li>
+<li><code>impl UdtOption&lt;<a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.i32.html'>i32</a>&gt; for <a class='struct' href='../udt/UdtOpts/struct.UDT_FC.html' title='udt::UdtOpts::UDT_FC'>UDT_FC</a></code></li>
+<li><code>impl UdtOption&lt;<a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.i32.html'>i32</a>&gt; for <a class='struct' href='../udt/UdtOpts/struct.UDT_SNDBUF.html' title='udt::UdtOpts::UDT_SNDBUF'>UDT_SNDBUF</a></code></li>
+<li><code>impl UdtOption&lt;<a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.i32.html'>i32</a>&gt; for <a class='struct' href='../udt/UdtOpts/struct.UDT_RCVBUF.html' title='udt::UdtOpts::UDT_RCVBUF'>UDT_RCVBUF</a></code></li>
+<li><code>impl UdtOption&lt;<a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.i32.html'>i32</a>&gt; for <a class='struct' href='../udt/UdtOpts/struct.UDP_SNDBUF.html' title='udt::UdtOpts::UDP_SNDBUF'>UDP_SNDBUF</a></code></li>
+<li><code>impl UdtOption&lt;<a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.i32.html'>i32</a>&gt; for <a class='struct' href='../udt/UdtOpts/struct.UDP_RCVBUF.html' title='udt::UdtOpts::UDP_RCVBUF'>UDP_RCVBUF</a></code></li>
+<li><code>impl UdtOption&lt;<a class='struct' href='../udt/struct.Linger.html' title='udt::Linger'>Linger</a>&gt; for <a class='struct' href='../udt/UdtOpts/struct.UDT_LINGER.html' title='udt::UdtOpts::UDT_LINGER'>UDT_LINGER</a></code></li>
+<li><code>impl UdtOption&lt;<a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.bool.html'>bool</a>&gt; for <a class='struct' href='../udt/UdtOpts/struct.UDT_RENDEZVOUS.html' title='udt::UdtOpts::UDT_RENDEZVOUS'>UDT_RENDEZVOUS</a></code></li>
+<li><code>impl UdtOption&lt;<a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.i32.html'>i32</a>&gt; for <a class='struct' href='../udt/UdtOpts/struct.UDT_SNDTIMEO.html' title='udt::UdtOpts::UDT_SNDTIMEO'>UDT_SNDTIMEO</a></code></li>
+<li><code>impl UdtOption&lt;<a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.i32.html'>i32</a>&gt; for <a class='struct' href='../udt/UdtOpts/struct.UDT_RCVTIMEO.html' title='udt::UdtOpts::UDT_RCVTIMEO'>UDT_RCVTIMEO</a></code></li>
+<li><code>impl UdtOption&lt;<a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.bool.html'>bool</a>&gt; for <a class='struct' href='../udt/UdtOpts/struct.UDT_REUSEADDR.html' title='udt::UdtOpts::UDT_REUSEADDR'>UDT_REUSEADDR</a></code></li>
+<li><code>impl UdtOption&lt;<a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.i64.html'>i64</a>&gt; for <a class='struct' href='../udt/UdtOpts/struct.UDT_MAXBW.html' title='udt::UdtOpts::UDT_MAXBW'>UDT_MAXBW</a></code></li>
+<li><code>impl UdtOption&lt;<a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.i32.html'>i32</a>&gt; for <a class='struct' href='../udt/UdtOpts/struct.UDT_STATE.html' title='udt::UdtOpts::UDT_STATE'>UDT_STATE</a></code></li>
+<li><code>impl UdtOption&lt;<a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.i32.html'>i32</a>&gt; for <a class='struct' href='../udt/UdtOpts/struct.UDT_EVENT.html' title='udt::UdtOpts::UDT_EVENT'>UDT_EVENT</a></code></li>
+<li><code>impl UdtOption&lt;<a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.i32.html'>i32</a>&gt; for <a class='struct' href='../udt/UdtOpts/struct.UDT_SNDDATA.html' title='udt::UdtOpts::UDT_SNDDATA'>UDT_SNDDATA</a></code></li>
+<li><code>impl UdtOption&lt;<a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.i32.html'>i32</a>&gt; for <a class='struct' href='../udt/UdtOpts/struct.UDT_RCVDATA.html' title='udt::UdtOpts::UDT_RCVDATA'>UDT_RCVDATA</a></code></li>
 </ul><script type="text/javascript" async
-                              src="../implementors/udt/trait.UdtOption.js">
-                      </script></section>
+                         src="../implementors/udt/trait.UdtOption.js">
+                 </script></section>
     <section id='search' class="content hidden"></section>
 
     <section class="footer"></section>
 
-    <div id="help" class="hidden">
+    <aside id="help" class="hidden">
         <div>
+            <h1 class="hidden">Help</h1>
+
             <div class="shortcuts">
-                <h1>Keyboard Shortcuts</h1>
+                <h2>Keyboard Shortcuts</h2>
 
                 <dl>
                     <dt>?</dt>
@@ -95,11 +99,13 @@
                     <dd>Move down in search results</dd>
                     <dt>&#9166;</dt>
                     <dd>Go to active search result</dd>
+                    <dt>+</dt>
+                    <dd>Collapse/expand all sections</dd>
                 </dl>
             </div>
 
             <div class="infos">
-                <h1>Search Tricks</h1>
+                <h2>Search Tricks</h2>
 
                 <p>
                     Prefix searches with a type followed by a colon (e.g.
@@ -115,11 +121,11 @@
 
                 <p>
                     Search functions by type signature (e.g.
-                    <code>vec -> usize</code>)
+                    <code>vec -> usize</code> or <code>* -> vec</code>)
                 </p>
             </div>
         </div>
-    </div>
+    </aside>
 
     
 
@@ -131,6 +137,6 @@
     <script src="../jquery.js"></script>
     <script src="../main.js"></script>
     
-    <script async src="../search-index.js"></script>
+    <script defer src="../search-index.js"></script>
 </body>
 </html>

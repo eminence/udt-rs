@@ -9,7 +9,9 @@
 
     <title>udt - Rust</title>
 
+    <link rel="stylesheet" type="text/css" href="../rustdoc.css">
     <link rel="stylesheet" type="text/css" href="../main.css">
+    
 
     
     
@@ -24,10 +26,10 @@
 
     
 
-    <section class="sidebar">
+    <nav class="sidebar">
         
         <p class='location'></p><script>window.sidebarCurrent = {name: 'udt', ty: 'mod', relpath: '../'};</script>
-    </section>
+    </nav>
 
     <nav class="sub">
         <form class="search-form js-only">
@@ -42,19 +44,28 @@
 
     <section id='main' class="content mod">
 <h1 class='fqn'><span class='in-band'>Crate <a class='mod' href=''>udt</a></span><span class='out-of-band'><span id='render-detail'>
-            <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
-                [<span class='inner'>&#x2212;</span>]
-            </a>
-        </span><a id='src-0' class='srclink' href='../src/udt/lib.rs.html#1-980' title='goto source code'>[src]</a></span></h1>
-<div class='docblock'><p>UDT</p>
+                   <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
+                       [<span class='inner'>&#x2212;</span>]
+                   </a>
+               </span><a id='src-0' class='srclink' href='../src/udt/src/lib.rs.html#1-1038' title='goto source code'>[src]</a></span></h1>
+<div class='docblock'><p><em>Note about these docs</em></p>
 
+<p>These docs are mostly copied verbatim from the UDT documentation.  If you see references to the
+C++ function names instead of the rust function names, that&#39;s why.</p>
+
+<h1 id='udt' class='section-header'><a href='#udt'>UDT</a></h1>
 <p>Bindings to the UDT4 high performance data data transfer library</p>
 
 <p>UDT follows closely the BSD socket API, but several of the functions have different semantics.</p>
 
-<h1 id="examples" class='section-header'><a
-                           href="#examples">Examples</a></h1>
+<p>UDT is a high performance data transfer protocol - UDP-based data transfer protocol. It was
+designed for data intensive applications over high speed wide area networks, to overcome the
+efficiency and fairness problems of TCP. As its name indicates, UDT is built on top of UDP and
+it provides both reliable data streaming and messaging services.</p>
+
+<h1 id='examples' class='section-header'><a href='#examples'>Examples</a></h1>
 <p>To create a Datagram server, that can send and receive messages:</p>
+
 <pre class='rust rust-example-rendered'>
     <span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>str</span>::<span class='ident'>FromStr</span>;
     <span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>net</span>::{<span class='ident'>SocketAddr</span>, <span class='ident'>SocketAddrV4</span>};
@@ -73,137 +84,120 @@
 </pre>
 </div><h2 id='modules' class='section-header'><a href="#modules">Modules</a></h2>
 <table>
-                    <tr class=' module-item'>
-                        <td><a class='mod' href='UdtOpts/index.html'
-                               title='udt::UdtOpts'>UdtOpts</a></td>
-                        <td class='docblock short'>
-                             <p>Various options that can be passed to <code>getsockopt</code> or <code>setsockopt</code></p>
-
-                        </td>
-                    </tr>
-                </table><h2 id='structs' class='section-header'><a href="#structs">Structs</a></h2>
+                       <tr class=' module-item'>
+                           <td><a class='mod' href='UdtOpts/index.html'
+                                  title='udt::UdtOpts'>UdtOpts</a></td>
+                           <td class='docblock short'>
+                                <p>Various options that can be passed to <code>getsockopt</code> or <code>setsockopt</code></p>
+                           </td>
+                       </tr></table><h2 id='structs' class='section-header'><a href="#structs">Structs</a></h2>
 <table>
-                    <tr class=' module-item'>
-                        <td><a class='struct' href='struct.Epoll.html'
-                               title='udt::Epoll'>Epoll</a></td>
-                        <td class='docblock short'>
-                             <p>Used with the <code>epoll*</code> methods of a UDTSocket</p>
-
-                        </td>
-                    </tr>
-                
-                    <tr class=' module-item'>
-                        <td><a class='struct' href='struct.EpollEvents.html'
-                               title='udt::EpollEvents'>EpollEvents</a></td>
-                        <td class='docblock short'>
-                             
-                        </td>
-                    </tr>
-                
-                    <tr class=' module-item'>
-                        <td><a class='struct' href='struct.Linger.html'
-                               title='udt::Linger'>Linger</a></td>
-                        <td class='docblock short'>
-                             <p>Linger option</p>
-
-                        </td>
-                    </tr>
-                
-                    <tr class=' module-item'>
-                        <td><a class='struct' href='struct.UdtError.html'
-                               title='udt::UdtError'>UdtError</a></td>
-                        <td class='docblock short'>
-                             
-                        </td>
-                    </tr>
-                
-                    <tr class=' module-item'>
-                        <td><a class='struct' href='struct.UdtSocket.html'
-                               title='udt::UdtSocket'>UdtSocket</a></td>
-                        <td class='docblock short'>
-                             <p>A UDT Socket</p>
-
-                        </td>
-                    </tr>
-                </table><h2 id='enums' class='section-header'><a href="#enums">Enums</a></h2>
+                       <tr class=' module-item'>
+                           <td><a class='struct' href='struct.Epoll.html'
+                                  title='udt::Epoll'>Epoll</a></td>
+                           <td class='docblock short'>
+                                <p>Used with the <code>epoll*</code> methods of a UDTSocket</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='struct' href='struct.EpollEvents.html'
+                                  title='udt::EpollEvents'>EpollEvents</a></td>
+                           <td class='docblock short'>
+                                <p>This is a bitflag field that can be constructed with <code>UDT_EPOLL_IN</code>, <code>UDT_EPOLL_OUT</code>, or
+<code>UDT_EPOLL_ERR</code></p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='struct' href='struct.Linger.html'
+                                  title='udt::Linger'>Linger</a></td>
+                           <td class='docblock short'>
+                                <p>Linger option</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='struct' href='struct.UdtError.html'
+                                  title='udt::UdtError'>UdtError</a></td>
+                           <td class='docblock short'>
+                                <p>A UDT Error</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='struct' href='struct.UdtSocket.html'
+                                  title='udt::UdtSocket'>UdtSocket</a></td>
+                           <td class='docblock short'>
+                                <p>A UDT Socket</p>
+                           </td>
+                       </tr></table><h2 id='enums' class='section-header'><a href="#enums">Enums</a></h2>
 <table>
-                    <tr class=' module-item'>
-                        <td><a class='enum' href='enum.SocketFamily.html'
-                               title='udt::SocketFamily'>SocketFamily</a></td>
-                        <td class='docblock short'>
-                             
-                        </td>
-                    </tr>
-                
-                    <tr class=' module-item'>
-                        <td><a class='enum' href='enum.SocketType.html'
-                               title='udt::SocketType'>SocketType</a></td>
-                        <td class='docblock short'>
-                             <p>Socket type</p>
-
-                        </td>
-                    </tr>
-                
-                    <tr class=' module-item'>
-                        <td><a class='enum' href='enum.UdtStatus.html'
-                               title='udt::UdtStatus'>UdtStatus</a></td>
-                        <td class='docblock short'>
-                             
-                        </td>
-                    </tr>
-                </table><h2 id='constants' class='section-header'><a href="#constants">Constants</a></h2>
+                       <tr class=' module-item'>
+                           <td><a class='enum' href='enum.SocketFamily.html'
+                                  title='udt::SocketFamily'>SocketFamily</a></td>
+                           <td class='docblock short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='enum' href='enum.SocketType.html'
+                                  title='udt::SocketType'>SocketType</a></td>
+                           <td class='docblock short'>
+                                <p>Socket type</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='enum' href='enum.UdtStatus.html'
+                                  title='udt::UdtStatus'>UdtStatus</a></td>
+                           <td class='docblock short'>
+                                
+                           </td>
+                       </tr></table><h2 id='constants' class='section-header'><a href="#constants">Constants</a></h2>
 <table>
-                    <tr class=' module-item'>
-                        <td><a class='constant' href='constant.UDT_EPOLL_ERR.html'
-                               title='udt::UDT_EPOLL_ERR'>UDT_EPOLL_ERR</a></td>
-                        <td class='docblock short'>
-                             
-                        </td>
-                    </tr>
-                
-                    <tr class=' module-item'>
-                        <td><a class='constant' href='constant.UDT_EPOLL_IN.html'
-                               title='udt::UDT_EPOLL_IN'>UDT_EPOLL_IN</a></td>
-                        <td class='docblock short'>
-                             
-                        </td>
-                    </tr>
-                
-                    <tr class=' module-item'>
-                        <td><a class='constant' href='constant.UDT_EPOLL_OUT.html'
-                               title='udt::UDT_EPOLL_OUT'>UDT_EPOLL_OUT</a></td>
-                        <td class='docblock short'>
-                             
-                        </td>
-                    </tr>
-                </table><h2 id='traits' class='section-header'><a href="#traits">Traits</a></h2>
+                       <tr class=' module-item'>
+                           <td><a class='constant' href='constant.UDT_EPOLL_ERR.html'
+                                  title='udt::UDT_EPOLL_ERR'>UDT_EPOLL_ERR</a></td>
+                           <td class='docblock short'>
+                                <p>An Epoll Event to watch for exception events</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='constant' href='constant.UDT_EPOLL_IN.html'
+                                  title='udt::UDT_EPOLL_IN'>UDT_EPOLL_IN</a></td>
+                           <td class='docblock short'>
+                                <p>An Epoll Event to watch for read events</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='constant' href='constant.UDT_EPOLL_OUT.html'
+                                  title='udt::UDT_EPOLL_OUT'>UDT_EPOLL_OUT</a></td>
+                           <td class='docblock short'>
+                                <p>An Epoll Event to watch for write events</p>
+                           </td>
+                       </tr></table><h2 id='traits' class='section-header'><a href="#traits">Traits</a></h2>
 <table>
-                    <tr class=' module-item'>
-                        <td><a class='trait' href='trait.UdtOption.html'
-                               title='udt::UdtOption'>UdtOption</a></td>
-                        <td class='docblock short'>
-                             
-                        </td>
-                    </tr>
-                </table><h2 id='functions' class='section-header'><a href="#functions">Functions</a></h2>
+                       <tr class=' module-item'>
+                           <td><a class='trait' href='trait.UdtOption.html'
+                                  title='udt::UdtOption'>UdtOption</a></td>
+                           <td class='docblock short'>
+                                
+                           </td>
+                       </tr></table><h2 id='functions' class='section-header'><a href="#functions">Functions</a></h2>
 <table>
-                    <tr class=' module-item'>
-                        <td><a class='fn' href='fn.init.html'
-                               title='udt::init'>init</a></td>
-                        <td class='docblock short'>
-                             <p>Initialize the UDT library.</p>
-
-                        </td>
-                    </tr>
-                </table></section>
+                       <tr class=' module-item'>
+                           <td><a class='fn' href='fn.init.html'
+                                  title='udt::init'>init</a></td>
+                           <td class='docblock short'>
+                                <p>Initialize the UDT library.</p>
+                           </td>
+                       </tr></table></section>
     <section id='search' class="content hidden"></section>
 
     <section class="footer"></section>
 
-    <div id="help" class="hidden">
+    <aside id="help" class="hidden">
         <div>
+            <h1 class="hidden">Help</h1>
+
             <div class="shortcuts">
-                <h1>Keyboard Shortcuts</h1>
+                <h2>Keyboard Shortcuts</h2>
 
                 <dl>
                     <dt>?</dt>
@@ -216,11 +210,13 @@
                     <dd>Move down in search results</dd>
                     <dt>&#9166;</dt>
                     <dd>Go to active search result</dd>
+                    <dt>+</dt>
+                    <dd>Collapse/expand all sections</dd>
                 </dl>
             </div>
 
             <div class="infos">
-                <h1>Search Tricks</h1>
+                <h2>Search Tricks</h2>
 
                 <p>
                     Prefix searches with a type followed by a colon (e.g.
@@ -236,11 +232,11 @@
 
                 <p>
                     Search functions by type signature (e.g.
-                    <code>vec -> usize</code>)
+                    <code>vec -> usize</code> or <code>* -> vec</code>)
                 </p>
             </div>
         </div>
-    </div>
+    </aside>
 
     
 
@@ -252,6 +248,6 @@
     <script src="../jquery.js"></script>
     <script src="../main.js"></script>
     
-    <script async src="../search-index.js"></script>
+    <script defer src="../search-index.js"></script>
 </body>
 </html>
