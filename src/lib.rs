@@ -426,7 +426,7 @@ impl UdtSocket {
         let addr: sockaddr_in = get_sockaddr(name); 
         let ret = unsafe {
             raw::udt_bind(self._sock, 
-                          std::mem::transmute(&addr),
+                          &addr as *const libc::sockaddr_in as *const libc::sockaddr,
                           size_of::<sockaddr_in>() as i32
                          )
         };
@@ -487,8 +487,7 @@ impl UdtSocket {
     pub fn connect(&self, name: std::net::SocketAddr) -> Result<(), UdtError> {
         let addr = get_sockaddr(name);
         let ret = unsafe {
-            raw::udt_connect(self._sock,
-                             std::mem::transmute(&addr),
+            raw::udt_connect(self._sock, &addr as *const libc::sockaddr_in as *const libc::sockaddr,
                              size_of::<sockaddr_in>() as i32)
         };
         trace!("connect returned  {:?}", ret);
@@ -801,8 +800,7 @@ impl UdtSocket {
         let val_p: *mut B = &mut val;
         let ty: raw::UDTOpt = opt.get_type();
         let mut size: c_int = size_of::<B>() as i32;
-        let ret = unsafe { raw::udt_getsockopt(self._sock, 0, ty,
-                                               std::mem::transmute(val_p), &mut size) };
+        let ret = unsafe { raw::udt_getsockopt(self._sock, 0, ty, val_p as *mut libc::c_void, &mut size) };
         
         if ret == raw::SUCCESS {
             Ok(val)
@@ -823,8 +821,7 @@ impl UdtSocket {
         let size: c_int = size_of::<B>() as i32;
 
         let ret = unsafe {
-            raw::udt_setsockopt(self._sock, 0, ty,
-                                std::mem::transmute(val_p), size)
+            raw::udt_setsockopt(self._sock, 0, ty, val_p as *const libc::c_void, size)
         };
         
         if ret == raw::SUCCESS {
