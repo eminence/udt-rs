@@ -1,8 +1,18 @@
-//! UDT
+//! *Note about these docs*
 //!
+//! These docs are mostly copied verbatim from the UDT documentation.  If you see references to the
+//! C++ function names instead of the rust function names, that's why.
+//!
+//! # UDT
 //! Bindings to the UDT4 high performance data data transfer library
 //!
 //! UDT follows closely the BSD socket API, but several of the functions have different semantics.
+//!
+//! UDT is a high performance data transfer protocol - UDP-based data transfer protocol. It was
+//! designed for data intensive applications over high speed wide area networks, to overcome the
+//! efficiency and fairness problems of TCP. As its name indicates, UDT is built on top of UDP and
+//! it provides both reliable data streaming and messaging services.
+//!
 //! 
 //! # Examples
 //!
@@ -25,6 +35,8 @@
 //!
 //!
 //! ```
+//!
+//!
 
 #[macro_use]
 extern crate log;
@@ -47,9 +59,24 @@ use std::net::SocketAddrV4;
 pub use raw::UdtStatus;
 
 bitflags! {
+/// This is a bitflag field that can be constructed with `UDT_EPOLL_IN`, `UDT_EPOLL_OUT`, or
+/// `UDT_EPOLL_ERR`
+///
+/// Example:
+///
+/// ```
+/// # use udt::*;
+/// let mut events = EpollEvents::all();
+/// events.remove(UDT_EPOLL_ERR);
+/// assert!(events.contains(UDT_EPOLL_OUT));
+/// assert!(! events.contains(UDT_EPOLL_ERR));
+/// ```
     flags EpollEvents: c_int {
+        /// An Epoll Event to watch for read events
         const UDT_EPOLL_IN = 0x1,
+        /// An Epoll Event to watch for write events
         const UDT_EPOLL_OUT = 0x4,
+        /// An Epoll Event to watch for exception events
         const UDT_EPOLL_ERR = 0x8
     }
 }
@@ -93,9 +120,14 @@ pub struct UdtSocket {
     _sock: raw::UDTSOCKET, 
 }
 
+/// A UDT Error
 #[derive(Debug)]
 pub struct UdtError {
+    /// The numeric error code may be one of the constants in the [`libudt4-sys`][1] crate
+    ///
+    /// [1]: ../libudt4_sys/index.html
     pub err_code: i32,
+    /// A textual description of the error
     pub err_msg: String
 }
 
@@ -107,9 +139,9 @@ pub trait UdtOption<T> {
 /// Linger option
 pub struct Linger {
     /// Nonzero to linger on close
-    onoff: i32,
+    pub onoff: i32,
     /// Time to longer
-    linger: i32
+    pub linger: i32
 }
 
 #[allow(non_camel_case_types)]
@@ -752,7 +784,9 @@ impl UdtSocket {
 
     /// Gets UDT options
     ///
-    /// See the `UdtOpts` module for all the supported option types.  
+    /// See the [`UdtOpts`][1] module for all the supported option types.  
+    ///
+    /// [1]: UdtOpts/index.html
     ///
     /// # Example
     ///
@@ -780,7 +814,9 @@ impl UdtSocket {
 
     /// Sets UDT options
     ///
-    /// See the `UdtOpts` module for all the supported option types.  
+    /// See the [`UdtOpts`][1] module for all the supported option types.  
+    
+    /// [1]: UdtOpts/index.html
     pub fn setsockopt<B, T: UdtOption<B>>(&self, opt: T, value: B) -> Result<(), UdtError> {
         let ty: raw::UDTOpt = opt.get_type();
         let val_p: *const B = &value;
@@ -804,6 +840,30 @@ impl UdtSocket {
 }
 
 /// Used with the `epoll*` methods of a UDTSocket
+///
+/// The epoll functions provides a highly scalable and efficient way to wait for UDT sockets IO
+/// events. It should be used instead of select and selectEx when the application needs to wait for
+/// a very large number of sockets. In addition, epoll also offers to wait on system sockets at the
+/// same time, which can be convenient when an application uses both UDT and TCP/UDP.
+///
+/// Applications should use [`Epoll::create`][1] to create an epoll ID and use [`add_usock`][2]/ssock and
+/// [`remove_usock`][3]/ssock to add/remove sockets. If a socket is already in the epoll set, it
+/// will be ignored if being added again. Adding invalid or closed sockets will cause error.
+/// However, they will simply be ignored without any error returned when being removed.
+///
+/// Multiple epoll entities can be created and there is no upper limits as long as system resource
+/// allows. There is also no hard limit on the number of UDT sockets. The number system descriptors
+/// supported by UDT::epoll are platform dependent.
+///
+/// For system sockets on Linux, developers may choose to watch individual events from EPOLLIN
+/// (read), EPOLLOUT (write), and EPOLLERR (exceptions). When using epoll_remove_ssock, if the
+/// socket is waiting on multiple events, only those specified in events are removed. The events
+/// can be a combination (with "|" operation) of any of the following values.
+///
+/// [1]: #method.create
+/// [2]: #method.add_usock
+/// [3]: #method.remove_usock
+///
 #[derive(Debug)]
 pub struct Epoll {
     eid: c_int,
@@ -811,7 +871,7 @@ pub struct Epoll {
     // poll requires us to pass in an array to receive a list of sockets.
     // instead of allocating one every time we call into poll, we create
     // two vecs and re-use them.  this means that while the UDT api is
-    // thread safe, this impl of epoll is not.
+    // thread safe, this impl of epoll is not
     rd_vec: Vec<c_int>,
     wr_vec: Vec<c_int>
 
@@ -905,10 +965,10 @@ impl Epoll {
                 wnum = 0;
             }
         }
-        for v in (0..rnum) {
+        for v in 0..rnum {
             trace!("rnum[{}] = {}", v, self.rd_vec[v as usize]);
         }
-        for v in (0..wnum) {
+        for v in 0..wnum {
             trace!("wnum[{}] = {}", v, self.wr_vec[v as usize]);
         }
 

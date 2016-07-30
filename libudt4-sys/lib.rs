@@ -6,42 +6,76 @@ use libc::sockaddr;
 pub type UDTSOCKET = c_int;
 pub type SYSSOCKET = c_int;
 
-
-pub const SUCCESS : c_int = 0;   //success operation.
-pub const ECONNSETUP  : c_int = 1000;   //connection setup failure.
-pub const ENOSERVER   : c_int = 1001;   //server does not exist.
-pub const ECONNREJ    : c_int = 1002;   //connection request was rejected by server.
-pub const ESOCKFAIL   : c_int = 1003;   //could not create/configure UDP socket.
-pub const ESECFAIL    : c_int = 1004;   //connection request was aborted due to security reasons.
-pub const ECONNFAIL   : c_int = 2000;   //connection failure.
-pub const ECONNLOST   : c_int = 2001;   //connection was broken.
-pub const ENOCONN : c_int = 2002;   //connection does not exist.
-pub const ERESOURCE   : c_int = 3000;   //system resource failure.
-pub const ETHREAD : c_int = 3001;   //could not create new thread.
-pub const ENOBUF  : c_int = 3002;   //no memory space.
-pub const EFILE   : c_int = 4000;   //file access error.
-pub const EINVRDOFF   : c_int = 4001;   //invalid read offset.
-pub const ERDPERM : c_int = 4002;   //no read permission.
-pub const EINVWROFF   : c_int = 4003;   //invalid write offset.
-pub const EWRPERM : c_int = 4004;   //no write permission.
-pub const EINVOP  : c_int = 5000;   //operation not supported.
-pub const EBOUNDSOCK  : c_int = 5001;   //cannot execute the operation on a bound socket.
-pub const ECONNSOCK   : c_int = 5002;   //cannot execute the operation on a connected socket.
-pub const EINVPARAM   : c_int = 5003;   //bad parameters.
-pub const EINVSOCK    : c_int = 5004;   //invalid UDT socket.
-pub const EUNBOUNDSOCK    : c_int = 5005;   //cannot listen on unbound socket.
-pub const ENOLISTEN   : c_int = 5006;   //(accept) socket is not in listening state.
-pub const ERDVNOSERV  : c_int = 5007;   //rendezvous connection process does not allow listen and accept call.
-pub const ERDVUNBOUND : c_int = 5008;   //rendezvous connection setup is enabled but bind has not been called before connect.
-pub const ESTREAMILL  : c_int = 5009;   //operation not supported in SOCK_STREAM mode.
-pub const EDGRAMILL   : c_int = 5010;   //operation not supported in SOCK_DGRAM mode.
-pub const EDUPLISTEN  : c_int = 5011;   //another socket is already listening on the same UDP port.
-pub const ELARGEMSG   : c_int = 5012;   //message is too large to be hold in the sending buffer.
-pub const EASYNCFAIL  : c_int = 6000;   //non-blocking call failure.
-pub const EASYNCSND   : c_int = 6001;   //no buffer available for sending.
-pub const EASYNCRCV   : c_int = 6002;   //no data available for read.
-pub const ETIMEOUT    : c_int = 6003;   //timeout before operation completes.
-pub const EPEERERR    : c_int = 7000;   //Error has happened at the peer side.
+/// success operation.
+pub const SUCCESS : c_int = 0;
+/// connection setup failure.
+pub const ECONNSETUP  : c_int = 1000;
+/// server does not exist.
+pub const ENOSERVER   : c_int = 1001;
+/// connection request was rejected by server.
+pub const ECONNREJ    : c_int = 1002;
+/// could not create/configure UDP socket.
+pub const ESOCKFAIL   : c_int = 1003;
+/// connection request was aborted due to security reasons.
+pub const ESECFAIL    : c_int = 1004;
+/// connection failure.
+pub const ECONNFAIL   : c_int = 2000;
+/// connection was broken.
+pub const ECONNLOST   : c_int = 2001;
+/// connection does not exist.
+pub const ENOCONN : c_int = 2002;
+/// system resource failure.
+pub const ERESOURCE   : c_int = 3000;
+/// could not create new thread.
+pub const ETHREAD : c_int = 3001;
+/// no memory space.
+pub const ENOBUF  : c_int = 3002;
+/// file access error.
+pub const EFILE   : c_int = 4000;
+/// invalid read offset.
+pub const EINVRDOFF   : c_int = 4001;
+/// no read permission.
+pub const ERDPERM : c_int = 4002;
+/// invalid write offset.
+pub const EINVWROFF   : c_int = 4003;
+/// no write permission.
+pub const EWRPERM : c_int = 4004;
+/// operation not supported.
+pub const EINVOP  : c_int = 5000;
+/// cannot execute the operation on a bound socket.
+pub const EBOUNDSOCK  : c_int = 5001;
+/// cannot execute the operation on a connected socket.
+pub const ECONNSOCK   : c_int = 5002;
+/// bad parameters.
+pub const EINVPARAM   : c_int = 5003;
+/// invalid UDT socket.
+pub const EINVSOCK    : c_int = 5004;
+/// cannot listen on unbound socket.
+pub const EUNBOUNDSOCK    : c_int = 5005;
+/// (accept) socket is not in listening state.
+pub const ENOLISTEN   : c_int = 5006;
+/// rendezvous connection process does not allow listen and accept call.
+pub const ERDVNOSERV  : c_int = 5007;
+/// rendezvous connection setup is enabled but bind has not been called before connect.
+pub const ERDVUNBOUND : c_int = 5008;
+/// operation not supported in SOCK_STREAM mode.
+pub const ESTREAMILL  : c_int = 5009;
+/// operation not supported in SOCK_DGRAM mode.
+pub const EDGRAMILL   : c_int = 5010;
+/// another socket is already listening on the same UDP port.
+pub const EDUPLISTEN  : c_int = 5011;
+/// message is too large to be hold in the sending buffer.
+pub const ELARGEMSG   : c_int = 5012;
+/// non-blocking call failure.
+pub const EASYNCFAIL  : c_int = 6000;
+/// no buffer available for sending.
+pub const EASYNCSND   : c_int = 6001;
+/// no data available for read.
+pub const EASYNCRCV   : c_int = 6002;
+/// timeout before operation completes.
+pub const ETIMEOUT    : c_int = 6003;
+/// Error has happened at the peer side.
+pub const EPEERERR    : c_int = 7000;
 
 
 pub const INVALID_SOCK: c_int = -1;
