@@ -190,7 +190,8 @@ fn test_epoll() {
     use std::net::Ipv4Addr;
     use std::str::FromStr;
     use std::sync::mpsc::channel;
-    use std::thread::sleep_ms;
+    use std::thread::sleep;
+    use std::time::Duration;
 
     init();
 
@@ -243,7 +244,7 @@ fn test_epoll() {
                 }
                 debug!("Sock {:?} is in state {:?}", s, state);
             }
-            sleep_ms(100);
+            sleep(Duration::from_millis(100));
             counter += 1;
             assert!(counter < 500);
         }
@@ -260,7 +261,7 @@ fn test_epoll() {
 
         sock.sendmsg("hello".as_bytes()).unwrap();
 
-        sleep_ms(3000);
+        sleep(Duration::from_millis(3000));
         sock.sendmsg("world".as_bytes()).unwrap();
         sock.sendmsg("done.".as_bytes()).unwrap();
 
@@ -283,7 +284,8 @@ fn test_epoll2() {
     use std::net::Ipv4Addr;
     use std::str::FromStr;
     use std::sync::mpsc::channel;
-    use std::thread::sleep_ms;
+    use std::thread::sleep;
+    use std::time::Duration;
 
     init();
 
@@ -343,7 +345,7 @@ fn test_epoll2() {
                 }
                 println!("Sock {:?} is in state {:?}", s, state);
             }
-            sleep_ms(100);
+            sleep(Duration::from_millis(100));
             counter += 1;
             assert!(counter < 500);
         }
@@ -360,7 +362,7 @@ fn test_epoll2() {
 
         sock.sendmsg("hello".as_bytes()).unwrap();
 
-        sleep_ms(3000);
+        sleep(Duration::from_millis(3000));
         sock.sendmsg("world".as_bytes()).unwrap();
         sock.sendmsg("done.".as_bytes()).unwrap();
 

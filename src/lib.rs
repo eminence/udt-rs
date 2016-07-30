@@ -986,7 +986,7 @@ impl Epoll {
 #[test]
 fn test_udt_socket() {
     init();
-    let sock = UdtSocket::new(SocketFamily::AFInet, SocketType::Stream).unwrap();
+    let _ = UdtSocket::new(SocketFamily::AFInet, SocketType::Stream).unwrap();
 }
 
 #[test]
@@ -1009,7 +1009,8 @@ fn test_udt_bind() {
 fn test_udt_socket_state() {
     use std::net::Ipv4Addr;
     use std::str::FromStr;
-    use std::thread::sleep_ms;
+    use std::thread::sleep;
+    use std::time::Duration;
 
     init();
     let sock = UdtSocket::new(SocketFamily::AFInet, SocketType::Stream).unwrap();
@@ -1026,9 +1027,9 @@ fn test_udt_socket_state() {
     assert_eq!(sock.getstate(), UdtStatus::OPENED);
     sock.listen(5).unwrap();
     assert_eq!(sock.getstate(), UdtStatus::LISTENING);
-    sock.close();
+    sock.close().unwrap();
     assert_eq!(sock.getstate(), UdtStatus::BROKEN);
-    sleep_ms(4500);
+    sleep(Duration::from_millis(4500));
     // after some time, the sock transitions to CLOSED and then NONEXIST
     // THe LISTENING -> CLOSED transition is made after a 3 second timeout
     assert!(sock.getstate() == UdtStatus::NONEXIST || sock.getstate() == UdtStatus::CLOSED);
