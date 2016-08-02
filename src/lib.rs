@@ -351,7 +351,7 @@ fn get_sockaddr(name: SocketAddr) -> sockaddr_in {
 
 
 
-#[cfg(any(target_os="unix", target_os="linux"))]
+#[cfg(target_family="unix")]
     fn get_udpsock_fd(a: std::net::UdpSocket) -> std::os::unix::io::RawFd {
         use std::os::unix::io::AsRawFd;
         a.as_raw_fd()
