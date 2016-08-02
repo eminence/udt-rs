@@ -131,13 +131,19 @@ pub enum UdtStatus {
 
 pub type SOCKOPT = UDTOpt;
 
+#[cfg(windows)]
+pub type SYS_UDPSOCKET = std::os::windows::io::RawSocket;
+#[cfg(not(windows))]
+pub type SYS_UDPSOCKET = std::os::unix::io::RawFd;
+
+
 extern {
 
     pub fn udt_startup();
     pub fn udt_cleanup();
     pub fn udt_socket(af: c_int, ty: c_int, protocol: c_int) -> UDTSOCKET;
     pub fn udt_bind(u: UDTSOCKET, name: *const sockaddr, namelen: c_int) -> c_int;
-    pub fn udt_bind2(u: UDTSOCKET, other: std::os::unix::io::RawFd) -> c_int;
+    pub fn udt_bind2(u: UDTSOCKET, other: SYS_UDPSOCKET) -> c_int;
     pub fn udt_listen(u: UDTSOCKET, backlog: c_int) -> c_int;
     pub fn udt_accept(u: UDTSOCKET, addr: *mut sockaddr, addrlen: *mut c_int) -> UDTSOCKET;
     pub fn udt_connect(u: UDTSOCKET, name: *const sockaddr, namelen: c_int) -> c_int;

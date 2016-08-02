@@ -4,7 +4,7 @@ extern crate log;
 
 use udt::*;
 
-#[cfg(target_os="linux")]
+#[cfg(any(target_os="linux", target_os="windows"))]
 #[allow(unused_variables)]
 fn do_platform_specific_init(sock: &mut UdtSocket) {}
 

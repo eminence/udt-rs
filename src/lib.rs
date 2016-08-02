@@ -305,7 +305,7 @@ impl SocketType {
 
 
 // SocketAddr to sockaddr_in
-#[cfg(target_os="linux")]
+#[cfg(any(target_os="linux", target_os="windows"))]
 fn get_sockaddr(name: SocketAddr) -> sockaddr_in {
     if let SocketAddr::V4(v4) = name {
         trace!("binding to {:?}", v4);
@@ -347,6 +347,21 @@ fn get_sockaddr(name: SocketAddr) -> sockaddr_in {
         panic!("ipv6 not implemented (yet) in this binding");
     }
 }
+
+
+
+
+#[cfg(target_os="unix")]
+    fn get_udpsock_fd(a: std::net::UdpSocket) -> std::os::unix::io::RawFd {
+        use std::os::unix::io::AsRawFd;
+        a.as_raw_fd()
+    }
+#[cfg(target_os="windows")]
+  pub  fn get_udpsock_fd(a: std::net::UdpSocket) -> std::os::windows::io::RawSocket {
+        use std::os::windows::io::AsRawSocket;
+        a.as_raw_socket()
+    }
+
    
 // sockaddr_to_SocketAddr
 fn sockaddr_to_socketaddr(s: sockaddr) -> SocketAddr {
@@ -437,6 +452,7 @@ impl UdtSocket {
         }
     }
 
+
     /// Binds a UDT socket to an existing UDP socket.
     ///
     /// This second form of bind allows UDT to bind directly on an existing UDP socket. This is
@@ -450,10 +466,11 @@ impl UdtSocket {
     /// regarding code robustness. Once the UDP socket descriptor is passed to UDT, it MUST NOT be
     /// touched again. DO NOT use this unless you clearly understand how the related systems work.
     pub fn bind_from(&self, other: std::net::UdpSocket) -> Result<(), UdtError> {
-        use std::os::unix::io::AsRawFd;
+
+	    {
+	    }
         let ret = unsafe {
-            raw::udt_bind2(self._sock,
-                          other.as_raw_fd())
+            raw::udt_bind2(self._sock, get_udpsock_fd(other))
         };
         if ret == raw::SUCCESS {
             Ok(())
