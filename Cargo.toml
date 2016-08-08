@@ -1,6 +1,6 @@
 [package]
 name = "udt"
-version = "0.1.4"
+version = "0.2.0"
 authors = ["Andrew Chin <achin@eminence32.net>"]
 keywords = ["udp", "socket", "udt", "udt4"]
 readme = "README.md"

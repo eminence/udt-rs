@@ -2,6 +2,7 @@ extern crate udt;
 #[macro_use]
 extern crate log;
 
+use std::str;
 use udt::*;
 
 #[cfg(any(target_os="linux", target_os="windows"))]
@@ -79,10 +80,11 @@ fn test_sendmsg() {
         let peer2 = new.getpeername().unwrap();
         assert_eq!(peer2, peer);
 
+        let msg = &mut [0u8; 100];
 
-        let msg = new.recvmsg(100).unwrap();
-        assert_eq!(msg.len(), 5);
-        assert_eq!(msg, "hello".as_bytes());
+        let len = new.recvmsg(msg).unwrap();
+        assert_eq!(len, 5);
+        assert_eq!(&msg[..len], "hello".as_bytes());
         new.sendmsg("world".as_bytes()).unwrap();
 
         new.close().unwrap();
@@ -99,9 +101,10 @@ fn test_sendmsg() {
         sock.connect(SocketAddr::V4(SocketAddrV4::new(localhost, port))).unwrap();
 
         sock.sendmsg("hello".as_bytes()).unwrap();
-        let msg = sock.recvmsg(1024).unwrap();
-        assert_eq!(msg.len(), 5);
-        assert_eq!(msg, "world".as_bytes());
+        let msg = &mut [0u8; 1024];
+        let len = sock.recvmsg(msg).unwrap();
+        assert_eq!(len, 5);
+        assert_eq!(&msg[..len], "world".as_bytes());
 
         sock.close().unwrap();
 
@@ -229,8 +232,9 @@ fn test_epoll() {
                     debug!("Server recieved connection from {:?}", peer);
                     epoll.add_usock(&new, None).unwrap();
                 } else {
-                    let msg = s.recvmsg(100).unwrap();
-                    let msg_string = String::from_utf8(msg).unwrap();
+                    let msg = &mut [0u8; 100];
+                    let len = s.recvmsg(msg).unwrap();
+                    let msg_string = str::from_utf8(&msg[..len]).unwrap();
                     debug!("Received message: {:?}", msg_string);
                 }
 
@@ -324,8 +328,9 @@ fn test_epoll2() {
                     println!("Server recieved connection from {:?}", peer);
                     epoll.add_usock(&new, Some(UDT_EPOLL_ERR | UDT_EPOLL_IN)).unwrap();
                 } else {
-                    if let Ok(msg) = s.recvmsg(100) {
-                        let msg_string = String::from_utf8(msg).unwrap();
+                    let msg = &mut [0u8; 100];
+                    if let Ok(len) = s.recvmsg(msg) {
+                        let msg_string = str::from_utf8(&msg[..len]).unwrap();
                         println!("Received message: {:?}", msg_string);
                     } else {
                         println!("Error on recieve, removing usock");

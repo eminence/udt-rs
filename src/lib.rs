@@ -755,17 +755,14 @@ impl UdtSocket {
     /// returned and specific error information can be retrieved by getlasterror. If UDT_RCVTIMEO
     /// is set to a positive value, zero will be returned if no message is received before the
     /// timer expires.
-    pub fn recvmsg(&self, len: usize) -> Result<Vec<u8>, UdtError> {
-        let mut v: Vec<u8> = Vec::with_capacity(len);
-        v.extend(std::iter::repeat(0 as u8).take(len).collect::<Vec<u8>>());
+    pub fn recvmsg(&self, buf: &mut [u8]) -> Result<usize, UdtError> {
         let ret = unsafe {
-            raw::udt_recvmsg(self._sock, 
-                             v.as_mut_ptr(),
-                             len as i32)
+            raw::udt_recvmsg(self._sock,
+                             buf.as_mut_ptr(),
+                             buf.len() as i32)
         };
         if ret > 0 {
-            v.truncate(ret as usize);
-            Ok(v)
+            Ok(ret as usize)
         } else {
             Err(get_last_err())
         }
