@@ -43,18 +43,49 @@ extern crate log;
 #[macro_use]
 extern crate bitflags;
 extern crate libudt4_sys as raw;
+#[cfg(windows)]
+extern crate winapi;
 
 use std::sync::{Once, ONCE_INIT};
 extern crate libc;
 
-use libc::{AF_INET, AF_INET6};
-use libc::{SOCK_STREAM, SOCK_DGRAM};
 use libc::{c_int};
 use std::mem::size_of;
-use libc::{sockaddr, sockaddr_in, in_addr};
 use std::ffi::{CStr};
 use std::net::SocketAddr;
 use std::net::SocketAddrV4;
+
+#[cfg(windows)]
+#[macro_use]
+mod _plat_specifics {
+    pub use winapi::SOCKADDR as sockaddr;
+    pub use winapi::SOCKADDR_IN as sockaddr_in; 
+    pub use winapi::IN_ADDR as in_addr;
+    pub use winapi::{AF_INET, AF_INET6};
+    pub use winapi::{SOCK_STREAM, SOCK_DGRAM};
+    pub fn get_udpsock_fd(a: ::std::net::UdpSocket) -> ::std::os::windows::io::RawSocket {
+	    use ::std::os::windows::io::AsRawSocket;
+	    a.as_raw_socket()
+    }
+    macro_rules! s_addr {
+        ($x:expr) => ($x.S_un)
+    }
+}
+#[cfg(not(windows))]
+#[macro_use]
+mod _plat_specifics {
+    pub use libc::{sockaddr, sockaddr_in, in_addr};
+    pub use libc::{AF_INET, AF_INET6};
+    pub use libc::{SOCK_STREAM, SOCK_DGRAM};
+    pub fn get_udpsock_fd(a: ::std::net::UdpSocket) -> ::std::os::unix::io::RawFd {
+	    use ::std::os::unix::io::AsRawFd;
+	    a.as_raw_fd()
+    }
+    macro_rules! s_addr {
+        ($x:expr) => ($x.s_addr)
+    }
+}
+use _plat_specifics::*;
 
 pub use raw::UdtStatus;
 
@@ -305,7 +336,7 @@ impl SocketType {
 
 
 // SocketAddr to sockaddr_in
-#[cfg(any(target_os="linux", target_os="windows"))]
+#[cfg(target_os="linux")]
 fn get_sockaddr(name: SocketAddr) -> sockaddr_in {
     if let SocketAddr::V4(v4) = name {
         trace!("binding to {:?}", v4);
@@ -319,6 +350,27 @@ fn get_sockaddr(name: SocketAddr) -> sockaddr_in {
             sin_family: AF_INET as u16,
             sin_port: v4.port().to_be(),
             sin_addr: in_addr{s_addr: addr_b},
+            sin_zero: [0; 8]
+      }
+    } else {
+        panic!("ipv6 not implemented (yet) in this binding");
+    }
+}
+
+#[cfg(target_os="windows")]
+fn get_sockaddr(name: SocketAddr) -> sockaddr_in {
+    if let SocketAddr::V4(v4) = name {
+        trace!("binding to {:?}", v4);
+        let addr_bytes = v4.ip().octets();
+        let addr_b: u32 = ((addr_bytes[3] as u32) << 24)  + 
+            ((addr_bytes[2] as u32) << 16)  + 
+            ((addr_bytes[1] as u32) << 8 )  + 
+            ( addr_bytes[0] as u32);
+        // construct a sockaddr_in
+         sockaddr_in {
+            sin_family: AF_INET as u16,
+            sin_port: v4.port().to_be(),
+            sin_addr: in_addr{S_un: addr_b},
             sin_zero: [0; 8]
       }
     } else {
@@ -348,20 +400,6 @@ fn get_sockaddr(name: SocketAddr) -> sockaddr_in {
     }
 }
 
-
-
-
-#[cfg(target_family="unix")]
-    fn get_udpsock_fd(a: std::net::UdpSocket) -> std::os::unix::io::RawFd {
-        use std::os::unix::io::AsRawFd;
-        a.as_raw_fd()
-    }
-#[cfg(target_os="windows")]
-  pub  fn get_udpsock_fd(a: std::net::UdpSocket) -> std::os::windows::io::RawSocket {
-        use std::os::windows::io::AsRawSocket;
-        a.as_raw_socket()
-    }
-
    
 // sockaddr_to_SocketAddr
 fn sockaddr_to_socketaddr(s: sockaddr) -> SocketAddr {
@@ -370,7 +408,7 @@ fn sockaddr_to_socketaddr(s: sockaddr) -> SocketAddr {
     match fam {
         AF_INET => {
             let name1: sockaddr_in = unsafe{ std::mem::transmute(s) };
-            let ip: u32 = name1.sin_addr.s_addr;
+            let ip: u32 = s_addr!(name1.sin_addr);
             let d: u8 = ((ip & 0xff000000) >> 24) as u8;
             let c: u8 = ((ip & 0xff0000) >> 16) as u8;
             let b: u8 = ((ip & 0xff00) >> 8) as u8;
@@ -441,7 +479,7 @@ impl UdtSocket {
         let addr: sockaddr_in = get_sockaddr(name); 
         let ret = unsafe {
             raw::udt_bind(self._sock, 
-                          &addr as *const libc::sockaddr_in as *const libc::sockaddr,
+                          &addr as *const sockaddr_in as *const sockaddr,
                           size_of::<sockaddr_in>() as i32
                          )
         };
@@ -504,7 +542,7 @@ impl UdtSocket {
     pub fn connect(&self, name: std::net::SocketAddr) -> Result<(), UdtError> {
         let addr = get_sockaddr(name);
         let ret = unsafe {
-            raw::udt_connect(self._sock, &addr as *const libc::sockaddr_in as *const libc::sockaddr,
+            raw::udt_connect(self._sock, &addr as *const sockaddr_in as *const sockaddr,
                              size_of::<sockaddr_in>() as i32)
         };
         trace!("connect returned  {:?}", ret);

@@ -1,7 +1,21 @@
 extern crate libc;
 
 use libc::{c_int, c_char, c_void, c_uchar};
-use libc::sockaddr;
+
+#[cfg(windows)]
+extern crate winapi;
+
+#[cfg(windows)]
+mod plat_imports {
+    pub use winapi::SOCKADDR as sockaddr;
+}
+#[cfg(not(windows))]
+mod plat_imports {
+    pub use libc::sockaddr;
+}
+
+use plat_imports::*;
+
 
 pub type UDTSOCKET = c_int;
 pub type SYSSOCKET = c_int;
