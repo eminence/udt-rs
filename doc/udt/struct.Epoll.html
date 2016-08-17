@@ -47,7 +47,7 @@
                    <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
                        [<span class='inner'>&#x2212;</span>]
                    </a>
-               </span><a id='src-483' class='srclink' href='../src/udt/src/lib.rs.html#865-875' title='goto source code'>[src]</a></span></h1>
+               </span><a id='src-521' class='srclink' href='../src/udt/src/lib.rs.html#917-927' title='goto source code'>[src]</a></span></h1>
 <pre class='rust struct'>pub struct Epoll {
     // some fields omitted
 }</pre><div class='docblock'><p>Used with the <code>epoll*</code> methods of a UDTSocket</p>
@@ -70,7 +70,7 @@ supported by UDT::epoll are platform dependent.</p>
 (read), EPOLLOUT (write), and EPOLLERR (exceptions). When using epoll_remove_ssock, if the
 socket is waiting on multiple events, only those specified in events are removed. The events
 can be a combination (with &quot;|&quot; operation) of any of the following values.</p>
-</div><h2 id='methods'>Methods</h2><h3 class='impl'><span class='in-band'><code>impl <a class='struct' href='../udt/struct.Epoll.html' title='udt::Epoll'>Epoll</a></code></span><span class='out-of-band'><div class='ghost'></div><a id='src-487' class='srclink' href='../src/udt/src/lib.rs.html#877-983' title='goto source code'>[src]</a></span></h3>
+</div><h2 id='methods'>Methods</h2><h3 class='impl'><span class='in-band'><code>impl <a class='struct' href='../udt/struct.Epoll.html' title='udt::Epoll'>Epoll</a></code></span><span class='out-of-band'><div class='ghost'></div><a id='src-525' class='srclink' href='../src/udt/src/lib.rs.html#929-1035' title='goto source code'>[src]</a></span></h3>
 <div class='impl-items'><h4 id='method.create' class='method'><code>fn <a href='#method.create' class='fnname'>create</a>() -&gt; <a class='enum' href='https://doc.rust-lang.org/nightly/core/result/enum.Result.html' title='core::result::Result'>Result</a>&lt;<a class='struct' href='../udt/struct.Epoll.html' title='udt::Epoll'>Epoll</a>,&nbsp;<a class='struct' href='../udt/struct.UdtError.html' title='udt::UdtError'>UdtError</a>&gt;</code></h4>
 <div class='docblock'><p>Creates a new Epoll object</p>
 </div><h4 id='method.add_usock' class='method'><code>fn <a href='#method.add_usock' class='fnname'>add_usock</a>(&amp;mut self, socket: &amp;<a class='struct' href='../udt/struct.UdtSocket.html' title='udt::UdtSocket'>UdtSocket</a>, events: <a class='enum' href='https://doc.rust-lang.org/nightly/core/option/enum.Option.html' title='core::option::Option'>Option</a>&lt;<a class='struct' href='../udt/struct.EpollEvents.html' title='udt::EpollEvents'>EpollEvents</a>&gt;) -&gt; <a class='enum' href='https://doc.rust-lang.org/nightly/core/result/enum.Result.html' title='core::result::Result'>Result</a>&lt;<a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.tuple.html'>()</a>,&nbsp;<a class='struct' href='../udt/struct.UdtError.html' title='udt::UdtError'>UdtError</a>&gt;</code></h4>
@@ -90,7 +90,7 @@ can be a combination (with &quot;|&quot; operation) of any of the following valu
 
 <h1 id='returns' class='section-header'><a href='#returns'>Returns</a></h1>
 <p>A tuple of sockets to be read and sockets to be written (or have exceptions)</p>
-</div></div><h2 id='implementations'>Trait Implementations</h2><h3 class='impl'><span class='in-band'><code>impl <a class='trait' href='https://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html' title='core::fmt::Debug'>Debug</a> for <a class='struct' href='../udt/struct.Epoll.html' title='udt::Epoll'>Epoll</a></code></span><span class='out-of-band'><div class='ghost'></div><a id='src-475' class='srclink' href='../src/udt/src/lib.rs.html#864' title='goto source code'>[src]</a></span></h3>
+</div></div><h2 id='implementations'>Trait Implementations</h2><h3 class='impl'><span class='in-band'><code>impl <a class='trait' href='https://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html' title='core::fmt::Debug'>Debug</a> for <a class='struct' href='../udt/struct.Epoll.html' title='udt::Epoll'>Epoll</a></code></span><span class='out-of-band'><div class='ghost'></div><a id='src-513' class='srclink' href='../src/udt/src/lib.rs.html#916' title='goto source code'>[src]</a></span></h3>
 <div class='impl-items'><h4 id='method.fmt' class='method'><code>fn <a href='https://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html#tymethod.fmt' class='fnname'>fmt</a>(&amp;self, __arg_0: &amp;mut <a class='struct' href='https://doc.rust-lang.org/nightly/core/fmt/struct.Formatter.html' title='core::fmt::Formatter'>Formatter</a>) -&gt; <a class='type' href='https://doc.rust-lang.org/nightly/core/fmt/type.Result.html' title='core::fmt::Result'>Result</a></code></h4>
 <div class='docblock'><p>Formats the value using the given formatter.</p>
 </div></div></section>

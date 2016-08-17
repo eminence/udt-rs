@@ -225,11 +225,45 @@
 <span id="181">181</span>
 <span id="182">182</span>
 <span id="183">183</span>
+<span id="184">184</span>
+<span id="185">185</span>
+<span id="186">186</span>
+<span id="187">187</span>
+<span id="188">188</span>
+<span id="189">189</span>
+<span id="190">190</span>
+<span id="191">191</span>
+<span id="192">192</span>
+<span id="193">193</span>
+<span id="194">194</span>
+<span id="195">195</span>
+<span id="196">196</span>
+<span id="197">197</span>
+<span id="198">198</span>
+<span id="199">199</span>
+<span id="200">200</span>
+<span id="201">201</span>
+<span id="202">202</span>
+<span id="203">203</span>
 </pre><pre class='rust '>
 <span class='kw'>extern</span> <span class='kw'>crate</span> <span class='ident'>libc</span>;
 
 <span class='kw'>use</span> <span class='ident'>libc</span>::{<span class='ident'>c_int</span>, <span class='ident'>c_char</span>, <span class='ident'>c_void</span>, <span class='ident'>c_uchar</span>};
-<span class='kw'>use</span> <span class='ident'>libc</span>::<span class='ident'>sockaddr</span>;
+
+<span class='attribute'>#[<span class='ident'>cfg</span>(<span class='ident'>windows</span>)]</span>
+<span class='kw'>extern</span> <span class='kw'>crate</span> <span class='ident'>winapi</span>;
+
+<span class='attribute'>#[<span class='ident'>cfg</span>(<span class='ident'>windows</span>)]</span>
+<span class='kw'>mod</span> <span class='ident'>plat_imports</span> {
+    <span class='kw'>pub</span> <span class='kw'>use</span> <span class='ident'>winapi</span>::<span class='ident'>SOCKADDR</span> <span class='kw'>as</span> <span class='ident'>sockaddr</span>;
+}
+<span class='attribute'>#[<span class='ident'>cfg</span>(<span class='ident'>not</span>(<span class='ident'>windows</span>))]</span>
+<span class='kw'>mod</span> <span class='ident'>plat_imports</span> {
+    <span class='kw'>pub</span> <span class='kw'>use</span> <span class='ident'>libc</span>::<span class='ident'>sockaddr</span>;
+}
+
+<span class='kw'>use</span> <span class='ident'>plat_imports</span>::<span class='op'>*</span>;
+
 
 <span class='kw'>pub</span> <span class='kw'>type</span> <span class='ident'>UDTSOCKET</span> <span class='op'>=</span> <span class='ident'>c_int</span>;
 <span class='kw'>pub</span> <span class='kw'>type</span> <span class='ident'>SYSSOCKET</span> <span class='op'>=</span> <span class='ident'>c_int</span>;
@@ -359,13 +393,19 @@
 
 <span class='kw'>pub</span> <span class='kw'>type</span> <span class='ident'>SOCKOPT</span> <span class='op'>=</span> <span class='ident'>UDTOpt</span>;
 
+<span class='attribute'>#[<span class='ident'>cfg</span>(<span class='ident'>windows</span>)]</span>
+<span class='kw'>pub</span> <span class='kw'>type</span> <span class='ident'>SYS_UDPSOCKET</span> <span class='op'>=</span> <span class='ident'>std</span>::<span class='ident'>os</span>::<span class='ident'>windows</span>::<span class='ident'>io</span>::<span class='ident'>RawSocket</span>;
+<span class='attribute'>#[<span class='ident'>cfg</span>(<span class='ident'>not</span>(<span class='ident'>windows</span>))]</span>
+<span class='kw'>pub</span> <span class='kw'>type</span> <span class='ident'>SYS_UDPSOCKET</span> <span class='op'>=</span> <span class='ident'>std</span>::<span class='ident'>os</span>::<span class='ident'>unix</span>::<span class='ident'>io</span>::<span class='ident'>RawFd</span>;
+
+
 <span class='kw'>extern</span> {
 
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>udt_startup</span>();
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>udt_cleanup</span>();
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>udt_socket</span>(<span class='ident'>af</span>: <span class='ident'>c_int</span>, <span class='ident'>ty</span>: <span class='ident'>c_int</span>, <span class='ident'>protocol</span>: <span class='ident'>c_int</span>) <span class='op'>-&gt;</span> <span class='ident'>UDTSOCKET</span>;
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>udt_bind</span>(<span class='ident'>u</span>: <span class='ident'>UDTSOCKET</span>, <span class='ident'>name</span>: <span class='op'>*</span><span class='kw'>const</span> <span class='ident'>sockaddr</span>, <span class='ident'>namelen</span>: <span class='ident'>c_int</span>) <span class='op'>-&gt;</span> <span class='ident'>c_int</span>;
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>udt_bind2</span>(<span class='ident'>u</span>: <span class='ident'>UDTSOCKET</span>, <span class='ident'>other</span>: <span class='ident'>std</span>::<span class='ident'>os</span>::<span class='ident'>unix</span>::<span class='ident'>io</span>::<span class='ident'>RawFd</span>) <span class='op'>-&gt;</span> <span class='ident'>c_int</span>;
+    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>udt_bind2</span>(<span class='ident'>u</span>: <span class='ident'>UDTSOCKET</span>, <span class='ident'>other</span>: <span class='ident'>SYS_UDPSOCKET</span>) <span class='op'>-&gt;</span> <span class='ident'>c_int</span>;
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>udt_listen</span>(<span class='ident'>u</span>: <span class='ident'>UDTSOCKET</span>, <span class='ident'>backlog</span>: <span class='ident'>c_int</span>) <span class='op'>-&gt;</span> <span class='ident'>c_int</span>;
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>udt_accept</span>(<span class='ident'>u</span>: <span class='ident'>UDTSOCKET</span>, <span class='ident'>addr</span>: <span class='op'>*</span><span class='kw-2'>mut</span> <span class='ident'>sockaddr</span>, <span class='ident'>addrlen</span>: <span class='op'>*</span><span class='kw-2'>mut</span> <span class='ident'>c_int</span>) <span class='op'>-&gt;</span> <span class='ident'>UDTSOCKET</span>;
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>udt_connect</span>(<span class='ident'>u</span>: <span class='ident'>UDTSOCKET</span>, <span class='ident'>name</span>: <span class='op'>*</span><span class='kw'>const</span> <span class='ident'>sockaddr</span>, <span class='ident'>namelen</span>: <span class='ident'>c_int</span>) <span class='op'>-&gt;</span> <span class='ident'>c_int</span>;
