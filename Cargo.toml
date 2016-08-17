@@ -12,7 +12,7 @@ Bindings to udt, a high performance data transfer protocol (based on UDP)
 license = "BSD-3-Clause"
 
 [dependencies]
-libudt4-sys = {path = "libudt4-sys", version="0.1"}
+libudt4-sys = {path = "libudt4-sys", version="0.2"}
 libc = "0.2"
 log = "0.3"
 bitflags = "0.7"

@@ -2,7 +2,7 @@
 name = "libudt4-sys"
 authors = ["Andrew Chin <achin@eminence32.net>"]
 build = "build.rs"
-version = "0.1.2"
+version = "0.2.0"
 links = "udt4wrap"
 description = "Native bindings to a C wrapper around the UDT library"
 license = "BSD-3-Clause"
