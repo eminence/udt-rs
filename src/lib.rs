@@ -71,7 +71,7 @@ bitflags! {
 /// assert!(events.contains(UDT_EPOLL_OUT));
 /// assert!(! events.contains(UDT_EPOLL_ERR));
 /// ```
-    flags EpollEvents: c_int {
+    pub flags EpollEvents: c_int {
         /// An Epoll Event to watch for read events
         const UDT_EPOLL_IN = 0x1,
         /// An Epoll Event to watch for write events
