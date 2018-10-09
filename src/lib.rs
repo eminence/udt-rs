@@ -64,8 +64,8 @@ mod _plat_specifics {
     pub use winapi::{AF_INET, AF_INET6};
     pub use winapi::{SOCK_STREAM, SOCK_DGRAM};
     pub fn get_udpsock_fd(a: ::std::net::UdpSocket) -> ::std::os::windows::io::RawSocket {
-	    use ::std::os::windows::io::AsRawSocket;
-	    a.as_raw_socket()
+	    use ::std::os::windows::io::IntoRawSocket;
+	    a.into_raw_socket()
     }
     macro_rules! s_addr {
         ($x:expr) => ($x.S_un)
@@ -78,8 +78,8 @@ mod _plat_specifics {
     pub use libc::{AF_INET, AF_INET6};
     pub use libc::{SOCK_STREAM, SOCK_DGRAM};
     pub fn get_udpsock_fd(a: ::std::net::UdpSocket) -> ::std::os::unix::io::RawFd {
-	    use ::std::os::unix::io::AsRawFd;
-	    a.as_raw_fd()
+	    use ::std::os::unix::io::IntoRawFd;
+	    a.into_raw_fd()
     }
     macro_rules! s_addr {
         ($x:expr) => ($x.s_addr)
