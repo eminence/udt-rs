@@ -173,10 +173,70 @@ fn test_send() {
         assert_eq!(sock.send("hello".as_bytes()).unwrap(), 5);
         assert_eq!(sock.send("world".as_bytes()).unwrap(), 5);
 
+        sock.close().unwrap();
+    });
+
+    server.join().unwrap();
+    client.join().unwrap();
+}
+
+#[test]
+fn test_perfmon() {
+    use std::net::Ipv4Addr;
+    use std::net::{SocketAddr, SocketAddrV4};
+    use std::str::FromStr;
+    use std::sync::mpsc::channel;
+    use std::thread::spawn;
+
+    init();
+
+    let localhost = Ipv4Addr::from_str("127.0.0.1").unwrap();
+
+    // the server will bind to a random port and pass it back for the client to connect to
+    let (tx, rx) = channel();
+
+    // spawn the server
+    let server = spawn(move || {
+        let mut sock = UdtSocket::new(SocketFamily::AFInet, SocketType::Stream).unwrap();
+        do_platform_specific_init(&mut sock);
+        sock.bind(SocketAddr::V4(SocketAddrV4::new(localhost, 0)))
+            .unwrap();
+        let my_addr = sock.getsockname().unwrap();
+        debug!("Server bound to {:?}", my_addr);
+
+        sock.listen(5).unwrap();
+
+        tx.send(my_addr.port()).unwrap();
+
+        let (new, new_peer) = sock.accept().unwrap();
+        debug!("Server recieved connection from {:?}", new_peer);
+
+        let mut buf: [u8; 10] = [0; 10];
+        assert_eq!(new.recv(&mut buf, 5).unwrap(), 5);
+
+        let perf = new.perfmon();
+        assert!(perf.is_ok());
+        assert_eq!(perf.unwrap().pkt_recv, 1);
+
+        new.close().unwrap();
+        sock.close().unwrap();
+    });
+
+    let client = spawn(move || {
+        let port = rx.recv().unwrap();
+        debug!("Client connecting to port {:?}", port);
+        let mut sock = UdtSocket::new(SocketFamily::AFInet, SocketType::Stream).unwrap();
+        do_platform_specific_init(&mut sock);
+        sock.connect(SocketAddr::V4(SocketAddrV4::new(localhost, port)))
+            .unwrap();
+
+        assert_eq!(sock.send(b"hello").unwrap(), 5);
+        std::thread::sleep(std::time::Duration::from_millis(50));
+        let perf = sock.perfmon();
+        assert!(perf.is_ok());
+        assert_eq!(perf.unwrap().pkt_sent, 1);
 
         sock.close().unwrap();
-
-
     });
 
     server.join().unwrap();
