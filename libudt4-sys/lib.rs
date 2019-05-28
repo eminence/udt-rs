@@ -1,6 +1,6 @@
 extern crate libc;
 
-use libc::{c_int, c_char, c_void, c_uchar};
+use libc::{c_char, c_double, c_int, c_long, c_uchar, c_void};
 
 #[cfg(windows)]
 extern crate winapi;
@@ -150,6 +150,73 @@ pub type SYS_UDPSOCKET = std::os::windows::io::RawSocket;
 #[cfg(not(windows))]
 pub type SYS_UDPSOCKET = std::os::unix::io::RawFd;
 
+#[derive(Debug, Default)]
+#[repr(C)]
+pub struct PerfMon {
+    // global measurements
+    /// time since the UDT entity is started, in milliseconds
+    pub ms_time_stamp: c_long,
+    /// total number of sent data packets, including retransmissions
+    pub pkt_sent_total: c_long,
+    /// total number of received packets
+    pub pkt_recv_total: c_long,
+    /// total number of lost packets (sender side)
+    pub pkt_snd_loss_total: c_int,
+    /// total number of lost packets (receiver side)
+    pub pkt_rcv_loss_total: c_int,
+    /// total number of retransmitted packets
+    pub pkt_retrans_total: c_int,
+    /// total number of sent ACK packets
+    pub pkt_sent_acktotal: c_int,
+    /// total number of received ACK packets
+    pub pkt_recv_acktotal: c_int,
+    /// total number of sent NAK packets
+    pub pkt_sent_naktotal: c_int,
+    /// total number of received NAK packets
+    pub pkt_recv_naktotal: c_int,
+    /// total time duration when UDT is sending data (idle time exclusive)
+    pub us_snd_duration_total: c_long,
+    /// number of sent data packets, including retransmissions
+    pub pkt_sent: c_long,
+    /// number of received packets
+    pub pkt_recv: c_long,
+    /// number of lost packets (sender side)
+    pub pkt_snd_loss: c_int,
+    /// number of lost packets (receiver side)
+    pub pkt_rcv_loss: c_int,
+    /// number of retransmitted packets
+    pub pkt_retrans: c_int,
+    /// number of sent ACK packets
+    pub pkt_sent_ack: c_int,
+    /// number of received ACK packets
+    pub pkt_recv_ack: c_int,
+    /// number of sent NAK packets
+    pub pkt_sent_nak: c_int,
+    /// number of received NAK packets
+    pub pkt_recv_nak: c_int,
+    /// sending rate in Mb/s
+    pub mbps_send_rate: c_double,
+    /// receiving rate in Mb/s
+    pub mbps_recv_rate: c_double,
+    /// busy sending time (i.e., idle time exclusive)
+    pub us_snd_duration: c_long,
+    /// packet sending period, in microseconds
+    pub us_pkt_snd_period: c_double,
+    /// flow window size, in number of packets
+    pub pkt_flow_window: c_int,
+    /// congestion window size, in number of packets
+    pub pkt_congestion_window: c_int,
+    /// number of packets on flight
+    pub pkt_flight_size: c_int,
+    /// RTT, in milliseconds
+    pub ms_rtt: c_double,
+    /// estimated bandwidth, in Mb/s
+    pub mbps_bandwidth: c_double,
+    /// available UDT sender buffer size
+    pub byte_avail_snd_buf: c_int,
+    /// available UDT receiver buffer size
+    pub byte_avail_rcv_buf: c_int,
+}
 
 extern {
 
@@ -190,6 +257,7 @@ extern {
     pub fn udt_getlasterror_code() -> c_int;
     pub fn udt_getlasterror_desc() -> *const c_char;
 
+    pub fn udt_perfmon(u: UDTSOCKET, perf: &mut PerfMon, clear: c_int) -> c_int;
 
 }
 

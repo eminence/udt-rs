@@ -886,6 +886,22 @@ impl UdtSocket {
     pub fn getstate(&self) -> UdtStatus {
         unsafe { raw::udt_getsockstate(self._sock) }
     }
+
+    /// The perfmon method retrieves the internal protocol parameters and performance trace.
+    ///
+    /// The perfmon method reads the performance data since the last time perfmon is executed, or since the connection is started.
+    ///
+    /// There are three kinds of performance information that can be read by applications: the total counts since the connection is started, the periodical counts since last time the counts are cleared, and instant parameter values.
+    pub fn perfmon(&self) -> Result<raw::PerfMon, UdtError> {
+        let mut perf = raw::PerfMon::default();
+        let ret = unsafe { raw::udt_perfmon(self._sock, &mut perf, 0) };
+
+        if ret == raw::SUCCESS {
+            Ok(perf)
+        } else {
+            Err(get_last_err())
+        }
+    }
 }
 
 /// Used with the `epoll*` methods of a UDTSocket
