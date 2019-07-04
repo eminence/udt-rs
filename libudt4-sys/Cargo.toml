@@ -2,21 +2,22 @@
 name = "libudt4-sys"
 authors = ["Andrew Chin <achin@eminence32.net>"]
 build = "build.rs"
-version = "0.2.0"
+version = "0.2.1"
 links = "udt4wrap"
 description = "Native bindings to a C wrapper around the UDT library"
 license = "BSD-3-Clause"
 repository = "https://github.com/eminence/udt-rs"
+edition = "2018"
 
 [lib]
 name = "libudt4_sys"
 path = "lib.rs"
 
 [build-dependencies]
-gcc = "0.3"
+cc = "^1.0"
 
 [dependencies]
-libc = "0.2"
+libc = "^0.2"
 
 [target.'cfg(windows)'.dependencies]
-winapi = "0.2"
+winapi = "^0.2"

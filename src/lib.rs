@@ -13,7 +13,7 @@
 //! efficiency and fairness problems of TCP. As its name indicates, UDT is built on top of UDP and
 //! it provides both reliable data streaming and messaging services.
 //!
-//! 
+//!
 //! # Examples
 //!
 //! To create a Datagram server, that can send and receive messages:
@@ -49,40 +49,44 @@ extern crate winapi;
 use std::sync::{Once, ONCE_INIT};
 extern crate libc;
 
-use libc::{c_int};
+use libc::c_int;
+use std::ffi::CStr;
 use std::mem::size_of;
-use std::ffi::{CStr};
 use std::net::SocketAddr;
 use std::net::SocketAddrV4;
 
 #[cfg(windows)]
 #[macro_use]
 mod _plat_specifics {
-    pub use winapi::SOCKADDR as sockaddr;
-    pub use winapi::SOCKADDR_IN as sockaddr_in; 
     pub use winapi::IN_ADDR as in_addr;
+    pub use winapi::SOCKADDR as sockaddr;
+    pub use winapi::SOCKADDR_IN as sockaddr_in;
     pub use winapi::{AF_INET, AF_INET6};
-    pub use winapi::{SOCK_STREAM, SOCK_DGRAM};
+    pub use winapi::{SOCK_DGRAM, SOCK_STREAM};
     pub fn get_udpsock_fd(a: ::std::net::UdpSocket) -> ::std::os::windows::io::RawSocket {
-	    use ::std::os::windows::io::IntoRawSocket;
-	    a.into_raw_socket()
+        use ::std::os::windows::io::IntoRawSocket;
+        a.into_raw_socket()
     }
     macro_rules! s_addr {
-        ($x:expr) => ($x.S_un)
+        ($x:expr) => {
+            $x.S_un
+        };
     }
 }
 #[cfg(not(windows))]
 #[macro_use]
 mod _plat_specifics {
-    pub use libc::{sockaddr, sockaddr_in, in_addr};
+    pub use libc::{in_addr, sockaddr, sockaddr_in};
     pub use libc::{AF_INET, AF_INET6};
-    pub use libc::{SOCK_STREAM, SOCK_DGRAM};
+    pub use libc::{SOCK_DGRAM, SOCK_STREAM};
     pub fn get_udpsock_fd(a: ::std::net::UdpSocket) -> ::std::os::unix::io::RawFd {
-	    use ::std::os::unix::io::IntoRawFd;
-	    a.into_raw_fd()
+        use ::std::os::unix::io::IntoRawFd;
+        a.into_raw_fd()
     }
     macro_rules! s_addr {
-        ($x:expr) => ($x.s_addr)
+        ($x:expr) => {
+            $x.s_addr
+        };
     }
 }
 use _plat_specifics::*;
@@ -118,27 +122,29 @@ macro_rules! impl_udt_opt {
      impl $name:ident: $ty:ty) => {
          $(#[$doc])*
         pub struct $name;
-        impl ::UdtOption<$ty> for $name {
+        impl crate::UdtOption<$ty> for $name {
             fn get_type(&self) -> ::raw::UDTOpt { ::raw::UDTOpt::$name }
         }
     };
 }
 
-/// Initialize the UDT library.  
+/// Initialize the UDT library.
 ///
-/// In particular, starts the background garbage collection thread.  
-/// 
+/// In particular, starts the background garbage collection thread.
+///
 /// It is safe to call this function multiple times.  A corresponding cleanup function will
 /// automatically be called when the program exists.
 pub fn init() {
     static INIT: Once = ONCE_INIT;
-        INIT.call_once(|| unsafe {
-            trace!("did INIT");
-            raw::udt_startup();
-            assert_eq!(libc::atexit(shutdown), 0);
-        });
-    extern fn shutdown() {
-        unsafe { raw::udt_cleanup(); } ;
+    INIT.call_once(|| unsafe {
+        trace!("did INIT");
+        raw::udt_startup();
+        assert_eq!(libc::atexit(shutdown), 0);
+    });
+    extern "C" fn shutdown() {
+        unsafe {
+            raw::udt_cleanup();
+        };
     }
 }
 
@@ -148,7 +154,7 @@ pub fn init() {
 /// and cloned
 #[derive(Debug, PartialEq, Eq, Copy, Clone, Hash)]
 pub struct UdtSocket {
-    _sock: raw::UDTSOCKET, 
+    _sock: raw::UDTSOCKET,
 }
 
 /// A UDT Error
@@ -159,7 +165,7 @@ pub struct UdtError {
     /// [1]: ../libudt4_sys/index.html
     pub err_code: i32,
     /// A textual description of the error
-    pub err_msg: String
+    pub err_msg: String,
 }
 
 pub trait UdtOption<T> {
@@ -172,7 +178,7 @@ pub struct Linger {
     /// Nonzero to linger on close
     pub onoff: i32,
     /// Time to longer
-    pub linger: i32
+    pub linger: i32,
 }
 
 #[allow(non_camel_case_types)]
@@ -185,7 +191,7 @@ pub mod UdtOpts {
     //!
     //! # Examples
     //!
-    //! ``` 
+    //! ```
     //! use udt::*;
     //!
     //! let sock = UdtSocket::new(SocketFamily::AFInet, SocketType::Stream).unwrap();
@@ -195,14 +201,14 @@ pub mod UdtOpts {
     //! ```
     //!
 
-    impl_udt_opt!{
+    impl_udt_opt! {
         /// Maximum Packet size (bytes)
         ///
         /// Including all UDT, UDP, and IP headers.  Default 1500 bytes
         impl UDT_MSS: i32
     }
-    
-    impl_udt_opt!{
+
+    impl_udt_opt! {
         /// Synchronization mode of data sending
         ///
         /// True for blocking sending; false for non-blocking sending.  Default true
@@ -211,12 +217,11 @@ pub mod UdtOpts {
 
     impl_udt_opt! {
         /// Synchronization mode for receiving.
-        /// 
+        ///
         /// true for blocking receiving; false for non-blocking
         /// receiving. Default true.
         impl UDT_RCVSYN: bool
     }
-
 
     // MISSING: UDT_CC for custom congestion control
 
@@ -251,7 +256,7 @@ pub mod UdtOpts {
     impl_udt_opt!(/// Linger time on close().
         ///
         /// Default 180 seconds.
-        impl UDT_LINGER: ::Linger);
+        impl UDT_LINGER: crate::Linger);
     impl_udt_opt!(/// Rendezvous connection setup.
         ///
         /// Default false (no rendezvous mode).
@@ -265,7 +270,7 @@ pub mod UdtOpts {
         /// Default -1 (infinite).
         impl UDT_RCVTIMEO: i32);
     impl_udt_opt!(/// Reuse an existing address or create a new one.
-        /// 
+        ///
         /// Default true (reuse).
         impl UDT_REUSEADDR: bool);
     impl_udt_opt!(/// Maximum bandwidth that one single UDT connection can use (bytes per second).
@@ -280,15 +285,15 @@ pub mod UdtOpts {
         impl UDT_SNDDATA: i32);
     impl_udt_opt!(/// Size of data available to read, in the receiving buffer.  Read only.
         impl UDT_RCVDATA: i32);
-    
 
 }
 
-
 fn get_last_err() -> UdtError {
-    let msg = unsafe{ CStr::from_ptr(raw::udt_getlasterror_desc()) };
-    UdtError{err_code: unsafe{ raw::udt_getlasterror_code() as i32},
-    err_msg: String::from_utf8_lossy(msg.to_bytes()).into_owned()}
+    let msg = unsafe { CStr::from_ptr(raw::udt_getlasterror_desc()) };
+    UdtError {
+        err_code: unsafe { raw::udt_getlasterror_code() as i32 },
+        err_msg: String::from_utf8_lossy(msg.to_bytes()).into_owned(),
+    }
 }
 
 #[repr(C)]
@@ -296,14 +301,16 @@ pub enum SocketFamily {
     /// IPv4
     AFInet,
     /// IPV6
-    AFInet6
+    AFInet6,
 }
 
 impl SocketFamily {
-    fn get_val(&self) -> c_int { match *self {
-        SocketFamily::AFInet => AF_INET,
-        SocketFamily::AFInet6 => AF_INET6
-    }}
+    fn get_val(&self) -> c_int {
+        match *self {
+            SocketFamily::AFInet => AF_INET,
+            SocketFamily::AFInet6 => AF_INET6,
+        }
+    }
 }
 
 /// Socket type
@@ -324,134 +331,126 @@ pub enum SocketType {
     ///
     /// Note that UDT Datagram sockets are also connection oriented.  A UDT connection can only be
     /// set up between the same socket types
-    Datagram = SOCK_DGRAM as isize
+    Datagram = SOCK_DGRAM as isize,
 }
 
 impl SocketType {
-    fn get_val(&self) -> c_int { match *self {
-        SocketType::Stream => SOCK_STREAM,
-        SocketType::Datagram => SOCK_DGRAM
-    }}
+    fn get_val(&self) -> c_int {
+        match *self {
+            SocketType::Stream => SOCK_STREAM,
+            SocketType::Datagram => SOCK_DGRAM,
+        }
+    }
 }
 
 
 // SocketAddr to sockaddr_in
-#[cfg(target_os="linux")]
+#[cfg(target_os = "linux")]
 fn get_sockaddr(name: SocketAddr) -> sockaddr_in {
     if let SocketAddr::V4(v4) = name {
         trace!("binding to {:?}", v4);
         let addr_bytes = v4.ip().octets();
-        let addr_b: u32 = ((addr_bytes[3] as u32) << 24)  + 
-            ((addr_bytes[2] as u32) << 16)  + 
-            ((addr_bytes[1] as u32) << 8 )  + 
-            ( addr_bytes[0] as u32);
+        let addr_b: u32 = ((addr_bytes[3] as u32) << 24)
+            + ((addr_bytes[2] as u32) << 16)
+            + ((addr_bytes[1] as u32) << 8)
+            + (addr_bytes[0] as u32);
         // construct a sockaddr_in
-         sockaddr_in {
+        sockaddr_in {
             sin_family: AF_INET as u16,
             sin_port: v4.port().to_be(),
-            sin_addr: in_addr{s_addr: addr_b},
-            sin_zero: [0; 8]
-      }
+            sin_addr: in_addr { s_addr: addr_b },
+            sin_zero: [0; 8],
+        }
     } else {
         panic!("ipv6 not implemented (yet) in this binding");
     }
 }
 
-#[cfg(target_os="windows")]
+#[cfg(target_os = "windows")]
 fn get_sockaddr(name: SocketAddr) -> sockaddr_in {
     if let SocketAddr::V4(v4) = name {
         trace!("binding to {:?}", v4);
         let addr_bytes = v4.ip().octets();
-        let addr_b: u32 = ((addr_bytes[3] as u32) << 24)  + 
-            ((addr_bytes[2] as u32) << 16)  + 
-            ((addr_bytes[1] as u32) << 8 )  + 
-            ( addr_bytes[0] as u32);
+        let addr_b: u32 = ((addr_bytes[3] as u32) << 24)
+            + ((addr_bytes[2] as u32) << 16)
+            + ((addr_bytes[1] as u32) << 8)
+            + (addr_bytes[0] as u32);
         // construct a sockaddr_in
-         sockaddr_in {
+        sockaddr_in {
             sin_family: AF_INET as u16,
             sin_port: v4.port().to_be(),
-            sin_addr: in_addr{S_un: addr_b},
-            sin_zero: [0; 8]
-      }
+            sin_addr: in_addr { S_un: addr_b },
+            sin_zero: [0; 8],
+        }
     } else {
         panic!("ipv6 not implemented (yet) in this binding");
     }
 }
 
-#[cfg(target_os="macos")]
+#[cfg(any(target_os = "macos",target_os = "freebsd"))]
 fn get_sockaddr(name: SocketAddr) -> sockaddr_in {
     if let SocketAddr::V4(v4) = name {
         trace!("binding to {:?}", v4);
         let addr_bytes = v4.ip().octets();
-        let addr_b: u32 = ((addr_bytes[3] as u32) << 24)  + 
-            ((addr_bytes[2] as u32) << 16)  + 
-            ((addr_bytes[1] as u32) << 8 )  + 
-            ( addr_bytes[0] as u32);
+        let addr_b: u32 = ((addr_bytes[3] as u32) << 24)
+            + ((addr_bytes[2] as u32) << 16)
+            + ((addr_bytes[1] as u32) << 8)
+            + (addr_bytes[0] as u32);
         // construct a sockaddr_in
-         sockaddr_in {
+        sockaddr_in {
             sin_len: std::mem::size_of::<sockaddr_in>() as u8,
             sin_family: AF_INET as u8,
             sin_port: v4.port().to_be(),
-            sin_addr: in_addr{s_addr: addr_b},
-            sin_zero: [0; 8]
-      }
+            sin_addr: in_addr { s_addr: addr_b },
+            sin_zero: [0; 8],
+        }
     } else {
         panic!("ipv6 not implemented (yet) in this binding");
     }
 }
 
-   
 // sockaddr_to_SocketAddr
 fn sockaddr_to_socketaddr(s: sockaddr) -> SocketAddr {
     let fam: i32 = s.sa_family as i32;
 
     match fam {
         AF_INET => {
-            let name1: sockaddr_in = unsafe{ std::mem::transmute(s) };
+            let name1: sockaddr_in = unsafe { std::mem::transmute(s) };
             let ip: u32 = s_addr!(name1.sin_addr);
             let d: u8 = ((ip & 0xff000000) >> 24) as u8;
             let c: u8 = ((ip & 0xff0000) >> 16) as u8;
             let b: u8 = ((ip & 0xff00) >> 8) as u8;
-            let a: u8 = ((ip & 0xff)) as u8;
+            let a: u8 = (ip & 0xff) as u8;
             SocketAddr::V4(SocketAddrV4::new(
-                        std::net::Ipv4Addr::new(a, b, c, d),
-                        u16::from_be(name1.sin_port)
-                        ))
-        },
-        AF_INET6 => {
-            panic!("ipv6 not yet implemented")
-        },
-        _ => panic!("unknown family type")
+                std::net::Ipv4Addr::new(a, b, c, d),
+                u16::from_be(name1.sin_port),
+            ))
+        }
+        AF_INET6 => panic!("ipv6 not yet implemented"),
+        _ => panic!("unknown family type"),
     }
 }
 
-
-
 impl UdtSocket {
     fn wrap_raw(u: raw::UDTSOCKET) -> UdtSocket {
-        UdtSocket{_sock: u}
+        UdtSocket { _sock: u }
     }
-    
+
     /// Creates a new UDT Socket.
     ///
     /// Creates a new socket.  There is no limits for the number of UDT sockets in one system, as
     /// long as there is enough system resources.  UDT supports both IPv4 and IPv6, which can be
-    /// selected by the `address_family` parameter. 
+    /// selected by the `address_family` parameter.
     ///
     /// Two socket types are supported in UDT:  Stream for data streaming and Datagram for
     /// messaging.  Note that UDT sockets are connection oriented in all cases.
     ///
     pub fn new(address_family: SocketFamily, ty: SocketType) -> Result<UdtSocket, UdtError> {
-
-        let fd = unsafe {
-            raw::udt_socket(address_family.get_val(),
-                       ty.get_val(),
-                       0)
-        };
+        let fd = unsafe { raw::udt_socket(address_family.get_val(), ty.get_val(), 0) };
         if fd == raw::INVALID_SOCK {
             Err(get_last_err())
         } else {
-            Ok(UdtSocket{_sock: fd})
+            Ok(UdtSocket { _sock: fd })
         }
     }
 
@@ -475,13 +474,13 @@ impl UdtSocket {
     /// sets.
     ///
     pub fn bind(&self, name: std::net::SocketAddr) -> Result<(), UdtError> {
-
-        let addr: sockaddr_in = get_sockaddr(name); 
+        let addr: sockaddr_in = get_sockaddr(name);
         let ret = unsafe {
-            raw::udt_bind(self._sock, 
-                          &addr as *const sockaddr_in as *const sockaddr,
-                          size_of::<sockaddr_in>() as i32
-                         )
+            raw::udt_bind(
+                self._sock,
+                &addr as *const sockaddr_in as *const sockaddr,
+                size_of::<sockaddr_in>() as i32,
+            )
         };
         if ret == raw::SUCCESS {
             Ok(())
@@ -489,7 +488,6 @@ impl UdtSocket {
             Err(get_last_err())
         }
     }
-
 
     /// Binds a UDT socket to an existing UDP socket.
     ///
@@ -504,12 +502,8 @@ impl UdtSocket {
     /// regarding code robustness. Once the UDP socket descriptor is passed to UDT, it MUST NOT be
     /// touched again. DO NOT use this unless you clearly understand how the related systems work.
     pub fn bind_from(&self, other: std::net::UdpSocket) -> Result<(), UdtError> {
-
-	    {
-	    }
-        let ret = unsafe {
-            raw::udt_bind2(self._sock, get_udpsock_fd(other))
-        };
+        {}
+        let ret = unsafe { raw::udt_bind2(self._sock, get_udpsock_fd(other)) };
         if ret == raw::SUCCESS {
             Ok(())
         } else {
@@ -542,8 +536,11 @@ impl UdtSocket {
     pub fn connect(&self, name: std::net::SocketAddr) -> Result<(), UdtError> {
         let addr = get_sockaddr(name);
         let ret = unsafe {
-            raw::udt_connect(self._sock, &addr as *const sockaddr_in as *const sockaddr,
-                             size_of::<sockaddr_in>() as i32)
+            raw::udt_connect(
+                self._sock,
+                &addr as *const sockaddr_in as *const sockaddr,
+                size_of::<sockaddr_in>() as i32,
+            )
         };
         trace!("connect returned  {:?}", ret);
         if ret == raw::SUCCESS {
@@ -551,7 +548,6 @@ impl UdtSocket {
         } else {
             Err(get_last_err())
         }
-
     }
 
     /// Enables a user UDT entity to wait for clients to connect.
@@ -603,7 +599,6 @@ impl UdtSocket {
         }
     }
 
-
     /// Close a UDT connection
     ///
     /// The close method gracefully shutdowns the UDT connection and releases all related data
@@ -631,7 +626,6 @@ impl UdtSocket {
         }
     }
 
-
     /// Retrieves the address information of the peer side of a connected UDT socket
     ///
     /// The getpeername retrieves the address of the peer side associated to the connection. The
@@ -639,7 +633,7 @@ impl UdtSocket {
     pub fn getpeername(&self) -> Result<std::net::SocketAddr, UdtError> {
         let mut name = unsafe { std::mem::zeroed() };
         let mut size: i32 = size_of::<sockaddr>() as i32;
-        let ret = unsafe { raw::udt_getpeername(self._sock,&mut name, &mut size) };
+        let ret = unsafe { raw::udt_getpeername(self._sock, &mut name, &mut size) };
         assert_eq!(size as usize, size_of::<sockaddr>());
         if ret != raw::SUCCESS {
             Err(get_last_err())
@@ -647,7 +641,7 @@ impl UdtSocket {
             Ok(sockaddr_to_socketaddr(name))
         }
     }
-   
+
     /// Retrieves the local address associated with a UDT socket.
     ///
     /// The getsockname retrieves the local address associated with the socket. The UDT socket must
@@ -674,7 +668,7 @@ impl UdtSocket {
     pub fn getsockname(&self) -> Result<std::net::SocketAddr, UdtError> {
         let mut name = unsafe { std::mem::zeroed() };
         let mut size: i32 = size_of::<sockaddr>() as i32;
-        let ret = unsafe { raw::udt_getsockname(self._sock,&mut name, &mut size) };
+        let ret = unsafe { raw::udt_getsockname(self._sock, &mut name, &mut size) };
 
         assert_eq!(size as usize, size_of::<sockaddr>());
         if ret != raw::SUCCESS {
@@ -682,7 +676,6 @@ impl UdtSocket {
         } else {
             Ok(sockaddr_to_socketaddr(name))
         }
-
     }
 
     /// Sends a message to the peer side.
@@ -721,13 +714,14 @@ impl UdtSocket {
     /// be retrieved by getlasterror. If UDT_SNDTIMEO is set to a positive value, zero will be
     /// returned if the message cannot be sent before the timer expires.
     pub fn sendmsg(&self, buf: &[u8]) -> Result<i32, UdtError> {
-
         let ret = unsafe {
-            raw::udt_sendmsg(self._sock, 
-                             buf.as_ptr(),
-                             buf.len() as i32,
-                             -1 as i32,
-                             1 as i32)
+            raw::udt_sendmsg(
+                self._sock,
+                buf.as_ptr(),
+                buf.len() as i32,
+                -1 as i32,
+                1 as i32,
+            )
         };
         if ret == raw::UDT_ERROR {
             Err(get_last_err())
@@ -735,7 +729,6 @@ impl UdtSocket {
             Ok(ret)
         }
     }
-
 
     /// Sends out a certain amount of data from an application buffer.
     ///
@@ -759,15 +752,12 @@ impl UdtSocket {
     /// If UDT_SNDTIMEO is set to a positive value, zero will be returned if no data is sent before
     /// the time expires.
     pub fn send(&self, buf: &[u8]) -> Result<i32, UdtError> {
-
         let ret = unsafe { raw::udt_send(self._sock, buf.as_ptr(), buf.len() as i32, 0) };
         if ret == raw::UDT_ERROR {
             Err(get_last_err())
         } else {
             Ok(ret)
         }
-
-
     }
 
     /// The recvmsg method receives a valid message.
@@ -794,11 +784,7 @@ impl UdtSocket {
     /// is set to a positive value, zero will be returned if no message is received before the
     /// timer expires.
     pub fn recvmsg(&self, buf: &mut [u8]) -> Result<usize, UdtError> {
-        let ret = unsafe {
-            raw::udt_recvmsg(self._sock,
-                             buf.as_mut_ptr(),
-                             buf.len() as i32)
-        };
+        let ret = unsafe { raw::udt_recvmsg(self._sock, buf.as_mut_ptr(), buf.len() as i32) };
         if ret > 0 {
             Ok(ret as usize)
         } else {
@@ -821,21 +807,18 @@ impl UdtSocket {
     /// specified by UDT_RCVTIMEO option. If there is still no data available when the timer
     /// expires, error will be returned. UDT_RCVTIMEO has no effect for non-blocking socket.
     pub fn recv(&self, buf: &mut [u8], len: usize) -> Result<i32, UdtError> {
-        let ret = unsafe {
-            raw::udt_recv(self._sock, buf.as_mut_ptr(), len as i32, 0)
-        };
+        let ret = unsafe { raw::udt_recv(self._sock, buf.as_mut_ptr(), len as i32, 0) };
 
         if ret == raw::UDT_ERROR {
             Err(get_last_err())
         } else {
             Ok(ret)
         }
-
     }
 
     /// Gets UDT options
     ///
-    /// See the [`UdtOpts`][1] module for all the supported option types.  
+    /// See the [`UdtOpts`][1] module for all the supported option types.
     ///
     /// [1]: UdtOpts/index.html
     ///
@@ -848,34 +831,34 @@ impl UdtSocket {
     /// let recv_buf: i32 = sock.getsockopt(UdtOpts::UDP_RCVBUF).unwrap();
     /// ```
     pub fn getsockopt<B: Default, T: UdtOption<B>>(&self, opt: T) -> Result<B, UdtError> {
-        let mut val: B = unsafe{ std::mem::zeroed() };
+        let mut val: B = unsafe { std::mem::zeroed() };
         let val_p: *mut B = &mut val;
         let ty: raw::UDTOpt = opt.get_type();
         let mut size: c_int = size_of::<B>() as i32;
-        let ret = unsafe { raw::udt_getsockopt(self._sock, 0, ty, val_p as *mut libc::c_void, &mut size) };
-        
+        let ret = unsafe {
+            raw::udt_getsockopt(self._sock, 0, ty, val_p as *mut libc::c_void, &mut size)
+        };
+
         if ret == raw::SUCCESS {
             Ok(val)
         } else {
             Err(get_last_err())
         }
-
     }
 
     /// Sets UDT options
     ///
-    /// See the [`UdtOpts`][1] module for all the supported option types.  
-    
+    /// See the [`UdtOpts`][1] module for all the supported option types.
+
     /// [1]: UdtOpts/index.html
     pub fn setsockopt<B, T: UdtOption<B>>(&self, opt: T, value: B) -> Result<(), UdtError> {
         let ty: raw::UDTOpt = opt.get_type();
         let val_p: *const B = &value;
         let size: c_int = size_of::<B>() as i32;
 
-        let ret = unsafe {
-            raw::udt_setsockopt(self._sock, 0, ty, val_p as *const libc::c_void, size)
-        };
-        
+        let ret =
+            unsafe { raw::udt_setsockopt(self._sock, 0, ty, val_p as *const libc::c_void, size) };
+
         if ret == raw::SUCCESS {
             Ok(())
         } else {
@@ -938,31 +921,37 @@ pub struct Epoll {
     // two vecs and re-use them.  this means that while the UDT api is
     // thread safe, this impl of epoll is not
     rd_vec: Vec<c_int>,
-    wr_vec: Vec<c_int>
-
+    wr_vec: Vec<c_int>,
 }
 
 impl Epoll {
     /// Creates a new Epoll object
     pub fn create() -> Result<Epoll, UdtError> {
-       let ret = unsafe { raw::udt_epoll_create() }; 
-       if ret < 0 {
-           Err(get_last_err())
-       } else {
-            Ok(Epoll{eid: ret, rd_vec: Vec::new(), wr_vec: Vec::new()})
-       }
-
+        let ret = unsafe { raw::udt_epoll_create() };
+        if ret < 0 {
+            Err(get_last_err())
+        } else {
+            Ok(Epoll {
+                eid: ret,
+                rd_vec: Vec::new(),
+                wr_vec: Vec::new(),
+            })
+        }
     }
 
     /// Adds a UdtSocket to an epoll
     ///
     /// `events` can be any combination of `UDT_EPOLL_IN`, `UDT_EPOLL_OUT`, and `UDT_EPOLL_ERR`
-    pub fn add_usock(&mut self, socket: &UdtSocket, events: Option<EpollEvents>) -> Result<(), UdtError> {
+    pub fn add_usock(
+        &mut self,
+        socket: &UdtSocket,
+        events: Option<EpollEvents>,
+    ) -> Result<(), UdtError> {
         use std::ptr::null;
 
         let ret = match events {
             None => unsafe { raw::udt_epoll_add_usock(self.eid, socket._sock, null()) },
-            Some(val) =>  {
+            Some(val) => {
                 let b: c_int = val.bits();
                 unsafe { raw::udt_epoll_add_usock(self.eid, socket._sock, &b) }
             }
@@ -993,16 +982,20 @@ impl Epoll {
     ///
     /// Timeout is in milliseconds.  If negative, wait forever.  If zero, return immediately.
     ///
-    /// If `write` is false, the list of sockets for writing will always be null. 
+    /// If `write` is false, the list of sockets for writing will always be null.
     ///
     /// # Returns
     ///
     /// A tuple of sockets to be read and sockets to be written (or have exceptions)
-    pub fn wait(&mut self, timeout: i64, write: bool) -> Result<(Vec<UdtSocket>, Vec<UdtSocket>), UdtError> {
+    pub fn wait(
+        &mut self,
+        timeout: i64,
+        write: bool,
+    ) -> Result<(Vec<UdtSocket>, Vec<UdtSocket>), UdtError> {
         use std::ptr::null_mut;
-        let mut rnum : c_int = self.rd_vec.len() as c_int;
-        let mut wnum : c_int= self.wr_vec.len() as c_int;
-        
+        let mut rnum: c_int = self.rd_vec.len() as c_int;
+        let mut wnum: c_int = self.wr_vec.len() as c_int;
+
         let wr_vec_ptr = if !write {
             wnum = 0;
             std::ptr::null_mut()
@@ -1010,14 +1003,19 @@ impl Epoll {
             self.wr_vec.as_mut_ptr()
         };
 
-
         let ret = unsafe {
-            raw::udt_epoll_wait2(self.eid,
-                                 self.rd_vec.as_mut_ptr(), &mut rnum,
-                                 wr_vec_ptr, &mut wnum,
-                                 timeout,
-                                 null_mut(), null_mut(), null_mut(), null_mut() // no support for polling sys sockets right now
-                                 )
+            raw::udt_epoll_wait2(
+                self.eid,
+                self.rd_vec.as_mut_ptr(),
+                &mut rnum,
+                wr_vec_ptr,
+                &mut wnum,
+                timeout,
+                null_mut(),
+                null_mut(),
+                null_mut(),
+                null_mut(), // no support for polling sys sockets right now
+            )
         };
         trace!("epoll returned {:?}", ret);
         trace!("rnum={}, wnum={}", rnum, wnum);
@@ -1038,18 +1036,23 @@ impl Epoll {
         }
 
         let mut rds = Vec::with_capacity(rnum as usize);
-        rds.extend(self.rd_vec.iter().take(rnum as usize).map(|&x| UdtSocket::wrap_raw(x)));
+        rds.extend(
+            self.rd_vec
+                .iter()
+                .take(rnum as usize)
+                .map(|&x| UdtSocket::wrap_raw(x)),
+        );
 
         let mut wrs = Vec::with_capacity(wnum as usize);
-        wrs.extend(self.wr_vec.iter().take(wnum as usize).map(|&x| UdtSocket::wrap_raw(x)));
-        Ok( (rds, wrs) )
-
-
-
+        wrs.extend(
+            self.wr_vec
+                .iter()
+                .take(wnum as usize)
+                .map(|&x| UdtSocket::wrap_raw(x)),
+        );
+        Ok((rds, wrs))
     }
-
 }
-
 
 #[test]
 fn test_udt_socket() {
@@ -1065,12 +1068,13 @@ fn test_udt_bind() {
     init();
     let sock = UdtSocket::new(SocketFamily::AFInet, SocketType::Stream).unwrap();
     let localhost = Ipv4Addr::from_str("127.0.0.1").unwrap();
-    if cfg!(target_os="macos") {
+    if cfg!(target_os = "macos") {
         trace!("Lowering buffer sizes on OSX");
         sock.setsockopt(UdtOpts::UDP_RCVBUF, 8192).unwrap();
         sock.setsockopt(UdtOpts::UDP_SNDBUF, 8192).unwrap();
     }
-    sock.bind(SocketAddr::V4(SocketAddrV4::new(localhost, 0))).or_else(|e| Err(panic!("Failed to bind to {:?} --> {:?}", localhost, e)));
+    sock.bind(SocketAddr::V4(SocketAddrV4::new(localhost, 0)))
+        .or_else(|e| Err(panic!("Failed to bind to {:?} --> {:?}", localhost, e)));
 }
 
 #[test]
@@ -1083,15 +1087,16 @@ fn test_udt_socket_state() {
     init();
     let sock = UdtSocket::new(SocketFamily::AFInet, SocketType::Stream).unwrap();
     assert_eq!(sock.getstate(), UdtStatus::INIT);
-    if cfg!(target_os="macos") {
+    if cfg!(target_os = "macos") {
         trace!("Lowering buffer sizes on OSX");
         sock.setsockopt(UdtOpts::UDP_RCVBUF, 8192).unwrap();
         sock.setsockopt(UdtOpts::UDP_SNDBUF, 8192).unwrap();
     }
-    
+
     let localhost = Ipv4Addr::from_str("127.0.0.1").unwrap();
-    
-    sock.bind(SocketAddr::V4(SocketAddrV4::new(localhost, 0))).or_else(|e| Err(panic!("Failed to bind to {:?} --> {:?}", localhost, e)));
+
+    sock.bind(SocketAddr::V4(SocketAddrV4::new(localhost, 0)))
+        .or_else(|e| Err(panic!("Failed to bind to {:?} --> {:?}", localhost, e)));
     assert_eq!(sock.getstate(), UdtStatus::OPENED);
     sock.listen(5).unwrap();
     assert_eq!(sock.getstate(), UdtStatus::LISTENING);
@@ -1101,6 +1106,4 @@ fn test_udt_socket_state() {
     // after some time, the sock transitions to CLOSED and then NONEXIST
     // THe LISTENING -> CLOSED transition is made after a 3 second timeout
     assert!(sock.getstate() == UdtStatus::NONEXIST || sock.getstate() == UdtStatus::CLOSED);
-
-
 }

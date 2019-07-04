@@ -1,4 +1,4 @@
-extern crate gcc;
+
 
 use std::path::PathBuf;
 use std::fs::{read_dir};
@@ -23,7 +23,7 @@ fn main() {
     }
 
     // g++ -fPIC -Wall -Wextra -DLINUX -finline-functions -O3 -fno-strict-aliasing -fvisibility=hidden -DAMD64 ccc.cpp -c
-    let mut cfg = gcc::Config::new();
+    let mut cfg = cc::Build::new();
     for file in cpp_files {
         cfg.file(file);
     }
@@ -63,7 +63,7 @@ fn main() {
             .flag("/Gm-") // disable minimal rebuild
             .flag("/EHsc")// enable c++ exceptions
             .flag("/MD"); // multi-threaded DLL runtime
-    } else {	
+    } else {
         cfg.flag("-fPIC")
            .opt_level(3)
            .flag("-Wextra")

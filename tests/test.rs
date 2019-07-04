@@ -5,16 +5,15 @@ extern crate log;
 use std::str;
 use udt::*;
 
-#[cfg(any(target_os="linux", target_os="windows"))]
+#[cfg(any(target_os = "linux", target_os = "windows"))]
 #[allow(unused_variables)]
 fn do_platform_specific_init(sock: &mut UdtSocket) {}
 
-#[cfg(target_os="macos")]
+#[cfg(any(target_os = "macos", target_os = "freebsd"))]
 fn do_platform_specific_init(sock: &mut UdtSocket) {
     sock.setsockopt(UdtOpts::UDP_RCVBUF, 8192).unwrap();
     sock.setsockopt(UdtOpts::UDP_SNDBUF, 8192).unwrap();
 }
-
 
 #[test]
 fn test_getsockopt() {
@@ -30,7 +29,6 @@ fn test_getsockopt() {
     assert_eq!(sock.getsockopt(UdtOpts::UDT_RENDEZVOUS).unwrap(), false);
     assert_eq!(sock.getsockopt(UdtOpts::UDT_SNDTIMEO).unwrap(), -1);
     assert_eq!(sock.getsockopt(UdtOpts::UDT_RCVTIMEO).unwrap(), -1);
-
 }
 
 #[test]
@@ -44,16 +42,13 @@ fn test_setsockopt() {
     assert_eq!(sock.getsockopt(UdtOpts::UDT_MSS).unwrap(), 1400);
 }
 
-
-
-
 #[test]
 fn test_sendmsg() {
-    use std::thread::spawn;
-    use std::net::{SocketAddr, SocketAddrV4};
     use std::net::Ipv4Addr;
+    use std::net::{SocketAddr, SocketAddrV4};
     use std::str::FromStr;
     use std::sync::mpsc::channel;
+    use std::thread::spawn;
 
     init();
 
@@ -66,7 +61,8 @@ fn test_sendmsg() {
     let server = spawn(move || {
         let mut sock = UdtSocket::new(SocketFamily::AFInet, SocketType::Datagram).unwrap();
         do_platform_specific_init(&mut sock);
-        sock.bind(SocketAddr::V4(SocketAddrV4::new(localhost, 0))).unwrap();
+        sock.bind(SocketAddr::V4(SocketAddrV4::new(localhost, 0)))
+            .unwrap();
         let my_addr = sock.getsockname().unwrap();
         debug!("Server bound to {:?}", my_addr);
 
@@ -89,8 +85,6 @@ fn test_sendmsg() {
 
         new.close().unwrap();
         sock.close().unwrap();
-
-
     });
 
     let client = spawn(move || {
@@ -98,7 +92,8 @@ fn test_sendmsg() {
         debug!("Client connecting to port {:?}", port);
         let mut sock = UdtSocket::new(SocketFamily::AFInet, SocketType::Datagram).unwrap();
         do_platform_specific_init(&mut sock);
-        sock.connect(SocketAddr::V4(SocketAddrV4::new(localhost, port))).unwrap();
+        sock.connect(SocketAddr::V4(SocketAddrV4::new(localhost, port)))
+            .unwrap();
 
         sock.sendmsg("hello".as_bytes()).unwrap();
         let msg = &mut [0u8; 1024];
@@ -107,25 +102,19 @@ fn test_sendmsg() {
         assert_eq!(&msg[..len], "world".as_bytes());
 
         sock.close().unwrap();
-
-
     });
 
     server.join().unwrap();
     client.join().unwrap();
-
-
-
 }
-
 
 #[test]
 fn test_send() {
-    use std::thread::spawn;
-    use std::net::{SocketAddr, SocketAddrV4};
     use std::net::Ipv4Addr;
+    use std::net::{SocketAddr, SocketAddrV4};
     use std::str::FromStr;
     use std::sync::mpsc::channel;
+    use std::thread::spawn;
 
     init();
 
@@ -138,7 +127,8 @@ fn test_send() {
     let server = spawn(move || {
         let mut sock = UdtSocket::new(SocketFamily::AFInet, SocketType::Stream).unwrap();
         do_platform_specific_init(&mut sock);
-        sock.bind(SocketAddr::V4(SocketAddrV4::new(localhost, 0))).unwrap();
+        sock.bind(SocketAddr::V4(SocketAddrV4::new(localhost, 0)))
+            .unwrap();
         let my_addr = sock.getsockname().unwrap();
         debug!("Server bound to {:?}", my_addr);
 
@@ -159,8 +149,6 @@ fn test_send() {
 
         new.close().unwrap();
         sock.close().unwrap();
-
-
     });
 
     let client = spawn(move || {
@@ -168,7 +156,8 @@ fn test_send() {
         debug!("Client connecting to port {:?}", port);
         let mut sock = UdtSocket::new(SocketFamily::AFInet, SocketType::Stream).unwrap();
         do_platform_specific_init(&mut sock);
-        sock.connect(SocketAddr::V4(SocketAddrV4::new(localhost, port))).unwrap();
+        sock.connect(SocketAddr::V4(SocketAddrV4::new(localhost, port)))
+            .unwrap();
 
         assert_eq!(sock.send("hello".as_bytes()).unwrap(), 5);
         assert_eq!(sock.send("world".as_bytes()).unwrap(), 5);
@@ -241,19 +230,16 @@ fn test_perfmon() {
 
     server.join().unwrap();
     client.join().unwrap();
-
-
 }
-
 
 #[test]
 fn test_epoll() {
-    use std::thread::spawn;
-    use std::net::{SocketAddr, SocketAddrV4};
     use std::net::Ipv4Addr;
+    use std::net::{SocketAddr, SocketAddrV4};
     use std::str::FromStr;
     use std::sync::mpsc::channel;
     use std::thread::sleep;
+    use std::thread::spawn;
     use std::time::Duration;
 
     init();
@@ -267,7 +253,8 @@ fn test_epoll() {
     let server = spawn(move || {
         let mut sock = UdtSocket::new(SocketFamily::AFInet, SocketType::Datagram).unwrap();
         do_platform_specific_init(&mut sock);
-        sock.bind(SocketAddr::V4(SocketAddrV4::new(localhost, 0))).unwrap();
+        sock.bind(SocketAddr::V4(SocketAddrV4::new(localhost, 0)))
+            .unwrap();
         let my_addr = sock.getsockname().unwrap();
         debug!("Server bound to {:?}", my_addr);
 
@@ -280,10 +267,10 @@ fn test_epoll() {
         epoll.add_usock(&sock, None).unwrap();
 
         let mut counter = 0;
-        loop { 
+        loop {
             let (pending_rd, pending_wr) = epoll.wait(1000, true).unwrap();
             debug!("Pending sockets: {:?} {:?}", pending_rd, pending_wr);
-            
+
             let rd_len = pending_rd.len();
             for s in pending_rd {
                 if s == sock {
@@ -297,12 +284,15 @@ fn test_epoll() {
                     let msg_string = str::from_utf8(&msg[..len]).unwrap();
                     debug!("Received message: {:?}", msg_string);
                 }
-
             }
 
             for s in pending_wr {
                 let state = s.getstate();
-                if rd_len == 0 && (state == UdtStatus::BROKEN || state == UdtStatus::CLOSED || state == UdtStatus::NONEXIST) {
+                if rd_len == 0
+                    && (state == UdtStatus::BROKEN
+                        || state == UdtStatus::CLOSED
+                        || state == UdtStatus::NONEXIST)
+                {
                     epoll.remove_usock(&s).unwrap();
                     return;
                 }
@@ -312,8 +302,6 @@ fn test_epoll() {
             counter += 1;
             assert!(counter < 500);
         }
-
-
     });
 
     let client = spawn(move || {
@@ -321,7 +309,8 @@ fn test_epoll() {
         debug!("Client connecting to port {:?}", port);
         let mut sock = UdtSocket::new(SocketFamily::AFInet, SocketType::Datagram).unwrap();
         do_platform_specific_init(&mut sock);
-        sock.connect(SocketAddr::V4(SocketAddrV4::new(localhost, port))).unwrap();
+        sock.connect(SocketAddr::V4(SocketAddrV4::new(localhost, port)))
+            .unwrap();
 
         sock.sendmsg("hello".as_bytes()).unwrap();
 
@@ -330,25 +319,20 @@ fn test_epoll() {
         sock.sendmsg("done.".as_bytes()).unwrap();
 
         sock.close().unwrap();
-
-
     });
 
     server.join().unwrap();
     client.join().unwrap();
-
-
-
 }
 
 #[test]
 fn test_epoll2() {
-    use std::thread::spawn;
-    use std::net::{SocketAddr, SocketAddrV4};
     use std::net::Ipv4Addr;
+    use std::net::{SocketAddr, SocketAddrV4};
     use std::str::FromStr;
     use std::sync::mpsc::channel;
     use std::thread::sleep;
+    use std::thread::spawn;
     use std::time::Duration;
 
     init();
@@ -362,7 +346,8 @@ fn test_epoll2() {
     let server = spawn(move || {
         let mut sock = UdtSocket::new(SocketFamily::AFInet, SocketType::Datagram).unwrap();
         do_platform_specific_init(&mut sock);
-        sock.bind(SocketAddr::V4(SocketAddrV4::new(localhost, 0))).unwrap();
+        sock.bind(SocketAddr::V4(SocketAddrV4::new(localhost, 0)))
+            .unwrap();
         let my_addr = sock.getsockname().unwrap();
         println!("Server bound to {:?}", my_addr);
 
@@ -372,21 +357,25 @@ fn test_epoll2() {
 
         let mut epoll = Epoll::create().unwrap();
 
-        epoll.add_usock(&sock, Some(UDT_EPOLL_ERR | UDT_EPOLL_IN)).unwrap();
+        epoll
+            .add_usock(&sock, Some(UDT_EPOLL_ERR | UDT_EPOLL_IN))
+            .unwrap();
 
         let mut counter = 0;
         let mut outer = true;
-        while outer { 
+        while outer {
             let (pending_rd, pending_wr) = epoll.wait(1000, true).unwrap();
             println!("Pending sockets: {:?} {:?}", pending_rd, pending_wr);
-            
+
             let rd_len = pending_rd.len();
             for s in pending_rd {
                 if s == sock {
                     println!("trying to accept new sock");
                     let (new, peer) = sock.accept().unwrap();
                     println!("Server recieved connection from {:?}", peer);
-                    epoll.add_usock(&new, Some(UDT_EPOLL_ERR | UDT_EPOLL_IN)).unwrap();
+                    epoll
+                        .add_usock(&new, Some(UDT_EPOLL_ERR | UDT_EPOLL_IN))
+                        .unwrap();
                 } else {
                     let msg = &mut [0u8; 100];
                     if let Ok(len) = s.recvmsg(msg) {
@@ -398,13 +387,16 @@ fn test_epoll2() {
                         outer = false;
                     }
                 }
-
             }
 
             for s in pending_wr {
                 let state = s.getstate();
                 println!("state: {:?}", state);
-                if rd_len == 0 && (state == UdtStatus::BROKEN || state == UdtStatus::CLOSED || state == UdtStatus::NONEXIST) {
+                if rd_len == 0
+                    && (state == UdtStatus::BROKEN
+                        || state == UdtStatus::CLOSED
+                        || state == UdtStatus::NONEXIST)
+                {
                     epoll.remove_usock(&s).unwrap();
                     return;
                 }
@@ -414,8 +406,6 @@ fn test_epoll2() {
             counter += 1;
             assert!(counter < 500);
         }
-
-
     });
 
     let client = spawn(move || {
@@ -423,7 +413,8 @@ fn test_epoll2() {
         debug!("Client connecting to port {:?}", port);
         let mut sock = UdtSocket::new(SocketFamily::AFInet, SocketType::Datagram).unwrap();
         do_platform_specific_init(&mut sock);
-        sock.connect(SocketAddr::V4(SocketAddrV4::new(localhost, port))).unwrap();
+        sock.connect(SocketAddr::V4(SocketAddrV4::new(localhost, port)))
+            .unwrap();
 
         sock.sendmsg("hello".as_bytes()).unwrap();
 
@@ -433,23 +424,18 @@ fn test_epoll2() {
 
         sock.close().unwrap();
         println!("Client is done");
-
-
     });
 
     server.join().unwrap();
     client.join().unwrap();
-
-
-
 }
 
 #[test]
 fn test_epoll3() {
-    use std::thread::spawn;
-    use std::net::{SocketAddr, SocketAddrV4};
     use std::net::Ipv4Addr;
+    use std::net::{SocketAddr, SocketAddrV4};
     use std::str::FromStr;
+    use std::thread::spawn;
 
     init();
 
@@ -459,7 +445,8 @@ fn test_epoll3() {
     let server = spawn(move || {
         let mut sock = UdtSocket::new(SocketFamily::AFInet, SocketType::Datagram).unwrap();
         do_platform_specific_init(&mut sock);
-        sock.bind(SocketAddr::V4(SocketAddrV4::new(localhost, 0))).unwrap();
+        sock.bind(SocketAddr::V4(SocketAddrV4::new(localhost, 0)))
+            .unwrap();
         let my_addr = sock.getsockname().unwrap();
         println!("Server bound to {:?}", my_addr);
 
@@ -473,7 +460,4 @@ fn test_epoll3() {
         epoll.add_usock(&sock, None).unwrap();
     });
     server.join().unwrap();
-
-
-
 }
